@@ -1,1 +1,0 @@
-package com.inmocontrol.negocio.assembler.entidad;
