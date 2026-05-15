@@ -5,6 +5,9 @@ bin/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Security ###
+.env
+
 ### STS ###
 .apt_generated
 .classpath

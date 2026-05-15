@@ -1,8 +1,8 @@
 package com.inmocontrol.transversal.excepcion;
 
-public class TransaccionExcepcion extends RuntimeException {
+public class TransaccionExcepcion extends InmocontrolExcepcion {
 
-    private static final long serialVersionUID = 6715703643636888883L;
+    private static final long serialVersionUID = 1L;
 
     public TransaccionExcepcion(String mensaje) {
         super(mensaje);
