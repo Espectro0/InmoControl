@@ -6,7 +6,7 @@ import java.util.Date;
 public final class UtilDate {
 
     public static final String FORMATO_FECHA = "yyyy-MM-dd";
-    public static final Date FECHA_DEFECTO = null;
+    protected static final Date FECHA_DEFECTO = null;
 
     private UtilDate() {
         super();
@@ -47,7 +47,7 @@ public final class UtilDate {
         try {
             var df = new SimpleDateFormat(UtilTexto.obtenerValorDefecto(formato));
             return df.parse(fechaTexto);
-        } catch (Exception e) {
+        } catch (Exception _) {
             return FECHA_DEFECTO;
         }
     }

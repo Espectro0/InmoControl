@@ -122,7 +122,7 @@ public class PostgreSQLDAOFactory extends DAOFactory {
     private boolean esConexionValida() {
         try {
             return conexion != null && !conexion.isClosed();
-        } catch (SQLException e) {
+        } catch (SQLException _) {
             return false;
         }
     }

@@ -35,30 +35,16 @@ public final class UtilNumero {
 
     public static boolean estaEnRango(
             final Integer numero, final Integer minimo, final Integer maximo) {
-        if (esNulo(numero)) {
-            return false;
-        }
-        if (!esNulo(minimo) && numero < minimo) {
-            return false;
-        }
-        if (!esNulo(maximo) && numero > maximo) {
-            return false;
-        }
-        return true;
+        return !esNulo(numero)
+                && (esNulo(minimo) || numero >= minimo)
+                && (esNulo(maximo) || numero <= maximo);
     }
 
     public static boolean estaEnRango(
             final Double numero, final Double minimo, final Double maximo) {
-        if (esNulo(numero)) {
-            return false;
-        }
-        if (!esNulo(minimo) && numero < minimo) {
-            return false;
-        }
-        if (!esNulo(maximo) && numero > maximo) {
-            return false;
-        }
-        return true;
+        return !esNulo(numero)
+                && (esNulo(minimo) || numero >= minimo)
+                && (esNulo(maximo) || numero <= maximo);
     }
 
     public static boolean esPositivo(final Integer numero) {
