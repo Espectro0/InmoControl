@@ -1,7 +1,7 @@
 package com.inmocontrol.datos.dao.sql.postgresql;
 
 import com.inmocontrol.datos.dao.PaisDAO;
-import com.inmocontrol.datos.sql.SQLDAO;
+import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
@@ -27,10 +27,13 @@ public class PaisPostgresqlDAO extends SQLDAO implements PaisDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return mapearResultado(rs);
+                return new PaisEntidad.Builder()
+                        .id(rs.getObject("id", UUID.class))
+                        .nombre(rs.getString("nombre"))
+                        .build();
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrió un error al consultar el país por id.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar el pais por id.", e);
         }
 
         return null;
@@ -45,19 +48,47 @@ public class PaisPostgresqlDAO extends SQLDAO implements PaisDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                resultados.add(mapearResultado(rs));
+                resultados.add(new PaisEntidad.Builder()
+                        .id(rs.getObject("id", UUID.class))
+                        .nombre(rs.getString("nombre"))
+                        .build());
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrió un error al consultar los países.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar los paises.", e);
         }
 
         return resultados;
     }
 
-    private PaisEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new PaisEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .build();
+    @Override
+    public List<PaisEntidad> consultarPorFiltro(PaisEntidad filtro) {
+        String sql = "SELECT id, nombre FROM pais WHERE 1=1";
+        List<Object> parametros = new ArrayList<>();
+
+        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+            sql += " AND nombre = ?";
+            parametros.add(filtro.getNombre());
+        }
+
+        List<PaisEntidad> resultados = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.size(); i++) {
+                stmt.setObject(i + 1, parametros.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                resultados.add(new PaisEntidad.Builder()
+                        .id(rs.getObject("id", UUID.class))
+                        .nombre(rs.getString("nombre"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            throw new TransaccionExcepcion("Ocurrio un error al consultar paises por filtro.", e);
+        }
+
+        return resultados;
     }
 }

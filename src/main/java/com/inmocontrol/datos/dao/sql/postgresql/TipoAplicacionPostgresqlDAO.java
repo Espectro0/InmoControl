@@ -1,7 +1,7 @@
 package com.inmocontrol.datos.dao.sql.postgresql;
 
 import com.inmocontrol.datos.dao.TipoAplicacionDAO;
-import com.inmocontrol.datos.sql.SQLDAO;
+import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.TipoAplicacionEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
@@ -30,8 +30,7 @@ public class TipoAplicacionPostgresqlDAO extends SQLDAO implements TipoAplicacio
                 return mapearResultado(rs);
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar el tipo de aplicación por id.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo aplicacion por id.", e);
         }
 
         return null;
@@ -49,8 +48,36 @@ public class TipoAplicacionPostgresqlDAO extends SQLDAO implements TipoAplicacio
                 resultados.add(mapearResultado(rs));
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar los tipos de aplicación.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos aplicacion.", e);
+        }
+
+        return resultados;
+    }
+
+    @Override
+    public List<TipoAplicacionEntidad> consultarPorFiltro(TipoAplicacionEntidad filtro) {
+        String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE 1=1";
+        List<Object> parametros = new ArrayList<>();
+
+        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+            sql += " AND nombre = ?";
+            parametros.add(filtro.getNombre());
+        }
+
+        List<TipoAplicacionEntidad> resultados = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.size(); i++) {
+                stmt.setObject(i + 1, parametros.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                resultados.add(mapearResultado(rs));
+            }
+        } catch (SQLException e) {
+            throw new TransaccionExcepcion("Ocurrio un error al consultar tipos aplicacion por filtro.", e);
         }
 
         return resultados;

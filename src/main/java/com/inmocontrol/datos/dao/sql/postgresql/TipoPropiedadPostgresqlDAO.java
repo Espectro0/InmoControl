@@ -1,7 +1,7 @@
 package com.inmocontrol.datos.dao.sql.postgresql;
 
 import com.inmocontrol.datos.dao.TipoPropiedadDAO;
-import com.inmocontrol.datos.sql.SQLDAO;
+import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
@@ -30,8 +30,7 @@ public class TipoPropiedadPostgresqlDAO extends SQLDAO implements TipoPropiedadD
                 return mapearResultado(rs);
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar el tipo de propiedad por id.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo propiedad por id.", e);
         }
 
         return null;
@@ -49,8 +48,36 @@ public class TipoPropiedadPostgresqlDAO extends SQLDAO implements TipoPropiedadD
                 resultados.add(mapearResultado(rs));
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar los tipos de propiedad.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos propiedad.", e);
+        }
+
+        return resultados;
+    }
+
+    @Override
+    public List<TipoPropiedadEntidad> consultarPorFiltro(TipoPropiedadEntidad filtro) {
+        String sql = "SELECT id, nombre FROM tipo_propiedad WHERE 1=1";
+        List<Object> parametros = new ArrayList<>();
+
+        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+            sql += " AND nombre = ?";
+            parametros.add(filtro.getNombre());
+        }
+
+        List<TipoPropiedadEntidad> resultados = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.size(); i++) {
+                stmt.setObject(i + 1, parametros.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                resultados.add(mapearResultado(rs));
+            }
+        } catch (SQLException e) {
+            throw new TransaccionExcepcion("Ocurrio un error al consultar tipos propiedad por filtro.", e);
         }
 
         return resultados;

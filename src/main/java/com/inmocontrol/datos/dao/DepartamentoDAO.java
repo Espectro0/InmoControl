@@ -1,13 +1,12 @@
 package com.inmocontrol.datos.dao;
 
+import com.inmocontrol.datos.ConsultarPorFiltroDAO;
+import com.inmocontrol.datos.ConsultarPorIdDAO;
+import com.inmocontrol.datos.ConsultarTodosDAO;
 import com.inmocontrol.entidad.DepartamentoEntidad;
-import java.util.List;
 import java.util.UUID;
 
-public interface DepartamentoDAO {
-    DepartamentoEntidad consultarPorId(UUID id);
-
-    List<DepartamentoEntidad> consultarTodos();
-
-    List<DepartamentoEntidad> consultarTodosPorPais(UUID paisId);
+public interface DepartamentoDAO
+		extends ConsultarPorIdDAO<DepartamentoEntidad, UUID>, ConsultarTodosDAO<DepartamentoEntidad>,
+				ConsultarPorFiltroDAO<DepartamentoEntidad> {
 }

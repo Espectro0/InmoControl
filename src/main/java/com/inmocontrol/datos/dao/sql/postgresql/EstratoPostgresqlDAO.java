@@ -1,7 +1,7 @@
 package com.inmocontrol.datos.dao.sql.postgresql;
 
 import com.inmocontrol.datos.dao.EstratoDAO;
-import com.inmocontrol.datos.sql.SQLDAO;
+import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.EstratoEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
@@ -30,7 +30,7 @@ public class EstratoPostgresqlDAO extends SQLDAO implements EstratoDAO {
                 return mapearResultado(rs);
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrió un error al consultar el estrato por id.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar el estrato por id.", e);
         }
 
         return null;
@@ -48,7 +48,41 @@ public class EstratoPostgresqlDAO extends SQLDAO implements EstratoDAO {
                 resultados.add(mapearResultado(rs));
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrió un error al consultar los estratos.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar los estratos.", e);
+        }
+
+        return resultados;
+    }
+
+    @Override
+    public List<EstratoEntidad> consultarPorFiltro(EstratoEntidad filtro) {
+        String sql = "SELECT id, nombre, descripcion FROM estrato WHERE 1=1";
+        List<Object> parametros = new ArrayList<>();
+
+        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+            sql += " AND nombre = ?";
+            parametros.add(filtro.getNombre());
+        }
+
+        if (filtro.getDescripcion() != null && !filtro.getDescripcion().isEmpty()) {
+            sql += " AND descripcion = ?";
+            parametros.add(filtro.getDescripcion());
+        }
+
+        List<EstratoEntidad> resultados = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.size(); i++) {
+                stmt.setObject(i + 1, parametros.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                resultados.add(mapearResultado(rs));
+            }
+        } catch (SQLException e) {
+            throw new TransaccionExcepcion("Ocurrio un error al consultar estratos por filtro.", e);
         }
 
         return resultados;

@@ -1,7 +1,7 @@
 package com.inmocontrol.datos.dao.sql.postgresql;
 
 import com.inmocontrol.datos.dao.AreaReferenciaDAO;
-import com.inmocontrol.datos.sql.SQLDAO;
+import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.AreaReferenciaEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
@@ -30,8 +30,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
                 return mapearResultado(rs);
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar el área de referencia por id.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar el area referencia por id.", e);
         }
 
         return null;
@@ -49,39 +48,64 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
                 resultados.add(mapearResultado(rs));
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar las áreas de referencia.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar los areas referencia.", e);
         }
 
         return resultados;
     }
 
     @Override
-    public AreaReferenciaEntidad crear(AreaReferenciaEntidad entidad) {
+    public List<AreaReferenciaEntidad> consultarPorFiltro(AreaReferenciaEntidad filtro) {
+        String sql = "SELECT id, nombre FROM area_referencia WHERE 1=1";
+        List<Object> parametros = new ArrayList<>();
+
+        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+            sql += " AND nombre = ?";
+            parametros.add(filtro.getNombre());
+        }
+
+        List<AreaReferenciaEntidad> resultados = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.size(); i++) {
+                stmt.setObject(i + 1, parametros.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                resultados.add(mapearResultado(rs));
+            }
+        } catch (SQLException e) {
+            throw new TransaccionExcepcion("Ocurrio un error al consultar areas referencia por filtro.", e);
+        }
+
+        return resultados;
+    }
+
+    @Override
+    public void crear(AreaReferenciaEntidad entidad) {
         String sql = "INSERT INTO area_referencia (id, nombre) VALUES (?, ?)";
 
         try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
             stmt.setObject(1, entidad.getId());
             stmt.setString(2, entidad.getNombre());
             stmt.executeUpdate();
-            return entidad;
         } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrió un error al crear el área de referencia.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al crear el area referencia.", e);
         }
     }
 
     @Override
-    public AreaReferenciaEntidad actualizar(AreaReferenciaEntidad entidad) {
+    public void actualizar(UUID id, AreaReferenciaEntidad entidad) {
         String sql = "UPDATE area_referencia SET nombre = ? WHERE id = ?";
 
         try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
             stmt.setString(1, entidad.getNombre());
-            stmt.setObject(2, entidad.getId());
+            stmt.setObject(2, id);
             stmt.executeUpdate();
-            return entidad;
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al actualizar el área de referencia.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al actualizar el area referencia.", e);
         }
     }
 
@@ -93,8 +117,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
             stmt.setObject(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al eliminar el área de referencia.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al eliminar el area referencia.", e);
         }
     }
 

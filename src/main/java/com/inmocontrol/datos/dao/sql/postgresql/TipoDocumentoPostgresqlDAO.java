@@ -1,7 +1,7 @@
 package com.inmocontrol.datos.dao.sql.postgresql;
 
 import com.inmocontrol.datos.dao.TipoDocumentoDAO;
-import com.inmocontrol.datos.sql.SQLDAO;
+import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
@@ -30,8 +30,7 @@ public class TipoDocumentoPostgresqlDAO extends SQLDAO implements TipoDocumentoD
                 return mapearResultado(rs);
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar el tipo de documento por id.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo documento por id.", e);
         }
 
         return null;
@@ -49,8 +48,36 @@ public class TipoDocumentoPostgresqlDAO extends SQLDAO implements TipoDocumentoD
                 resultados.add(mapearResultado(rs));
             }
         } catch (SQLException e) {
-            throw new TransaccionExcepcion(
-                    "Ocurrió un error al consultar los tipos de documento.", e);
+            throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos documento.", e);
+        }
+
+        return resultados;
+    }
+
+    @Override
+    public List<TipoDocumentoEntidad> consultarPorFiltro(TipoDocumentoEntidad filtro) {
+        String sql = "SELECT id, nombre FROM tipo_documento WHERE 1=1";
+        List<Object> parametros = new ArrayList<>();
+
+        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+            sql += " AND nombre = ?";
+            parametros.add(filtro.getNombre());
+        }
+
+        List<TipoDocumentoEntidad> resultados = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+            for (int i = 0; i < parametros.size(); i++) {
+                stmt.setObject(i + 1, parametros.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                resultados.add(mapearResultado(rs));
+            }
+        } catch (SQLException e) {
+            throw new TransaccionExcepcion("Ocurrio un error al consultar tipos documento por filtro.", e);
         }
 
         return resultados;
