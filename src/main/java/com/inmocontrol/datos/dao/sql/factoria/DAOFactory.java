@@ -46,37 +46,37 @@ public abstract class DAOFactory {
 
 	public abstract void cancelarTransaccion();
 
-	public abstract PaisDAO getPaisDAO();
+	public abstract PaisDAO obtenerPaisDAO();
 
-	public abstract EstratoDAO getEstratoDAO();
+	public abstract EstratoDAO obtenerEstratoDAO();
 
-	public abstract TipoDocumentoDAO getTipoDocumentoDAO();
+	public abstract TipoDocumentoDAO obtenerTipoDocumentoDAO();
 
-	public abstract TipoPropiedadDAO getTipoPropiedadDAO();
+	public abstract TipoPropiedadDAO obtenerTipoPropiedadDAO();
 
-	public abstract TipoParticipanteDAO getTipoParticipanteDAO();
+	public abstract TipoParticipanteDAO obtenerTipoParticipanteDAO();
 
-	public abstract TipoAplicacionDAO getTipoAplicacionDAO();
+	public abstract TipoAplicacionDAO obtenerTipoAplicacionDAO();
 
-	public abstract ParametroDAO getParametroDAO();
+	public abstract ParametroDAO obtenerParametroDAO();
 
-	public abstract AreaReferenciaDAO getAreaReferenciaDAO();
+	public abstract AreaReferenciaDAO obtenerAreaReferenciaDAO();
 
-	public abstract DepartamentoDAO getDepartamentoDAO();
+	public abstract DepartamentoDAO obtenerDepartamentoDAO();
 
-	public abstract CiudadDAO getCiudadDAO();
+	public abstract CiudadDAO obtenerCiudadDAO();
 
-	public abstract ClausulaContratoDAO getClausulaContratoDAO();
+	public abstract ClausulaContratoDAO obtenerClausulaContratoDAO();
 
-	public abstract PersonaDAO getPersonaDAO();
+	public abstract PersonaDAO obtenerPersonaDAO();
 
-	public abstract ParticipanteContratoDAO getParticipanteContratoDAO();
+	public abstract ParticipanteContratoDAO obtenerParticipanteContratoDAO();
 
-	public abstract PropiedadDAO getPropiedadDAO();
+	public abstract PropiedadDAO obtenerPropiedadDAO();
 
-	public abstract ParametroClausulaContratoDAO getParametroClausulaContratoDAO();
+	public abstract ParametroClausulaContratoDAO obtenerParametroClausulaContratoDAO();
 
-	public abstract ContratoDAO getContratoDAO();
+	public abstract ContratoDAO obtenerContratoDAO();
 
-	public abstract ClausulaPorContratoDAO getClausulaPorContratoDAO();
+	public abstract ClausulaPorContratoDAO obtenerClausulaPorContratoDAO();
 }

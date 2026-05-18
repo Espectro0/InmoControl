@@ -1,1 +1,0 @@
-package com.inmocontrol.negocio.casouso.tipoaplicacion.impl;

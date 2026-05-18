@@ -104,87 +104,87 @@ public class PostgreSQLDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public PaisDAO getPaisDAO() {
+	public PaisDAO obtenerPaisDAO() {
 		return new PaisPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public EstratoDAO getEstratoDAO() {
+	public EstratoDAO obtenerEstratoDAO() {
 		return new EstratoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public TipoDocumentoDAO getTipoDocumentoDAO() {
+	public TipoDocumentoDAO obtenerTipoDocumentoDAO() {
 		return new TipoDocumentoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public TipoPropiedadDAO getTipoPropiedadDAO() {
+	public TipoPropiedadDAO obtenerTipoPropiedadDAO() {
 		return new TipoPropiedadPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public TipoParticipanteDAO getTipoParticipanteDAO() {
+	public TipoParticipanteDAO obtenerTipoParticipanteDAO() {
 		return new TipoParticipantePostgresqlDAO(conexion);
 	}
 
 	@Override
-	public TipoAplicacionDAO getTipoAplicacionDAO() {
+	public TipoAplicacionDAO obtenerTipoAplicacionDAO() {
 		return new TipoAplicacionPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public ParametroDAO getParametroDAO() {
+	public ParametroDAO obtenerParametroDAO() {
 		return new ParametroPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public AreaReferenciaDAO getAreaReferenciaDAO() {
+	public AreaReferenciaDAO obtenerAreaReferenciaDAO() {
 		return new AreaReferenciaPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public DepartamentoDAO getDepartamentoDAO() {
+	public DepartamentoDAO obtenerDepartamentoDAO() {
 		return new DepartamentoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public CiudadDAO getCiudadDAO() {
+	public CiudadDAO obtenerCiudadDAO() {
 		return new CiudadPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public ClausulaContratoDAO getClausulaContratoDAO() {
+	public ClausulaContratoDAO obtenerClausulaContratoDAO() {
 		return new ClausulaContratoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public PersonaDAO getPersonaDAO() {
+	public PersonaDAO obtenerPersonaDAO() {
 		return new PersonaPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public ParticipanteContratoDAO getParticipanteContratoDAO() {
+	public ParticipanteContratoDAO obtenerParticipanteContratoDAO() {
 		return new ParticipanteContratoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public PropiedadDAO getPropiedadDAO() {
+	public PropiedadDAO obtenerPropiedadDAO() {
 		return new PropiedadPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public ParametroClausulaContratoDAO getParametroClausulaContratoDAO() {
+	public ParametroClausulaContratoDAO obtenerParametroClausulaContratoDAO() {
 		return new ParametroClausulaContratoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public ContratoDAO getContratoDAO() {
+	public ContratoDAO obtenerContratoDAO() {
 		return new ContratoPostgresqlDAO(conexion);
 	}
 
 	@Override
-	public ClausulaPorContratoDAO getClausulaPorContratoDAO() {
+	public ClausulaPorContratoDAO obtenerClausulaPorContratoDAO() {
 		return new ClausulaPorContratoPostgresqlDAO(conexion);
 	}
 }
