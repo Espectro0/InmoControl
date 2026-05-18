@@ -1,0 +1,1 @@
+package com.inmocontrol.negocio.casouso.propiedad.impl;

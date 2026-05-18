@@ -1,0 +1,1 @@
+package com.inmocontrol.negocio.fachada.departamento.impl;
