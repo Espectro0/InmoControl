@@ -5,6 +5,8 @@ import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.tipoparticipante.RegistrarTipoParticipanteCasoUso;
 import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoParticipanteCasoUso {
@@ -19,6 +21,7 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
   @Override
   public void ejecutar(TipoParticipanteDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
     validarUnicoNombre(datos);
     registrarTipoParticipante(datos);
   }
@@ -29,6 +32,13 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
     }
     if (UtilObjeto.esNulo(datos.getNombre()) || datos.getNombre().isEmpty()) {
       throw new ValidacionExcepcion("El nombre del tipo de participante es obligatorio.");
+    }
+  }
+
+  private void validarFormatos(TipoParticipanteDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getNombre(), 1, 50)) {
+      throw new ValidacionExcepcion(
+          "El nombre del tipo de participante debe tener entre 1 y 50 caracteres.");
     }
   }
 
@@ -44,7 +54,9 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
 
   private void registrarTipoParticipante(TipoParticipanteDominio datos) {
     TipoParticipanteEntidad entidad =
-        new TipoParticipanteEntidad.Builder().nombre(datos.getNombre()).build();
+        new TipoParticipanteEntidad.Builder()
+            .nombre(UtilSanitizacion.sanitizar(datos.getNombre()))
+            .build();
     daoFactory.obtenerTipoParticipanteDAO().crear(entidad);
   }
 }

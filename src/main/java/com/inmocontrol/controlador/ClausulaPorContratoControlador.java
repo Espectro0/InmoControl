@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/clausulas-por-contrato")
+@RequestMapping("/api/v1/clausulas-por-contrato")
 public class ClausulaPorContratoControlador {
 
   @GetMapping("/{id}")

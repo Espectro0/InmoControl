@@ -5,6 +5,8 @@ import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.tipoparticipante.ModificarTipoParticipanteCasoUso;
 import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarTipoParticipanteCasoUsoImpl implements ModificarTipoParticipanteCasoUso {
@@ -20,6 +22,7 @@ public class ModificarTipoParticipanteCasoUsoImpl implements ModificarTipoPartic
   public void ejecutar(TipoParticipanteDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaTipoParticipante(datos);
+    validarFormatos(datos);
     validarUnicoNombre(datos);
     modificarTipoParticipante(datos);
   }
@@ -42,6 +45,13 @@ public class ModificarTipoParticipanteCasoUsoImpl implements ModificarTipoPartic
     }
   }
 
+  private void validarFormatos(TipoParticipanteDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getNombre(), 1, 50)) {
+      throw new ValidacionExcepcion(
+          "El nombre del tipo de participante debe tener entre 1 y 50 caracteres.");
+    }
+  }
+
   private void validarUnicoNombre(TipoParticipanteDominio datos) {
     TipoParticipanteEntidad filtro =
         new TipoParticipanteEntidad.Builder().nombre(datos.getNombre()).build();
@@ -56,7 +66,10 @@ public class ModificarTipoParticipanteCasoUsoImpl implements ModificarTipoPartic
 
   private void modificarTipoParticipante(TipoParticipanteDominio datos) {
     TipoParticipanteEntidad entidad =
-        new TipoParticipanteEntidad.Builder().id(datos.getId()).nombre(datos.getNombre()).build();
+        new TipoParticipanteEntidad.Builder()
+            .id(datos.getId())
+            .nombre(UtilSanitizacion.sanitizar(datos.getNombre()))
+            .build();
     daoFactory.obtenerTipoParticipanteDAO().actualizar(entidad.getId(), entidad);
   }
 }

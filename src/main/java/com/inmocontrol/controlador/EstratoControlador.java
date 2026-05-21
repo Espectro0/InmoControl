@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/estratos")
+@RequestMapping("/api/v1/estratos")
 public class EstratoControlador {
 
   @GetMapping("/{id}")

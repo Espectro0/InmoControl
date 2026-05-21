@@ -2,6 +2,7 @@ package com.inmocontrol.negocio.casouso.areareferencia.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.AreaReferenciaEntidad;
+import com.inmocontrol.entidad.ClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.areareferencia.EliminarAreaReferenciaCasoUso;
 import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -20,6 +21,7 @@ public class EliminarAreaReferenciaCasoUsoImpl implements EliminarAreaReferencia
   public void ejecutar(AreaReferenciaDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaAreaReferencia(datos);
+    validarNoDependencias(datos);
     eliminarAreaReferencia(datos);
   }
 
@@ -37,6 +39,18 @@ public class EliminarAreaReferenciaCasoUsoImpl implements EliminarAreaReferencia
         daoFactory.obtenerAreaReferenciaDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe un area de referencia con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarNoDependencias(AreaReferenciaDominio datos) {
+    ClausulaContratoEntidad filtro =
+        new ClausulaContratoEntidad.Builder()
+            .areaReferencia(new AreaReferenciaEntidad.Builder().id(datos.getId()).build())
+            .build();
+    var resultados = daoFactory.obtenerClausulaContratoDAO().consultarPorFiltro(filtro);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "No es posible eliminar el area de referencia porque esta siendo usada por clausulas contrato.");
     }
   }
 

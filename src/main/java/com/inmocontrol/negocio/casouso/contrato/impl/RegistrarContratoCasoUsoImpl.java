@@ -6,6 +6,8 @@ import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.negocio.casouso.contrato.RegistrarContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
@@ -20,6 +22,8 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
   @Override
   public void ejecutar(ContratoDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
+    validarFechas(datos);
     validarUnicoCodigoContrato(datos);
     registrarContrato(datos);
   }
@@ -40,6 +44,18 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
     }
   }
 
+  private void validarFormatos(ContratoDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getCodigoContrato(), 1, 15)) {
+      throw new ValidacionExcepcion("El codigo del contrato debe tener entre 1 y 15 caracteres.");
+    }
+  }
+
+  private void validarFechas(ContratoDominio datos) {
+    if (datos.getFechaFin() != null && datos.getFechaInicio().after(datos.getFechaFin())) {
+      throw new ValidacionExcepcion("La fecha de inicio debe ser anterior a la fecha de fin.");
+    }
+  }
+
   private void validarUnicoCodigoContrato(ContratoDominio datos) {
     ContratoEntidad filtro =
         new ContratoEntidad.Builder().codigoContrato(datos.getCodigoContrato()).build();
@@ -53,7 +69,7 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
   private void registrarContrato(ContratoDominio datos) {
     ContratoEntidad entidad =
         new ContratoEntidad.Builder()
-            .codigoContrato(datos.getCodigoContrato())
+            .codigoContrato(UtilSanitizacion.sanitizar(datos.getCodigoContrato()))
             .fechaInicio(datos.getFechaInicio())
             .fechaFin(datos.getFechaFin())
             .esActivo(true)

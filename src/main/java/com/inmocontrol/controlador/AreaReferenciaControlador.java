@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/areas-referencia")
+@RequestMapping("/api/v1/areas-referencia")
 public class AreaReferenciaControlador {
 
   @GetMapping("/{id}")

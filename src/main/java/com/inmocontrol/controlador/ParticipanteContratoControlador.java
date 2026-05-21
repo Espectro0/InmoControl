@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/participantes-contrato")
+@RequestMapping("/api/v1/participantes-contrato")
 public class ParticipanteContratoControlador {
 
   @GetMapping("/{id}")

@@ -24,8 +24,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public PropiedadEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, tipo_propiedad_id, estrato_id, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad_id FROM propiedad WHERE id = ?";
+        "SELECT id, tipo_propiedad, estrato, nombre_inmueble, "
+            + "descripcion_inmueble, area_metros, direccion, ciudad FROM propiedad WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -44,8 +44,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public List<PropiedadEntidad> consultarTodos() {
     String sql =
-        "SELECT id, tipo_propiedad_id, estrato_id, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad_id FROM propiedad";
+        "SELECT id, tipo_propiedad, estrato, nombre_inmueble, "
+            + "descripcion_inmueble, area_metros, direccion, ciudad FROM propiedad";
     List<PropiedadEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -64,8 +64,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public List<PropiedadEntidad> consultarPorFiltro(PropiedadEntidad filtro) {
     String sql =
-        "SELECT id, tipo_propiedad_id, estrato_id, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad_id FROM propiedad WHERE 1=1";
+        "SELECT id, tipo_propiedad, estrato, nombre_inmueble, "
+            + "descripcion_inmueble, area_metros, direccion, ciudad FROM propiedad WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombreInmueble() != null && !filtro.getNombreInmueble().isEmpty()) {
@@ -100,8 +100,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public void crear(PropiedadEntidad entidad) {
     String sql =
-        "INSERT INTO propiedad (id, tipo_propiedad_id, estrato_id, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO propiedad (id, tipo_propiedad, estrato, nombre_inmueble, "
+            + "descripcion_inmueble, area_metros, direccion, ciudad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, entidad.getId());
@@ -122,8 +122,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public void actualizar(UUID id, PropiedadEntidad entidad) {
     String sql =
-        "UPDATE propiedad SET tipo_propiedad_id = ?, estrato_id = ?, nombre_inmueble = ?, "
-            + "descripcion_inmueble = ?, area_metros = ?, direccion = ?, ciudad_id = ? WHERE id = ?";
+        "UPDATE propiedad SET tipo_propiedad = ?, estrato = ?, nombre_inmueble = ?, "
+            + "descripcion_inmueble = ?, area_metros = ?, direccion = ?, ciudad = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(
@@ -158,14 +158,14 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
         .id(rs.getObject("id", UUID.class))
         .tipoPropiedad(
             new TipoPropiedadEntidad.Builder()
-                .id(rs.getObject("tipo_propiedad_id", UUID.class))
+                .id(rs.getObject("tipo_propiedad", UUID.class))
                 .build())
-        .estrato(new EstratoEntidad.Builder().id(rs.getObject("estrato_id", UUID.class)).build())
+        .estrato(new EstratoEntidad.Builder().id(rs.getObject("estrato", UUID.class)).build())
         .nombreInmueble(rs.getString("nombre_inmueble"))
         .descripcionInmueble(rs.getString("descripcion_inmueble"))
         .areaMetros(rs.getObject("area_metros", Integer.class))
         .direccion(rs.getString("direccion"))
-        .ciudad(new CiudadEntidad.Builder().id(rs.getObject("ciudad_id", UUID.class)).build())
+        .ciudad(new CiudadEntidad.Builder().id(rs.getObject("ciudad", UUID.class)).build())
         .build();
   }
 }

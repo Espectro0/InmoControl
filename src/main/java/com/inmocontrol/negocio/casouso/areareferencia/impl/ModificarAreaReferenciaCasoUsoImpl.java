@@ -5,6 +5,8 @@ import com.inmocontrol.entidad.AreaReferenciaEntidad;
 import com.inmocontrol.negocio.casouso.areareferencia.ModificarAreaReferenciaCasoUso;
 import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarAreaReferenciaCasoUsoImpl implements ModificarAreaReferenciaCasoUso {
@@ -20,6 +22,7 @@ public class ModificarAreaReferenciaCasoUsoImpl implements ModificarAreaReferenc
   public void ejecutar(AreaReferenciaDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaAreaReferencia(datos);
+    validarFormatos(datos);
     validarUnicoNombre(datos);
     modificarAreaReferencia(datos);
   }
@@ -41,6 +44,13 @@ public class ModificarAreaReferenciaCasoUsoImpl implements ModificarAreaReferenc
     }
   }
 
+  private void validarFormatos(AreaReferenciaDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getNombre(), 1, 50)) {
+      throw new ValidacionExcepcion(
+          "El nombre del area de referencia debe tener entre 1 y 50 caracteres.");
+    }
+  }
+
   private void validarUnicoNombre(AreaReferenciaDominio datos) {
     AreaReferenciaEntidad filtro =
         new AreaReferenciaEntidad.Builder().nombre(datos.getNombre()).build();
@@ -55,7 +65,10 @@ public class ModificarAreaReferenciaCasoUsoImpl implements ModificarAreaReferenc
 
   private void modificarAreaReferencia(AreaReferenciaDominio datos) {
     AreaReferenciaEntidad entidad =
-        new AreaReferenciaEntidad.Builder().id(datos.getId()).nombre(datos.getNombre()).build();
+        new AreaReferenciaEntidad.Builder()
+            .id(datos.getId())
+            .nombre(UtilSanitizacion.sanitizar(datos.getNombre()))
+            .build();
     daoFactory.obtenerAreaReferenciaDAO().actualizar(entidad.getId(), entidad);
   }
 }

@@ -7,6 +7,8 @@ import com.inmocontrol.entidad.TipoAplicacionEntidad;
 import com.inmocontrol.negocio.casouso.clausulacontrato.RegistrarClausulaContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaContratoCasoUso {
@@ -21,6 +23,7 @@ public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaCo
   @Override
   public void ejecutar(ClausulaContratoDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
     validarUnicoAreaTipoTitulo(datos);
     registrarClausulaContrato(datos);
   }
@@ -42,6 +45,15 @@ public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaCo
     }
     if (UtilObjeto.esNulo(datos.getContenidoLegal()) || datos.getContenidoLegal().isEmpty()) {
       throw new ValidacionExcepcion("El contenido legal es obligatorio.");
+    }
+  }
+
+  private void validarFormatos(ClausulaContratoDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getTitulo(), 1, 50)) {
+      throw new ValidacionExcepcion("El titulo debe tener entre 1 y 50 caracteres.");
+    }
+    if (!UtilValidacion.validarLongitud(datos.getContenidoLegal(), 1, 200)) {
+      throw new ValidacionExcepcion("El contenido legal debe tener entre 1 y 200 caracteres.");
     }
   }
 
@@ -68,8 +80,8 @@ public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaCo
                 new AreaReferenciaEntidad.Builder().id(datos.getAreaReferencia().getId()).build())
             .tipoAplicacion(
                 new TipoAplicacionEntidad.Builder().id(datos.getTipoAplicacion().getId()).build())
-            .titulo(datos.getTitulo())
-            .contenidoLegal(datos.getContenidoLegal())
+            .titulo(UtilSanitizacion.sanitizar(datos.getTitulo()))
+            .contenidoLegal(UtilSanitizacion.sanitizar(datos.getContenidoLegal()))
             .build();
     daoFactory.obtenerClausulaContratoDAO().crear(entidad);
   }

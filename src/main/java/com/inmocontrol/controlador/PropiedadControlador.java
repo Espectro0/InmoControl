@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/propiedades")
+@RequestMapping("/api/v1/propiedades")
 public class PropiedadControlador {
 
   @GetMapping("/{id}")

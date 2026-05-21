@@ -23,7 +23,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
   @Override
   public ContratoEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad_id "
+        "SELECT id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad "
             + "FROM contrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -43,7 +43,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
   @Override
   public List<ContratoEntidad> consultarTodos() {
     String sql =
-        "SELECT id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad_id FROM contrato";
+        "SELECT id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad FROM contrato";
     List<ContratoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -62,7 +62,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
   @Override
   public List<ContratoEntidad> consultarPorFiltro(ContratoEntidad filtro) {
     String sql =
-        "SELECT id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad_id "
+        "SELECT id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad "
             + "FROM contrato WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
     }
 
     if (filtro.getPropiedad() != null && filtro.getPropiedad().getId() != null) {
-      sql += " AND propiedad_id = ?";
+      sql += " AND propiedad = ?";
       parametros.add(filtro.getPropiedad().getId());
     }
 
@@ -113,7 +113,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
   @Override
   public void crear(ContratoEntidad entidad) {
     String sql =
-        "INSERT INTO contrato (id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad_id) "
+        "INSERT INTO contrato (id, codigo_contrato, fecha_inicio, fecha_fin, es_activo, propiedad) "
             + "VALUES (?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -136,7 +136,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
   public void actualizar(UUID id, ContratoEntidad entidad) {
     String sql =
         "UPDATE contrato SET codigo_contrato = ?, fecha_inicio = ?, fecha_fin = ?, "
-            + "es_activo = ?, propiedad_id = ? WHERE id = ?";
+            + "es_activo = ?, propiedad = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setString(1, entidad.getCodigoContrato());
@@ -173,8 +173,7 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
         .fechaInicio(rs.getDate("fecha_inicio"))
         .fechaFin(rs.getDate("fecha_fin"))
         .esActivo(rs.getObject("es_activo", Boolean.class))
-        .propiedad(
-            new PropiedadEntidad.Builder().id(rs.getObject("propiedad_id", UUID.class)).build())
+        .propiedad(new PropiedadEntidad.Builder().id(rs.getObject("propiedad", UUID.class)).build())
         .build();
   }
 }

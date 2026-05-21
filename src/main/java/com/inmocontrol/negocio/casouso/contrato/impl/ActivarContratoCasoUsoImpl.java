@@ -1,6 +1,7 @@
 package com.inmocontrol.negocio.casouso.contrato.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
+import com.inmocontrol.entidad.ClausulaPorContratoEntidad;
 import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.contrato.ActivarContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
@@ -21,6 +22,7 @@ public class ActivarContratoCasoUsoImpl implements ActivarContratoCasoUso {
     validarObligatoriedadId(datos);
     validarExistenciaContrato(datos);
     validarQueEstaSuspendido(datos);
+    validarTieneClausulas(datos);
     activarContrato(datos);
   }
 
@@ -44,6 +46,18 @@ public class ActivarContratoCasoUsoImpl implements ActivarContratoCasoUso {
     ContratoEntidad existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
     if (Boolean.TRUE.equals(existente.getEsActivo())) {
       throw new ValidacionExcepcion("El contrato ya se encuentra activo.");
+    }
+  }
+
+  private void validarTieneClausulas(ContratoDominio datos) {
+    ClausulaPorContratoEntidad filtro =
+        new ClausulaPorContratoEntidad.Builder()
+            .contrato(new ContratoEntidad.Builder().id(datos.getId()).build())
+            .build();
+    var clausulas = daoFactory.obtenerClausulaPorContratoDAO().consultarPorFiltro(filtro);
+    if (clausulas.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "El contrato debe tener al menos una clausula para poder ser activado.");
     }
   }
 

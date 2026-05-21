@@ -20,7 +20,7 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
   @Override
   public CiudadEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre, departamento_id FROM ciudad WHERE id = ?";
+    String sql = "SELECT id, nombre, departamento FROM ciudad WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +38,7 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
   @Override
   public List<CiudadEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre, departamento_id FROM ciudad";
+    String sql = "SELECT id, nombre, departamento FROM ciudad";
     List<CiudadEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,7 +56,7 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
   @Override
   public List<CiudadEntidad> consultarPorFiltro(CiudadEntidad filtro) {
-    String sql = "SELECT id, nombre, departamento_id FROM ciudad WHERE 1=1";
+    String sql = "SELECT id, nombre, departamento FROM ciudad WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
@@ -65,7 +65,7 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
     }
 
     if (filtro.getDepartamento() != null && filtro.getDepartamento().getId() != null) {
-      sql += " AND departamento_id = ?";
+      sql += " AND departamento = ?";
       parametros.add(filtro.getDepartamento().getId());
     }
 
@@ -94,7 +94,7 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
         .nombre(rs.getString("nombre"))
         .departamento(
             new com.inmocontrol.entidad.DepartamentoEntidad.Builder()
-                .id(rs.getObject("departamento_id", UUID.class))
+                .id(rs.getObject("departamento", UUID.class))
                 .build())
         .build();
   }

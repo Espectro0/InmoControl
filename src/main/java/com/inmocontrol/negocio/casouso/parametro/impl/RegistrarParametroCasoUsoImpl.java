@@ -5,6 +5,8 @@ import com.inmocontrol.entidad.ParametroEntidad;
 import com.inmocontrol.negocio.casouso.parametro.RegistrarParametroCasoUso;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso {
@@ -19,6 +21,8 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
   @Override
   public void ejecutar(ParametroDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
+    validarUnicoPlaceholder(datos);
     registrarParametro(datos);
   }
 
@@ -34,14 +38,13 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
     }
   }
 
-  private void registrarParametro(ParametroDominio datos) {
-    validarUnicoPlaceholder(datos);
-    ParametroEntidad entidad =
-        new ParametroEntidad.Builder()
-            .placeholder(datos.getPlaceholder())
-            .descripcion(datos.getDescripcion())
-            .build();
-    daoFactory.obtenerParametroDAO().crear(entidad);
+  private void validarFormatos(ParametroDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getPlaceholder(), 1, 30)) {
+      throw new ValidacionExcepcion("El placeholder debe tener entre 1 y 30 caracteres.");
+    }
+    if (!UtilValidacion.validarLongitud(datos.getDescripcion(), 1, 100)) {
+      throw new ValidacionExcepcion("La descripcion debe tener entre 1 y 100 caracteres.");
+    }
   }
 
   private void validarUnicoPlaceholder(ParametroDominio datos) {
@@ -52,5 +55,14 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
       throw new ValidacionExcepcion(
           "Ya existe un parametro con el placeholder: " + datos.getPlaceholder());
     }
+  }
+
+  private void registrarParametro(ParametroDominio datos) {
+    ParametroEntidad entidad =
+        new ParametroEntidad.Builder()
+            .placeholder(UtilSanitizacion.sanitizar(datos.getPlaceholder()))
+            .descripcion(UtilSanitizacion.sanitizar(datos.getDescripcion()))
+            .build();
+    daoFactory.obtenerParametroDAO().crear(entidad);
   }
 }

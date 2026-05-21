@@ -24,7 +24,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public ParticipanteContratoEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, persona_id, tipo_participante_id, contrato_id "
+        "SELECT id, persona, tipo_participante, contrato "
             + "FROM participante_contrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -45,7 +45,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public void crear(ParticipanteContratoEntidad entidad) {
     String sql =
-        "INSERT INTO participante_contrato (id, persona_id, tipo_participante_id, contrato_id) "
+        "INSERT INTO participante_contrato (id, persona, tipo_participante, contrato) "
             + "VALUES (?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -63,8 +63,8 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public void actualizar(UUID id, ParticipanteContratoEntidad entidad) {
     String sql =
-        "UPDATE participante_contrato SET persona_id = ?, tipo_participante_id = ?, "
-            + "contrato_id = ? WHERE id = ?";
+        "UPDATE participante_contrato SET persona = ?, tipo_participante = ?, "
+            + "contrato = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, entidad.getPersona() != null ? entidad.getPersona().getId() : null);
@@ -92,8 +92,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
 
   @Override
   public List<ParticipanteContratoEntidad> consultarTodos() {
-    String sql =
-        "SELECT id, persona_id, tipo_participante_id, contrato_id FROM participante_contrato";
+    String sql = "SELECT id, persona, tipo_participante, contrato FROM participante_contrato";
     List<ParticipanteContratoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -113,21 +112,21 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public List<ParticipanteContratoEntidad> consultarPorFiltro(ParticipanteContratoEntidad filtro) {
     String sql =
-        "SELECT id, persona_id, tipo_participante_id, contrato_id FROM participante_contrato WHERE 1=1";
+        "SELECT id, persona, tipo_participante, contrato FROM participante_contrato WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getPersona() != null && filtro.getPersona().getId() != null) {
-      sql += " AND persona_id = ?";
+      sql += " AND persona = ?";
       parametros.add(filtro.getPersona().getId());
     }
 
     if (filtro.getTipoParticipante() != null && filtro.getTipoParticipante().getId() != null) {
-      sql += " AND tipo_participante_id = ?";
+      sql += " AND tipo_participante = ?";
       parametros.add(filtro.getTipoParticipante().getId());
     }
 
     if (filtro.getContrato() != null && filtro.getContrato().getId() != null) {
-      sql += " AND contrato_id = ?";
+      sql += " AND contrato = ?";
       parametros.add(filtro.getContrato().getId());
     }
 
@@ -154,12 +153,12 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   private ParticipanteContratoEntidad mapearResultado(ResultSet rs) throws SQLException {
     return new ParticipanteContratoEntidad.Builder()
         .id(rs.getObject("id", UUID.class))
-        .persona(new PersonaEntidad.Builder().id(rs.getObject("persona_id", UUID.class)).build())
+        .persona(new PersonaEntidad.Builder().id(rs.getObject("persona", UUID.class)).build())
         .tipoParticipante(
             new TipoParticipanteEntidad.Builder()
-                .id(rs.getObject("tipo_participante_id", UUID.class))
+                .id(rs.getObject("tipo_participante", UUID.class))
                 .build())
-        .contrato(new ContratoEntidad.Builder().id(rs.getObject("contrato_id", UUID.class)).build())
+        .contrato(new ContratoEntidad.Builder().id(rs.getObject("contrato", UUID.class)).build())
         .build();
   }
 }

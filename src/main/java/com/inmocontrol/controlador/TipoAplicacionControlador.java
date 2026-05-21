@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/tipos-aplicacion")
+@RequestMapping("/api/v1/tipos-aplicacion")
 public class TipoAplicacionControlador {
 
   @GetMapping("/{id}")

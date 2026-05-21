@@ -7,6 +7,7 @@ import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.clausulaporcontrato.RegistrarClausulaPorContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarClausulaPorContratoCasoUsoImpl
@@ -22,6 +23,7 @@ public class RegistrarClausulaPorContratoCasoUsoImpl
   @Override
   public void ejecutar(ClausulaPorContratoDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
     validarUnicoContratoClausula(datos);
     registrarClausulaPorContrato(datos);
   }
@@ -38,6 +40,12 @@ public class RegistrarClausulaPorContratoCasoUsoImpl
     }
     if (UtilObjeto.esNulo(datos.getClausula()) || UtilObjeto.esNulo(datos.getClausula().getId())) {
       throw new ValidacionExcepcion("La clausula es obligatoria.");
+    }
+  }
+
+  private void validarFormatos(ClausulaPorContratoDominio datos) {
+    if (!UtilValidacion.validarRangoEntero(datos.getNumeroClausula(), 1, 40)) {
+      throw new ValidacionExcepcion("El numero de clausula debe estar entre 1 y 40.");
     }
   }
 

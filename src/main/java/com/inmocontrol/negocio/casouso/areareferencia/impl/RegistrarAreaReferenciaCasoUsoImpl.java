@@ -5,6 +5,8 @@ import com.inmocontrol.entidad.AreaReferenciaEntidad;
 import com.inmocontrol.negocio.casouso.areareferencia.RegistrarAreaReferenciaCasoUso;
 import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenciaCasoUso {
@@ -19,6 +21,7 @@ public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenc
   @Override
   public void ejecutar(AreaReferenciaDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
     validarUnicoNombre(datos);
     registrarAreaReferencia(datos);
   }
@@ -29,6 +32,13 @@ public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenc
     }
     if (UtilObjeto.esNulo(datos.getNombre()) || datos.getNombre().isEmpty()) {
       throw new ValidacionExcepcion("El nombre del area de referencia es obligatorio.");
+    }
+  }
+
+  private void validarFormatos(AreaReferenciaDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getNombre(), 1, 50)) {
+      throw new ValidacionExcepcion(
+          "El nombre del area de referencia debe tener entre 1 y 50 caracteres.");
     }
   }
 
@@ -44,7 +54,9 @@ public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenc
 
   private void registrarAreaReferencia(AreaReferenciaDominio datos) {
     AreaReferenciaEntidad entidad =
-        new AreaReferenciaEntidad.Builder().nombre(datos.getNombre()).build();
+        new AreaReferenciaEntidad.Builder()
+            .nombre(UtilSanitizacion.sanitizar(datos.getNombre()))
+            .build();
     daoFactory.obtenerAreaReferenciaDAO().crear(entidad);
   }
 }

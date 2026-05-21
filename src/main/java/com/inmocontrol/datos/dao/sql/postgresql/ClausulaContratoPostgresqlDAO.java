@@ -23,7 +23,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public ClausulaContratoEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, area_referencia_id, tipo_aplicacion_id, titulo, contenido_legal "
+        "SELECT id, area_referencia, tipo_aplicacion, titulo, contenido_legal "
             + "FROM clausula_contrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -44,7 +44,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public List<ClausulaContratoEntidad> consultarTodos() {
     String sql =
-        "SELECT id, area_referencia_id, tipo_aplicacion_id, titulo, contenido_legal "
+        "SELECT id, area_referencia, tipo_aplicacion, titulo, contenido_legal "
             + "FROM clausula_contrato";
     List<ClausulaContratoEntidad> resultados = new ArrayList<>();
 
@@ -64,7 +64,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public List<ClausulaContratoEntidad> consultarPorFiltro(ClausulaContratoEntidad filtro) {
     String sql =
-        "SELECT id, area_referencia_id, tipo_aplicacion_id, titulo, contenido_legal "
+        "SELECT id, area_referencia, tipo_aplicacion, titulo, contenido_legal "
             + "FROM clausula_contrato WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
     }
 
     if (filtro.getAreaReferencia() != null && filtro.getAreaReferencia().getId() != null) {
-      sql += " AND area_referencia_id = ?";
+      sql += " AND area_referencia = ?";
       parametros.add(filtro.getAreaReferencia().getId());
     }
 
@@ -101,7 +101,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public void crear(ClausulaContratoEntidad entidad) {
     String sql =
-        "INSERT INTO clausula_contrato (id, area_referencia_id, tipo_aplicacion_id, titulo, contenido_legal) "
+        "INSERT INTO clausula_contrato (id, area_referencia, tipo_aplicacion, titulo, contenido_legal) "
             + "VALUES (?, ?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -121,7 +121,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public void actualizar(UUID id, ClausulaContratoEntidad entidad) {
     String sql =
-        "UPDATE clausula_contrato SET area_referencia_id = ?, tipo_aplicacion_id = ?, "
+        "UPDATE clausula_contrato SET area_referencia = ?, tipo_aplicacion = ?, "
             + "titulo = ?, contenido_legal = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -155,11 +155,11 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
         .id(rs.getObject("id", UUID.class))
         .areaReferencia(
             new AreaReferenciaEntidad.Builder()
-                .id(rs.getObject("area_referencia_id", UUID.class))
+                .id(rs.getObject("area_referencia", UUID.class))
                 .build())
         .tipoAplicacion(
             new TipoAplicacionEntidad.Builder()
-                .id(rs.getObject("tipo_aplicacion_id", UUID.class))
+                .id(rs.getObject("tipo_aplicacion", UUID.class))
                 .build())
         .titulo(rs.getString("titulo"))
         .contenidoLegal(rs.getString("contenido_legal"))

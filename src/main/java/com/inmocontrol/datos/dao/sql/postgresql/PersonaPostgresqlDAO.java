@@ -24,9 +24,9 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
   @Override
   public PersonaEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, tipo_documento_id, numero_identificacion, primer_nombre, "
+        "SELECT id, tipo_documento, numero_identificacion, primer_nombre, "
             + "segundo_nombre, primer_apellido, segundo_apellido, numero_telefonico, "
-            + "correo_electronico, direccion_residencia, ciudad_residencia_id, "
+            + "correo_electronico, direccion_residencia, ciudad_residencia, "
             + "fecha_nacimiento, edad FROM persona WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -46,9 +46,9 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
   @Override
   public List<PersonaEntidad> consultarTodos() {
     String sql =
-        "SELECT id, tipo_documento_id, numero_identificacion, primer_nombre, "
+        "SELECT id, tipo_documento, numero_identificacion, primer_nombre, "
             + "segundo_nombre, primer_apellido, segundo_apellido, numero_telefonico, "
-            + "correo_electronico, direccion_residencia, ciudad_residencia_id, "
+            + "correo_electronico, direccion_residencia, ciudad_residencia, "
             + "fecha_nacimiento, edad FROM persona";
     List<PersonaEntidad> resultados = new ArrayList<>();
 
@@ -68,9 +68,9 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
   @Override
   public List<PersonaEntidad> consultarPorFiltro(PersonaEntidad filtro) {
     String sql =
-        "SELECT id, tipo_documento_id, numero_identificacion, primer_nombre, "
+        "SELECT id, tipo_documento, numero_identificacion, primer_nombre, "
             + "segundo_nombre, primer_apellido, segundo_apellido, numero_telefonico, "
-            + "correo_electronico, direccion_residencia, ciudad_residencia_id, "
+            + "correo_electronico, direccion_residencia, ciudad_residencia, "
             + "fecha_nacimiento, edad FROM persona WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
@@ -90,12 +90,12 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
     }
 
     if (filtro.getTipoDocumento() != null && filtro.getTipoDocumento().getId() != null) {
-      sql += " AND tipo_documento_id = ?";
+      sql += " AND tipo_documento = ?";
       parametros.add(filtro.getTipoDocumento().getId());
     }
 
     if (filtro.getCiudadResidencia() != null && filtro.getCiudadResidencia().getId() != null) {
-      sql += " AND ciudad_residencia_id = ?";
+      sql += " AND ciudad_residencia = ?";
       parametros.add(filtro.getCiudadResidencia().getId());
     }
 
@@ -126,9 +126,9 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
   @Override
   public void crear(PersonaEntidad entidad) {
     String sql =
-        "INSERT INTO persona (id, tipo_documento_id, numero_identificacion, primer_nombre, "
+        "INSERT INTO persona (id, tipo_documento, numero_identificacion, primer_nombre, "
             + "segundo_nombre, primer_apellido, segundo_apellido, numero_telefonico, "
-            + "correo_electronico, direccion_residencia, ciudad_residencia_id, "
+            + "correo_electronico, direccion_residencia, ciudad_residencia, "
             + "fecha_nacimiento, edad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -160,9 +160,9 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
   @Override
   public void actualizar(UUID id, PersonaEntidad entidad) {
     String sql =
-        "UPDATE persona SET tipo_documento_id = ?, numero_identificacion = ?, primer_nombre = ?, "
+        "UPDATE persona SET tipo_documento = ?, numero_identificacion = ?, primer_nombre = ?, "
             + "segundo_nombre = ?, primer_apellido = ?, segundo_apellido = ?, numero_telefonico = ?, "
-            + "correo_electronico = ?, direccion_residencia = ?, ciudad_residencia_id = ?, "
+            + "correo_electronico = ?, direccion_residencia = ?, ciudad_residencia = ?, "
             + "fecha_nacimiento = ?, edad = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -208,7 +208,7 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
         .id(rs.getObject("id", UUID.class))
         .tipoDocumento(
             new TipoDocumentoEntidad.Builder()
-                .id(rs.getObject("tipo_documento_id", UUID.class))
+                .id(rs.getObject("tipo_documento", UUID.class))
                 .build())
         .numeroIdentificacion(rs.getString("numero_identificacion"))
         .primerNombre(rs.getString("primer_nombre"))
@@ -219,9 +219,7 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
         .correoElectronico(rs.getString("correo_electronico"))
         .direccionResidencia(rs.getString("direccion_residencia"))
         .ciudadResidencia(
-            new CiudadEntidad.Builder()
-                .id(rs.getObject("ciudad_residencia_id", UUID.class))
-                .build())
+            new CiudadEntidad.Builder().id(rs.getObject("ciudad_residencia", UUID.class)).build())
         .fechaNacimiento(rs.getDate("fecha_nacimiento"))
         .edad(rs.getObject("edad", Integer.class))
         .build();

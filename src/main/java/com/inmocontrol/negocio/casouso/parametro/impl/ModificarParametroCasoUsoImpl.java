@@ -5,6 +5,8 @@ import com.inmocontrol.entidad.ParametroEntidad;
 import com.inmocontrol.negocio.casouso.parametro.ModificarParametroCasoUso;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso {
@@ -20,6 +22,8 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
   public void ejecutar(ParametroDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaParametro(datos);
+    validarFormatos(datos);
+    validarUnicoPlaceholder(datos);
     modificarParametro(datos);
   }
 
@@ -39,15 +43,13 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
     }
   }
 
-  private void modificarParametro(ParametroDominio datos) {
-    validarUnicoPlaceholder(datos);
-    ParametroEntidad entidad =
-        new ParametroEntidad.Builder()
-            .id(datos.getId())
-            .placeholder(datos.getPlaceholder())
-            .descripcion(datos.getDescripcion())
-            .build();
-    daoFactory.obtenerParametroDAO().actualizar(entidad.getId(), entidad);
+  private void validarFormatos(ParametroDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getPlaceholder(), 1, 30)) {
+      throw new ValidacionExcepcion("El placeholder debe tener entre 1 y 30 caracteres.");
+    }
+    if (!UtilValidacion.validarLongitud(datos.getDescripcion(), 1, 100)) {
+      throw new ValidacionExcepcion("La descripcion debe tener entre 1 y 100 caracteres.");
+    }
   }
 
   private void validarUnicoPlaceholder(ParametroDominio datos) {
@@ -60,5 +62,15 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
             "Ya existe un parametro con el placeholder: " + datos.getPlaceholder());
       }
     }
+  }
+
+  private void modificarParametro(ParametroDominio datos) {
+    ParametroEntidad entidad =
+        new ParametroEntidad.Builder()
+            .id(datos.getId())
+            .placeholder(UtilSanitizacion.sanitizar(datos.getPlaceholder()))
+            .descripcion(UtilSanitizacion.sanitizar(datos.getDescripcion()))
+            .build();
+    daoFactory.obtenerParametroDAO().actualizar(entidad.getId(), entidad);
   }
 }

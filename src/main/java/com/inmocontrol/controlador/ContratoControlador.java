@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/contratos")
+@RequestMapping("/api/v1/contratos")
 public class ContratoControlador {
 
   @GetMapping("/{id}")

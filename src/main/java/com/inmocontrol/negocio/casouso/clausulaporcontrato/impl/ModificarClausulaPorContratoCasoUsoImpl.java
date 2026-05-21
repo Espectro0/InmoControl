@@ -7,6 +7,7 @@ import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.clausulaporcontrato.ModificarClausulaPorContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarClausulaPorContratoCasoUsoImpl
@@ -23,6 +24,8 @@ public class ModificarClausulaPorContratoCasoUsoImpl
   public void ejecutar(ClausulaPorContratoDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaClausulaPorContrato(datos);
+    validarFormatos(datos);
+    validarContratoNoCerrado(datos);
     modificarClausulaPorContrato(datos);
   }
 
@@ -41,6 +44,26 @@ public class ModificarClausulaPorContratoCasoUsoImpl
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion(
           "No existe una clausula por contrato con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarFormatos(ClausulaPorContratoDominio datos) {
+    if (datos.getNumeroClausula() != null
+        && !UtilValidacion.validarRangoEntero(datos.getNumeroClausula(), 1, 40)) {
+      throw new ValidacionExcepcion("El numero de clausula debe estar entre 1 y 40.");
+    }
+  }
+
+  private void validarContratoNoCerrado(ClausulaPorContratoDominio datos) {
+    ClausulaPorContratoEntidad existente =
+        daoFactory.obtenerClausulaPorContratoDAO().consultarPorId(datos.getId());
+    if (existente != null && existente.getContrato() != null) {
+      ContratoEntidad contrato =
+          daoFactory.obtenerContratoDAO().consultarPorId(existente.getContrato().getId());
+      if (contrato != null && Boolean.FALSE.equals(contrato.getEsActivo())) {
+        throw new ValidacionExcepcion(
+            "No es posible modificar la clausula porque el contrato esta cerrado o firmado.");
+      }
     }
   }
 

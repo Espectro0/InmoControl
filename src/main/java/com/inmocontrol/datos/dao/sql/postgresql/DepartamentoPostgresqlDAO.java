@@ -20,7 +20,7 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
 
   @Override
   public DepartamentoEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre, pais_id FROM departamento WHERE id = ?";
+    String sql = "SELECT id, nombre, pais FROM departamento WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +38,7 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
 
   @Override
   public List<DepartamentoEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre, pais_id FROM departamento";
+    String sql = "SELECT id, nombre, pais FROM departamento";
     List<DepartamentoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,7 +56,7 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
 
   @Override
   public List<DepartamentoEntidad> consultarPorFiltro(DepartamentoEntidad filtro) {
-    String sql = "SELECT id, nombre, pais_id FROM departamento WHERE 1=1";
+    String sql = "SELECT id, nombre, pais FROM departamento WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
@@ -65,7 +65,7 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
     }
 
     if (filtro.getPais() != null && filtro.getPais().getId() != null) {
-      sql += " AND pais_id = ?";
+      sql += " AND pais = ?";
       parametros.add(filtro.getPais().getId());
     }
 
@@ -94,7 +94,7 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
         .nombre(rs.getString("nombre"))
         .pais(
             new com.inmocontrol.entidad.PaisEntidad.Builder()
-                .id(rs.getObject("pais_id", UUID.class))
+                .id(rs.getObject("pais", UUID.class))
                 .build())
         .build();
   }

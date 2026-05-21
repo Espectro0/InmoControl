@@ -8,6 +8,8 @@ import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.negocio.casouso.propiedad.RegistrarPropiedadCasoUso;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso {
@@ -22,6 +24,7 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
   @Override
   public void ejecutar(PropiedadDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
     validarUnicoNombreDireccion(datos);
     registrarPropiedad(datos);
   }
@@ -42,6 +45,25 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
     }
     if (UtilObjeto.esNulo(datos.getCiudad()) || UtilObjeto.esNulo(datos.getCiudad().getId())) {
       throw new ValidacionExcepcion("La ciudad es obligatoria.");
+    }
+  }
+
+  private void validarFormatos(PropiedadDominio datos) {
+    if (!UtilValidacion.validarLongitud(datos.getNombreInmueble(), 1, 10)) {
+      throw new ValidacionExcepcion("El nombre del inmueble debe tener entre 1 y 10 caracteres.");
+    }
+    if (datos.getDescripcionInmueble() != null
+        && !datos.getDescripcionInmueble().isEmpty()
+        && !UtilValidacion.validarLongitud(datos.getDescripcionInmueble(), 1, 100)) {
+      throw new ValidacionExcepcion(
+          "La descripcion del inmueble debe tener maximo 100 caracteres.");
+    }
+    if (datos.getAreaMetros() != null
+        && !UtilValidacion.validarRangoEntero(datos.getAreaMetros(), 1, 999)) {
+      throw new ValidacionExcepcion("El area en metros debe estar entre 1 y 999.");
+    }
+    if (!UtilValidacion.validarLongitud(datos.getDireccion(), 1, 50)) {
+      throw new ValidacionExcepcion("La direccion debe tener entre 1 y 50 caracteres.");
     }
   }
 
@@ -70,10 +92,10 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
                 datos.getEstrato() != null
                     ? new EstratoEntidad.Builder().id(datos.getEstrato().getId()).build()
                     : null)
-            .nombreInmueble(datos.getNombreInmueble())
-            .descripcionInmueble(datos.getDescripcionInmueble())
+            .nombreInmueble(UtilSanitizacion.sanitizar(datos.getNombreInmueble()))
+            .descripcionInmueble(UtilSanitizacion.sanitizar(datos.getDescripcionInmueble()))
             .areaMetros(datos.getAreaMetros())
-            .direccion(datos.getDireccion())
+            .direccion(UtilSanitizacion.sanitizar(datos.getDireccion()))
             .ciudad(new CiudadEntidad.Builder().id(datos.getCiudad().getId()).build())
             .build();
     daoFactory.obtenerPropiedadDAO().crear(entidad);

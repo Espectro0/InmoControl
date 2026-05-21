@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/personas")
+@RequestMapping("/api/v1/personas")
 public class PersonaControlador {
 
   @GetMapping("/{id}")

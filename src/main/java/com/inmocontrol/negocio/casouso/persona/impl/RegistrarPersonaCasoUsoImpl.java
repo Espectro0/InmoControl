@@ -6,7 +6,12 @@ import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.RegistrarPersonaCasoUso;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
+import com.inmocontrol.transversal.UtilEmail;
+import com.inmocontrol.transversal.UtilIdentificador;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilTelefono;
+import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
@@ -21,6 +26,7 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
   @Override
   public void ejecutar(PersonaDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarFormatos(datos);
     validarUnicoNumeroIdentificacion(datos);
     registrarPersona(datos);
   }
@@ -45,6 +51,49 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
     }
   }
 
+  private void validarFormatos(PersonaDominio datos) {
+    if (!UtilIdentificador.esIdentificadorValido(datos.getNumeroIdentificacion())) {
+      throw new ValidacionExcepcion("El numero de identificacion tiene un formato invalido.");
+    }
+    validarLongitudOpcional(datos.getNumeroIdentificacion(), 1, 15, "numero de identificacion");
+    validarLongitudOpcional(datos.getPrimerNombre(), 1, 20, "primer nombre");
+    validarLongitudOpcional(datos.getSegundoNombre(), 1, 20, "segundo nombre");
+    validarLongitudOpcional(datos.getPrimerApellido(), 1, 20, "primer apellido");
+    validarLongitudOpcional(datos.getSegundoApellido(), 1, 20, "segundo apellido");
+    validarTelefonoOpcional(datos.getNumeroTelefonico());
+    validarEmailOpcional(datos.getCorreoElectronico());
+    validarLongitudOpcional(datos.getDireccionResidencia(), 1, 50, "direccion de residencia");
+  }
+
+  private void validarLongitudOpcional(String valor, int min, int max, String nombreCampo) {
+    if (valor != null && !valor.isEmpty() && !UtilValidacion.validarLongitud(valor, min, max)) {
+      throw new ValidacionExcepcion(
+          "El " + nombreCampo + " debe tener entre " + min + " y " + max + " caracteres.");
+    }
+  }
+
+  private void validarTelefonoOpcional(String telefono) {
+    if (telefono != null && !telefono.isEmpty()) {
+      if (!UtilTelefono.esTelefonoValido(telefono)) {
+        throw new ValidacionExcepcion("El numero telefonico tiene un formato invalido.");
+      }
+      if (!UtilValidacion.validarLongitud(telefono, 1, 15)) {
+        throw new ValidacionExcepcion("El numero telefonico debe tener maximo 15 caracteres.");
+      }
+    }
+  }
+
+  private void validarEmailOpcional(String email) {
+    if (email != null && !email.isEmpty()) {
+      if (!UtilEmail.esEmailValido(email)) {
+        throw new ValidacionExcepcion("El correo electronico tiene un formato invalido.");
+      }
+      if (!UtilValidacion.validarLongitud(email, 1, 30)) {
+        throw new ValidacionExcepcion("El correo electronico debe tener maximo 30 caracteres.");
+      }
+    }
+  }
+
   private void validarUnicoNumeroIdentificacion(PersonaDominio datos) {
     PersonaEntidad existente =
         new PersonaEntidad.Builder().numeroIdentificacion(datos.getNumeroIdentificacion()).build();
@@ -61,14 +110,22 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
         new PersonaEntidad.Builder()
             .tipoDocumento(
                 new TipoDocumentoEntidad.Builder().id(datos.getTipoDocumento().getId()).build())
-            .numeroIdentificacion(datos.getNumeroIdentificacion())
-            .primerNombre(datos.getPrimerNombre())
-            .segundoNombre(datos.getSegundoNombre())
-            .primerApellido(datos.getPrimerApellido())
-            .segundoApellido(datos.getSegundoApellido())
-            .numeroTelefonico(datos.getNumeroTelefonico())
-            .correoElectronico(datos.getCorreoElectronico())
-            .direccionResidencia(datos.getDireccionResidencia())
+            .numeroIdentificacion(UtilSanitizacion.sanitizar(datos.getNumeroIdentificacion()))
+            .primerNombre(UtilSanitizacion.sanitizar(datos.getPrimerNombre()))
+            .segundoNombre(UtilSanitizacion.sanitizar(datos.getSegundoNombre()))
+            .primerApellido(UtilSanitizacion.sanitizar(datos.getPrimerApellido()))
+            .segundoApellido(UtilSanitizacion.sanitizar(datos.getSegundoApellido()))
+            .numeroTelefonico(
+                UtilSanitizacion.sanitizar(
+                    UtilValidacion.esTelefonoValido(datos.getNumeroTelefonico())
+                        ? datos.getNumeroTelefonico()
+                        : null))
+            .correoElectronico(
+                UtilSanitizacion.sanitizar(
+                    UtilValidacion.esEmailValido(datos.getCorreoElectronico())
+                        ? datos.getCorreoElectronico()
+                        : null))
+            .direccionResidencia(UtilSanitizacion.sanitizar(datos.getDireccionResidencia()))
             .ciudadResidencia(
                 datos.getCiudadResidencia() != null
                     ? new CiudadEntidad.Builder().id(datos.getCiudadResidencia().getId()).build()

@@ -2,6 +2,8 @@ package com.inmocontrol.negocio.casouso.clausulacontrato.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ClausulaContratoEntidad;
+import com.inmocontrol.entidad.ClausulaPorContratoEntidad;
+import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.clausulacontrato.EliminarClausulaContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -20,6 +22,7 @@ public class EliminarClausulaContratoCasoUsoImpl implements EliminarClausulaCont
   public void ejecutar(ClausulaContratoDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaClausulaContrato(datos);
+    validarNoEstaEnContratosActivos(datos);
     eliminarClausulaContrato(datos);
   }
 
@@ -37,6 +40,27 @@ public class EliminarClausulaContratoCasoUsoImpl implements EliminarClausulaCont
         daoFactory.obtenerClausulaContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe una clausula contrato con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarNoEstaEnContratosActivos(ClausulaContratoDominio datos) {
+    ClausulaPorContratoEntidad filtro =
+        new ClausulaPorContratoEntidad.Builder()
+            .clausula(new ClausulaContratoEntidad.Builder().id(datos.getId()).build())
+            .build();
+    var clausulasPorContrato =
+        daoFactory.obtenerClausulaPorContratoDAO().consultarPorFiltro(filtro);
+    if (!clausulasPorContrato.isEmpty()) {
+      for (ClausulaPorContratoEntidad cpc : clausulasPorContrato) {
+        if (cpc.getContrato() != null && cpc.getContrato().getId() != null) {
+          ContratoEntidad contrato =
+              daoFactory.obtenerContratoDAO().consultarPorId(cpc.getContrato().getId());
+          if (contrato != null && Boolean.TRUE.equals(contrato.getEsActivo())) {
+            throw new ValidacionExcepcion(
+                "No es posible eliminar la clausula contrato porque esta asignada a un contrato activo.");
+          }
+        }
+      }
     }
   }
 

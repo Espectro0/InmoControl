@@ -42,6 +42,10 @@ import java.sql.SQLException;
 
 public class PostgreSQLDAOFactory extends DAOFactory {
 
+  public PostgreSQLDAOFactory() {
+    abrirConexion();
+  }
+
   @Override
   protected void abrirConexion() {
     try {
