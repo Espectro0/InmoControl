@@ -68,6 +68,26 @@ public class ContratoPostgresqlDAO extends SQLDAO implements ContratoDAO {
 			parametros.add(filtro.getCodigoContrato());
 		}
 
+		if (filtro.getEsActivo() != null) {
+			sql += " AND es_activo = ?";
+			parametros.add(filtro.getEsActivo());
+		}
+
+		if (filtro.getPropiedad() != null && filtro.getPropiedad().getId() != null) {
+			sql += " AND propiedad_id = ?";
+			parametros.add(filtro.getPropiedad().getId());
+		}
+
+		if (filtro.getFechaInicio() != null) {
+			sql += " AND fecha_inicio >= ?";
+			parametros.add(new Date(filtro.getFechaInicio().getTime()));
+		}
+
+		if (filtro.getFechaFin() != null) {
+			sql += " AND fecha_fin <= ?";
+			parametros.add(new Date(filtro.getFechaFin().getTime()));
+		}
+
 		List<ContratoEntidad> resultados = new ArrayList<>();
 
 		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {

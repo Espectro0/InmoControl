@@ -86,6 +86,21 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
 			parametros.add(filtro.getPrimerApellido());
 		}
 
+		if (filtro.getTipoDocumento() != null && filtro.getTipoDocumento().getId() != null) {
+			sql += " AND tipo_documento_id = ?";
+			parametros.add(filtro.getTipoDocumento().getId());
+		}
+
+		if (filtro.getCiudadResidencia() != null && filtro.getCiudadResidencia().getId() != null) {
+			sql += " AND ciudad_residencia_id = ?";
+			parametros.add(filtro.getCiudadResidencia().getId());
+		}
+
+		if (filtro.getCorreoElectronico() != null && !filtro.getCorreoElectronico().isEmpty()) {
+			sql += " AND correo_electronico = ?";
+			parametros.add(filtro.getCorreoElectronico());
+		}
+
 		List<PersonaEntidad> resultados = new ArrayList<>();
 
 		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
