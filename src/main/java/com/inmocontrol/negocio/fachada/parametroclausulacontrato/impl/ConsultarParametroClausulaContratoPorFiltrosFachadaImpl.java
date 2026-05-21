@@ -1,0 +1,44 @@
+package com.inmocontrol.negocio.fachada.parametroclausulacontrato.impl;
+
+import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
+import com.inmocontrol.dto.ParametroClausulaContratoDTO;
+import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
+import com.inmocontrol.negocio.casouso.parametroclausulacontrato.impl.ConsultarParametroClausulaContratoPorFiltrosCasoUsoImpl;
+import com.inmocontrol.negocio.casouso.parametroclausulacontrato.ConsultarParametroClausulaContratoPorFiltrosCasoUso;
+import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
+import com.inmocontrol.negocio.fachada.parametroclausulacontrato.ConsultarParametroClausulaContratoPorFiltrosFachada;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+import com.inmocontrol.transversal.UtilObjeto;
+import java.util.List;
+
+public class ConsultarParametroClausulaContratoPorFiltrosFachadaImpl implements ConsultarParametroClausulaContratoPorFiltrosFachada {
+
+    private DAOFactory daoFactory;
+    private ConsultarParametroClausulaContratoPorFiltrosCasoUso casoUso;
+
+    public ConsultarParametroClausulaContratoPorFiltrosFachadaImpl() {
+        daoFactory = DAOFactory.getFactory();
+        casoUso = new ConsultarParametroClausulaContratoPorFiltrosCasoUsoImpl(daoFactory);
+    }
+
+    @Override
+    public List<ParametroClausulaContratoEntidad> ejecutar(ParametroClausulaContratoDTO datos) {
+        if (UtilObjeto.esNulo(datos)) {
+            throw new ValidacionExcepcion("Los datos del parametro clausula contrato no pueden ser nulos");
+        }
+
+        try {
+            ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder()
+                    .valor(datos.getValor())
+                    .build();
+            return casoUso.ejecutar(dominio);
+
+        } catch (Exception excepcion) {
+            throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+}

@@ -1,0 +1,33 @@
+package com.inmocontrol.negocio.fachada.parametro.impl;
+
+import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
+import com.inmocontrol.entidad.ParametroEntidad;
+import com.inmocontrol.negocio.casouso.parametro.impl.ConsultarParametroTodosCasoUsoImpl;
+import com.inmocontrol.negocio.casouso.parametro.ConsultarParametroTodosCasoUso;
+import com.inmocontrol.negocio.fachada.parametro.ConsultarParametroTodosFachada;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+import java.util.List;
+
+public class ConsultarParametroTodosFachadaImpl implements ConsultarParametroTodosFachada {
+
+	private DAOFactory daoFactory;
+	private ConsultarParametroTodosCasoUso casoUso;
+
+	public ConsultarParametroTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarParametroTodosCasoUsoImpl(daoFactory);
+	}
+
+	@Override
+	public List<ParametroEntidad> ejecutar(Void datos) {
+		try {
+			return casoUso.ejecutar(datos);
+
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
+}
