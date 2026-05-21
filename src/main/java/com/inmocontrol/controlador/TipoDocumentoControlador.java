@@ -22,28 +22,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/tipos-documento")
 public class TipoDocumentoControlador {
 
-	@GetMapping
-	public ResponseEntity<RespuestaExito<List<TipoDocumentoEntidad>>> consultarTodos() {
-		ConsultarTipoDocumentoTodosFachada fachada = new ConsultarTipoDocumentoTodosFachadaImpl();
-		List<TipoDocumentoEntidad> resultado = fachada.ejecutar(null);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipos de documento obtenidos exitosamente", resultado));
-	}
+  @GetMapping("/{id}")
+  public ResponseEntity<RespuestaExito<TipoDocumentoEntidad>> consultarPorId(
+      @PathVariable UUID id) {
+    TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().id(id).build();
+    ConsultarTipoDocumentoPorIdFachada fachada = new ConsultarTipoDocumentoPorIdFachadaImpl();
+    TipoDocumentoEntidad resultado = fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Tipo de documento obtenido exitosamente", resultado));
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<RespuestaExito<TipoDocumentoEntidad>> consultarPorId(@PathVariable UUID id) {
-		TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().id(id).build();
-		ConsultarTipoDocumentoPorIdFachada fachada = new ConsultarTipoDocumentoPorIdFachadaImpl();
-		TipoDocumentoEntidad resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipo de documento obtenido exitosamente", resultado));
-	}
+  @GetMapping
+  public ResponseEntity<RespuestaExito<List<TipoDocumentoEntidad>>> consultar(
+      @RequestParam(required = false) String nombre) {
 
-	@GetMapping("/buscar")
-	public ResponseEntity<RespuestaExito<List<TipoDocumentoEntidad>>> consultarPorFiltros(
-			@RequestParam(required = false) String nombre) {
-		TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().nombre(nombre).build();
-		ConsultarTipoDocumentoPorFiltrosFachada fachada = new ConsultarTipoDocumentoPorFiltrosFachadaImpl();
-		List<TipoDocumentoEntidad> resultado = fachada.ejecutar(dto);
-		return ResponseEntity
-				.ok(RespuestaExito.crear("Tipos de documento filtrados obtenidos exitosamente", resultado));
-	}
+    TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().nombre(nombre).build();
+
+    List<TipoDocumentoEntidad> resultado;
+    boolean tieneFiltros = nombre != null;
+
+    if (tieneFiltros) {
+      ConsultarTipoDocumentoPorFiltrosFachada fachadaFiltros =
+          new ConsultarTipoDocumentoPorFiltrosFachadaImpl();
+      resultado = fachadaFiltros.ejecutar(dto);
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Tipos de documento filtrados obtenidos exitosamente", resultado));
+    } else {
+      ConsultarTipoDocumentoTodosFachada fachadaTodos =
+          new ConsultarTipoDocumentoTodosFachadaImpl();
+      resultado = fachadaTodos.ejecutar();
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Tipos de documento obtenidos exitosamente", resultado));
+    }
+  }
 }

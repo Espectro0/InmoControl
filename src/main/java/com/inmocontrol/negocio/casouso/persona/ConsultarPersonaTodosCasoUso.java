@@ -1,8 +1,7 @@
 package com.inmocontrol.negocio.casouso.persona;
 
-import com.inmocontrol.negocio.casouso.CasoUsoConRetorno;
 import com.inmocontrol.entidad.PersonaEntidad;
+import com.inmocontrol.negocio.casouso.CasoUsoSinParametro;
 import java.util.List;
 
-public interface ConsultarPersonaTodosCasoUso extends CasoUsoConRetorno<Void, List<PersonaEntidad>> {
-}
+public interface ConsultarPersonaTodosCasoUso extends CasoUsoSinParametro<List<PersonaEntidad>> {}

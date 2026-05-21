@@ -7,6 +7,6 @@ import com.inmocontrol.entidad.DepartamentoEntidad;
 import java.util.UUID;
 
 public interface DepartamentoDAO
-		extends ConsultarPorIdDAO<DepartamentoEntidad, UUID>, ConsultarTodosDAO<DepartamentoEntidad>,
-				ConsultarPorFiltroDAO<DepartamentoEntidad> {
-}
+    extends ConsultarPorIdDAO<DepartamentoEntidad, UUID>,
+        ConsultarTodosDAO<DepartamentoEntidad>,
+        ConsultarPorFiltroDAO<DepartamentoEntidad> {}

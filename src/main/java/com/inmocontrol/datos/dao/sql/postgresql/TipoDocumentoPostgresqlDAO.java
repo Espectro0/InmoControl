@@ -14,79 +14,80 @@ import java.util.UUID;
 
 public class TipoDocumentoPostgresqlDAO extends SQLDAO implements TipoDocumentoDAO {
 
-    public TipoDocumentoPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public TipoDocumentoPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public TipoDocumentoEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre FROM tipo_documento WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo documento por id.", e);
     }
 
-    @Override
-    public TipoDocumentoEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre FROM tipo_documento WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<TipoDocumentoEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre FROM tipo_documento";
+    List<TipoDocumentoEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo documento por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos documento.", e);
     }
 
-    @Override
-    public List<TipoDocumentoEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre FROM tipo_documento";
-        List<TipoDocumentoEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<TipoDocumentoEntidad> consultarPorFiltro(TipoDocumentoEntidad filtro) {
+    String sql = "SELECT id, nombre FROM tipo_documento WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos documento.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<TipoDocumentoEntidad> consultarPorFiltro(TipoDocumentoEntidad filtro) {
-        String sql = "SELECT id, nombre FROM tipo_documento WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
+    List<TipoDocumentoEntidad> resultados = new ArrayList<>();
 
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
 
-        List<TipoDocumentoEntidad> resultados = new ArrayList<>();
+      ResultSet rs = stmt.executeQuery();
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar tipos documento por filtro.", e);
-        }
-
-        return resultados;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion(
+          "Ocurrio un error al consultar tipos documento por filtro.", e);
     }
 
-    private TipoDocumentoEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new TipoDocumentoEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .build();
-    }
+    return resultados;
+  }
+
+  private TipoDocumentoEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new TipoDocumentoEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .build();
+  }
 }

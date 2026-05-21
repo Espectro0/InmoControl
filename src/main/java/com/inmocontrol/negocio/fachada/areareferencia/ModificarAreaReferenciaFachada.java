@@ -1,7 +1,6 @@
 package com.inmocontrol.negocio.fachada.areareferencia;
 
-import com.inmocontrol.negocio.fachada.FachadaSinRetorno;
 import com.inmocontrol.dto.AreaReferenciaDTO;
+import com.inmocontrol.negocio.fachada.FachadaSinRetorno;
 
-public interface ModificarAreaReferenciaFachada extends FachadaSinRetorno<AreaReferenciaDTO> {
-}
+public interface ModificarAreaReferenciaFachada extends FachadaSinRetorno<AreaReferenciaDTO> {}

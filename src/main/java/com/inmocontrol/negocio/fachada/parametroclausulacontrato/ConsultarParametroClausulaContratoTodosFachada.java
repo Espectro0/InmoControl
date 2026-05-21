@@ -1,9 +1,8 @@
 package com.inmocontrol.negocio.fachada.parametroclausulacontrato;
 
-import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
+import com.inmocontrol.negocio.fachada.FachadaSinParametro;
 import java.util.List;
 
 public interface ConsultarParametroClausulaContratoTodosFachada
-		extends FachadaConRetorno<Void, List<ParametroClausulaContratoEntidad>> {
-}
+    extends FachadaSinParametro<List<ParametroClausulaContratoEntidad>> {}

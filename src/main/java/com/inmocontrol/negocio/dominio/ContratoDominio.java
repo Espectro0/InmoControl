@@ -6,6 +6,71 @@ import java.util.Date;
 import java.util.UUID;
 
 public final class ContratoDominio {
+  private UUID id;
+  private String codigoContrato;
+  private Date fechaInicio;
+  private Date fechaFin;
+  private Boolean esActivo;
+  private PropiedadDominio propiedad;
+
+  private ContratoDominio(final Builder builder) {
+    setId(builder.id);
+    setCodigoContrato(builder.codigoContrato);
+    setFechaInicio(builder.fechaInicio);
+    setFechaFin(builder.fechaFin);
+    setEsActivo(builder.esActivo);
+    setPropiedad(builder.propiedad);
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public String getCodigoContrato() {
+    return codigoContrato;
+  }
+
+  public Date getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public Date getFechaFin() {
+    return fechaFin;
+  }
+
+  public Boolean getEsActivo() {
+    return esActivo;
+  }
+
+  public PropiedadDominio getPropiedad() {
+    return propiedad;
+  }
+
+  private void setId(final UUID id) {
+    this.id = id;
+  }
+
+  private void setCodigoContrato(final String codigoContrato) {
+    this.codigoContrato = UtilTexto.aplicarTrim(codigoContrato);
+  }
+
+  private void setFechaInicio(final Date fechaInicio) {
+    this.fechaInicio = UtilDate.obtenerValorDefecto(fechaInicio);
+  }
+
+  private void setFechaFin(final Date fechaFin) {
+    this.fechaFin = UtilDate.obtenerValorDefecto(fechaFin);
+  }
+
+  private void setEsActivo(final Boolean esActivo) {
+    this.esActivo = esActivo;
+  }
+
+  private void setPropiedad(final PropiedadDominio propiedad) {
+    this.propiedad = propiedad;
+  }
+
+  public static class Builder {
     private UUID id;
     private String codigoContrato;
     private Date fechaInicio;
@@ -13,103 +78,38 @@ public final class ContratoDominio {
     private Boolean esActivo;
     private PropiedadDominio propiedad;
 
-    private ContratoDominio(final Builder builder) {
-        setId(builder.id);
-        setCodigoContrato(builder.codigoContrato);
-        setFechaInicio(builder.fechaInicio);
-        setFechaFin(builder.fechaFin);
-        setEsActivo(builder.esActivo);
-        setPropiedad(builder.propiedad);
+    public Builder id(final UUID id) {
+      this.id = id;
+      return this;
     }
 
-    public UUID getId() {
-        return id;
+    public Builder codigoContrato(final String codigoContrato) {
+      this.codigoContrato = codigoContrato;
+      return this;
     }
 
-    public String getCodigoContrato() {
-        return codigoContrato;
+    public Builder fechaInicio(final Date fechaInicio) {
+      this.fechaInicio = fechaInicio;
+      return this;
     }
 
-    public Date getFechaInicio() {
-        return fechaInicio;
+    public Builder fechaFin(final Date fechaFin) {
+      this.fechaFin = fechaFin;
+      return this;
     }
 
-    public Date getFechaFin() {
-        return fechaFin;
+    public Builder esActivo(final Boolean esActivo) {
+      this.esActivo = esActivo;
+      return this;
     }
 
-    public Boolean getEsActivo() {
-        return esActivo;
+    public Builder propiedad(final PropiedadDominio propiedad) {
+      this.propiedad = propiedad;
+      return this;
     }
 
-    public PropiedadDominio getPropiedad() {
-        return propiedad;
+    public ContratoDominio build() {
+      return new ContratoDominio(this);
     }
-
-    private void setId(final UUID id) {
-        this.id = id;
-    }
-
-    private void setCodigoContrato(final String codigoContrato) {
-        this.codigoContrato = UtilTexto.aplicarTrim(codigoContrato);
-    }
-
-    private void setFechaInicio(final Date fechaInicio) {
-        this.fechaInicio = UtilDate.obtenerValorDefecto(fechaInicio);
-    }
-
-    private void setFechaFin(final Date fechaFin) {
-        this.fechaFin = UtilDate.obtenerValorDefecto(fechaFin);
-    }
-
-    private void setEsActivo(final Boolean esActivo) {
-        this.esActivo = esActivo;
-    }
-
-    private void setPropiedad(final PropiedadDominio propiedad) {
-        this.propiedad = propiedad;
-    }
-
-    public static class Builder {
-        private UUID id;
-        private String codigoContrato;
-        private Date fechaInicio;
-        private Date fechaFin;
-        private Boolean esActivo;
-        private PropiedadDominio propiedad;
-
-        public Builder id(final UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder codigoContrato(final String codigoContrato) {
-            this.codigoContrato = codigoContrato;
-            return this;
-        }
-
-        public Builder fechaInicio(final Date fechaInicio) {
-            this.fechaInicio = fechaInicio;
-            return this;
-        }
-
-        public Builder fechaFin(final Date fechaFin) {
-            this.fechaFin = fechaFin;
-            return this;
-        }
-
-        public Builder esActivo(final Boolean esActivo) {
-            this.esActivo = esActivo;
-            return this;
-        }
-
-        public Builder propiedad(final PropiedadDominio propiedad) {
-            this.propiedad = propiedad;
-            return this;
-        }
-
-        public ContratoDominio build() {
-            return new ContratoDominio(this);
-        }
-    }
+  }
 }

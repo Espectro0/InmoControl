@@ -7,15 +7,15 @@ import java.util.List;
 
 public class ConsultarTipoDocumentoTodosCasoUsoImpl implements ConsultarTipoDocumentoTodosCasoUso {
 
-    private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-    public ConsultarTipoDocumentoTodosCasoUsoImpl(DAOFactory daoFactory) {
-        super();
-        this.daoFactory = daoFactory;
-    }
+  public ConsultarTipoDocumentoTodosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-    @Override
-    public List<TipoDocumentoEntidad> ejecutar(Void datos) {
-        return daoFactory.obtenerTipoDocumentoDAO().consultarTodos();
-    }
+  @Override
+  public List<TipoDocumentoEntidad> ejecutar() {
+    return daoFactory.obtenerTipoDocumentoDAO().consultarTodos();
+  }
 }

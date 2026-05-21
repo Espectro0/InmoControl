@@ -16,59 +16,85 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/parametros-clausula-contrato")
 public class ParametroClausulaContratoControlador {
 
-	@GetMapping
-	public ResponseEntity<RespuestaExito<List<ParametroClausulaContratoEntidad>>> consultarTodos() {
-		ConsultarParametroClausulaContratoTodosFachada fachada = new ConsultarParametroClausulaContratoTodosFachadaImpl();
-		List<ParametroClausulaContratoEntidad> resultado = fachada.ejecutar(null);
-		return ResponseEntity
-				.ok(RespuestaExito.crear("Parametros Clausula Contrato obtenidos exitosamente", resultado));
-	}
+  @GetMapping("/{id}")
+  public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> consultarPorId(
+      @PathVariable UUID id) {
+    ParametroClausulaContratoDTO dto = new ParametroClausulaContratoDTO.Builder().id(id).build();
+    ConsultarParametroClausulaContratoPorIdFachada fachada =
+        new ConsultarParametroClausulaContratoPorIdFachadaImpl();
+    ParametroClausulaContratoEntidad resultado = fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Parametro Clausula Contrato obtenido exitosamente", resultado));
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> consultarPorId(@PathVariable UUID id) {
-		ParametroClausulaContratoDTO dto = new ParametroClausulaContratoDTO.Builder().id(id).build();
-		ConsultarParametroClausulaContratoPorIdFachada fachada = new ConsultarParametroClausulaContratoPorIdFachadaImpl();
-		ParametroClausulaContratoEntidad resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Parametro Clausula Contrato obtenido exitosamente", resultado));
-	}
+  @GetMapping
+  public ResponseEntity<RespuestaExito<List<ParametroClausulaContratoEntidad>>> consultar(
+      @RequestParam(required = false) UUID parametroId,
+      @RequestParam(required = false) UUID clausulaPorContratoId,
+      @RequestParam(required = false) String valor) {
 
-	@GetMapping("/buscar")
-	public ResponseEntity<RespuestaExito<List<ParametroClausulaContratoEntidad>>> consultarPorFiltros(
-			@RequestParam(required = false) UUID parametroId,
-			@RequestParam(required = false) UUID clausulaPorContratoId, @RequestParam(required = false) String valor) {
-		ParametroClausulaContratoDTO dto = new ParametroClausulaContratoDTO.Builder()
-				.parametro(parametroId != null ? new ParametroDTO.Builder().id(parametroId).build() : null)
-				.clausulaPorContrato(clausulaPorContratoId != null
-						? new ClausulaPorContratoDTO.Builder().id(clausulaPorContratoId).build()
-						: null)
-				.valor(valor).build();
-		ConsultarParametroClausulaContratoPorFiltrosFachada fachada = new ConsultarParametroClausulaContratoPorFiltrosFachadaImpl();
-		List<ParametroClausulaContratoEntidad> resultado = fachada.ejecutar(dto);
-		return ResponseEntity
-				.ok(RespuestaExito.crear("Parametros Clausula Contrato filtrados obtenidos exitosamente", resultado));
-	}
+    ParametroClausulaContratoDTO dto =
+        new ParametroClausulaContratoDTO.Builder()
+            .parametro(
+                parametroId != null ? new ParametroDTO.Builder().id(parametroId).build() : null)
+            .clausulaPorContrato(
+                clausulaPorContratoId != null
+                    ? new ClausulaPorContratoDTO.Builder().id(clausulaPorContratoId).build()
+                    : null)
+            .valor(valor)
+            .build();
 
-	@PostMapping
-	public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> registrar(@RequestBody ParametroClausulaContratoDTO dto) {
-		RegistrarParametroClausulaContratoFachada fachada = new RegistrarParametroClausulaContratoFachadaImpl();
-		ParametroClausulaContratoEntidad resultado = new ParametroClausulaContratoEntidad.Builder().build();
-		fachada.ejecutar(dto);
-		return ResponseEntity.status(201).body(RespuestaExito.crear("Parametro Clausula Contrato registrado exitosamente", resultado));
-	}
+    List<ParametroClausulaContratoEntidad> resultado;
+    boolean tieneFiltros = parametroId != null || clausulaPorContratoId != null || valor != null;
 
-	@PutMapping
-	public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> modificar(@RequestBody ParametroClausulaContratoDTO dto) {
-		ModificarParametroClausulaContratoFachada fachada = new ModificarParametroClausulaContratoFachadaImpl();
-		ParametroClausulaContratoEntidad resultado = new ParametroClausulaContratoEntidad.Builder().build();
-		fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Parametro Clausula Contrato modificado exitosamente", resultado));
-	}
+    if (tieneFiltros) {
+      ConsultarParametroClausulaContratoPorFiltrosFachada fachadaFiltros =
+          new ConsultarParametroClausulaContratoPorFiltrosFachadaImpl();
+      resultado = fachadaFiltros.ejecutar(dto);
+      return ResponseEntity.ok(
+          RespuestaExito.crear(
+              "Parametros Clausula Contrato filtrados obtenidos exitosamente", resultado));
+    } else {
+      ConsultarParametroClausulaContratoTodosFachada fachadaTodos =
+          new ConsultarParametroClausulaContratoTodosFachadaImpl();
+      resultado = fachadaTodos.ejecutar();
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Parametros Clausula Contrato obtenidos exitosamente", resultado));
+    }
+  }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
-		ParametroClausulaContratoDTO dto = new ParametroClausulaContratoDTO.Builder().id(id).build();
-		EliminarParametroClausulaContratoFachada fachada = new EliminarParametroClausulaContratoFachadaImpl();
-		fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Parametro Clausula Contrato eliminado exitosamente", null));
-	}
+  @PostMapping
+  public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> registrar(
+      @RequestBody ParametroClausulaContratoDTO dto) {
+    RegistrarParametroClausulaContratoFachada fachada =
+        new RegistrarParametroClausulaContratoFachadaImpl();
+    ParametroClausulaContratoEntidad resultado =
+        new ParametroClausulaContratoEntidad.Builder().build();
+    fachada.ejecutar(dto);
+    return ResponseEntity.status(201)
+        .body(
+            RespuestaExito.crear("Parametro Clausula Contrato registrado exitosamente", resultado));
+  }
+
+  @PutMapping
+  public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> modificar(
+      @RequestBody ParametroClausulaContratoDTO dto) {
+    ModificarParametroClausulaContratoFachada fachada =
+        new ModificarParametroClausulaContratoFachadaImpl();
+    ParametroClausulaContratoEntidad resultado =
+        new ParametroClausulaContratoEntidad.Builder().build();
+    fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Parametro Clausula Contrato modificado exitosamente", resultado));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
+    ParametroClausulaContratoDTO dto = new ParametroClausulaContratoDTO.Builder().id(id).build();
+    EliminarParametroClausulaContratoFachada fachada =
+        new EliminarParametroClausulaContratoFachadaImpl();
+    fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Parametro Clausula Contrato eliminado exitosamente", null));
+  }
 }

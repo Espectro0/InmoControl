@@ -14,79 +14,80 @@ import java.util.UUID;
 
 public class TipoAplicacionPostgresqlDAO extends SQLDAO implements TipoAplicacionDAO {
 
-    public TipoAplicacionPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public TipoAplicacionPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public TipoAplicacionEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo aplicacion por id.", e);
     }
 
-    @Override
-    public TipoAplicacionEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<TipoAplicacionEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre FROM tipo_aplicacion";
+    List<TipoAplicacionEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo aplicacion por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos aplicacion.", e);
     }
 
-    @Override
-    public List<TipoAplicacionEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre FROM tipo_aplicacion";
-        List<TipoAplicacionEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<TipoAplicacionEntidad> consultarPorFiltro(TipoAplicacionEntidad filtro) {
+    String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos aplicacion.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<TipoAplicacionEntidad> consultarPorFiltro(TipoAplicacionEntidad filtro) {
-        String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
+    List<TipoAplicacionEntidad> resultados = new ArrayList<>();
 
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
 
-        List<TipoAplicacionEntidad> resultados = new ArrayList<>();
+      ResultSet rs = stmt.executeQuery();
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar tipos aplicacion por filtro.", e);
-        }
-
-        return resultados;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion(
+          "Ocurrio un error al consultar tipos aplicacion por filtro.", e);
     }
 
-    private TipoAplicacionEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new TipoAplicacionEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .build();
-    }
+    return resultados;
+  }
+
+  private TipoAplicacionEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new TipoAplicacionEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .build();
+  }
 }

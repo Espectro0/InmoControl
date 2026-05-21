@@ -9,37 +9,37 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarParametroCasoUsoImpl implements EliminarParametroCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public EliminarParametroCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public EliminarParametroCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public void ejecutar(ParametroDominio datos) {
-		validarObligatoriedadId(datos);
-		validarExistenciaParametro(datos);
-		eliminarParametro(datos);
-	}
+  @Override
+  public void ejecutar(ParametroDominio datos) {
+    validarObligatoriedadId(datos);
+    validarExistenciaParametro(datos);
+    eliminarParametro(datos);
+  }
 
-	private void validarObligatoriedadId(ParametroDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("El parametro a eliminar no es valido.");
-		}
-		if (UtilObjeto.esNulo(datos.getId())) {
-			throw new ValidacionExcepcion("El ID del parametro es obligatorio.");
-		}
-	}
+  private void validarObligatoriedadId(ParametroDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      throw new ValidacionExcepcion("El parametro a eliminar no es valido.");
+    }
+    if (UtilObjeto.esNulo(datos.getId())) {
+      throw new ValidacionExcepcion("El ID del parametro es obligatorio.");
+    }
+  }
 
-	private void validarExistenciaParametro(ParametroDominio datos) {
-		ParametroEntidad existente = daoFactory.obtenerParametroDAO().consultarPorId(datos.getId());
-		if (UtilObjeto.esNulo(existente)) {
-			throw new ValidacionExcepcion("No existe un parametro con el ID: " + datos.getId());
-		}
-	}
+  private void validarExistenciaParametro(ParametroDominio datos) {
+    ParametroEntidad existente = daoFactory.obtenerParametroDAO().consultarPorId(datos.getId());
+    if (UtilObjeto.esNulo(existente)) {
+      throw new ValidacionExcepcion("No existe un parametro con el ID: " + datos.getId());
+    }
+  }
 
-	private void eliminarParametro(ParametroDominio datos) {
-		daoFactory.obtenerParametroDAO().eliminar(datos.getId());
-	}
+  private void eliminarParametro(ParametroDominio datos) {
+    daoFactory.obtenerParametroDAO().eliminar(datos.getId());
+  }
 }

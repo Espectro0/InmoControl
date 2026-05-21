@@ -9,33 +9,34 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarTipoPropiedadPorIdCasoUsoImpl implements ConsultarTipoPropiedadPorIdCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarTipoPropiedadPorIdCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarTipoPropiedadPorIdCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public TipoPropiedadEntidad ejecutar(TipoPropiedadDominio datos) {
-		validarObligatoriedadIdTipoPropiedad(datos);
-		return consultarTipoPropiedad(datos);
-	}
+  @Override
+  public TipoPropiedadEntidad ejecutar(TipoPropiedadDominio datos) {
+    validarObligatoriedadIdTipoPropiedad(datos);
+    return consultarTipoPropiedad(datos);
+  }
 
-	private void validarObligatoriedadIdTipoPropiedad(TipoPropiedadDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("El tipo de propiedad a consultar no es valido.");
-		}
-		if (UtilObjeto.esNulo(datos.getId())) {
-			throw new ValidacionExcepcion("El ID del tipo de propiedad es obligatorio.");
-		}
-	}
+  private void validarObligatoriedadIdTipoPropiedad(TipoPropiedadDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      throw new ValidacionExcepcion("El tipo de propiedad a consultar no es valido.");
+    }
+    if (UtilObjeto.esNulo(datos.getId())) {
+      throw new ValidacionExcepcion("El ID del tipo de propiedad es obligatorio.");
+    }
+  }
 
-	private TipoPropiedadEntidad consultarTipoPropiedad(TipoPropiedadDominio datos) {
-		TipoPropiedadEntidad tipoPropiedadEntidad = daoFactory.obtenerTipoPropiedadDAO().consultarPorId(datos.getId());
-		if (UtilObjeto.esNulo(tipoPropiedadEntidad)) {
-			throw new ValidacionExcepcion("No existe un tipo de propiedad con el ID: " + datos.getId());
-		}
-		return tipoPropiedadEntidad;
-	}
+  private TipoPropiedadEntidad consultarTipoPropiedad(TipoPropiedadDominio datos) {
+    TipoPropiedadEntidad tipoPropiedadEntidad =
+        daoFactory.obtenerTipoPropiedadDAO().consultarPorId(datos.getId());
+    if (UtilObjeto.esNulo(tipoPropiedadEntidad)) {
+      throw new ValidacionExcepcion("No existe un tipo de propiedad con el ID: " + datos.getId());
+    }
+    return tipoPropiedadEntidad;
+  }
 }

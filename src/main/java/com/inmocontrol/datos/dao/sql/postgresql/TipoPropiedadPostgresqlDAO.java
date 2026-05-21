@@ -14,79 +14,80 @@ import java.util.UUID;
 
 public class TipoPropiedadPostgresqlDAO extends SQLDAO implements TipoPropiedadDAO {
 
-    public TipoPropiedadPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public TipoPropiedadPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public TipoPropiedadEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre FROM tipo_propiedad WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo propiedad por id.", e);
     }
 
-    @Override
-    public TipoPropiedadEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre FROM tipo_propiedad WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<TipoPropiedadEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre FROM tipo_propiedad";
+    List<TipoPropiedadEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo propiedad por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos propiedad.", e);
     }
 
-    @Override
-    public List<TipoPropiedadEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre FROM tipo_propiedad";
-        List<TipoPropiedadEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<TipoPropiedadEntidad> consultarPorFiltro(TipoPropiedadEntidad filtro) {
+    String sql = "SELECT id, nombre FROM tipo_propiedad WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos propiedad.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<TipoPropiedadEntidad> consultarPorFiltro(TipoPropiedadEntidad filtro) {
-        String sql = "SELECT id, nombre FROM tipo_propiedad WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
+    List<TipoPropiedadEntidad> resultados = new ArrayList<>();
 
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
 
-        List<TipoPropiedadEntidad> resultados = new ArrayList<>();
+      ResultSet rs = stmt.executeQuery();
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar tipos propiedad por filtro.", e);
-        }
-
-        return resultados;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion(
+          "Ocurrio un error al consultar tipos propiedad por filtro.", e);
     }
 
-    private TipoPropiedadEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new TipoPropiedadEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .build();
-    }
+    return resultados;
+  }
+
+  private TipoPropiedadEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new TipoPropiedadEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .build();
+  }
 }

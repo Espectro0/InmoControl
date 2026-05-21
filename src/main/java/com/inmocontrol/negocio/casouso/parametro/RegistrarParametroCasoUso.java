@@ -3,5 +3,4 @@ package com.inmocontrol.negocio.casouso.parametro;
 import com.inmocontrol.negocio.casouso.CasoUsoSinRetorno;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 
-public interface RegistrarParametroCasoUso extends CasoUsoSinRetorno<ParametroDominio> {
-}
+public interface RegistrarParametroCasoUso extends CasoUsoSinRetorno<ParametroDominio> {}

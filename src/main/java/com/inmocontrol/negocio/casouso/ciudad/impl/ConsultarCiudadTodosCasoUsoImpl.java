@@ -7,15 +7,15 @@ import java.util.List;
 
 public class ConsultarCiudadTodosCasoUsoImpl implements ConsultarCiudadTodosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarCiudadTodosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarCiudadTodosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<CiudadEntidad> ejecutar(Void datos) {
-		return daoFactory.obtenerCiudadDAO().consultarTodos();
-	}
+  @Override
+  public List<CiudadEntidad> ejecutar() {
+    return daoFactory.obtenerCiudadDAO().consultarTodos();
+  }
 }

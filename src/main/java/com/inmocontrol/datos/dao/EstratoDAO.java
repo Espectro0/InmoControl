@@ -7,6 +7,6 @@ import com.inmocontrol.entidad.EstratoEntidad;
 import java.util.UUID;
 
 public interface EstratoDAO
-		extends ConsultarPorIdDAO<EstratoEntidad, UUID>, ConsultarTodosDAO<EstratoEntidad>,
-				ConsultarPorFiltroDAO<EstratoEntidad> {
-}
+    extends ConsultarPorIdDAO<EstratoEntidad, UUID>,
+        ConsultarTodosDAO<EstratoEntidad>,
+        ConsultarPorFiltroDAO<EstratoEntidad> {}

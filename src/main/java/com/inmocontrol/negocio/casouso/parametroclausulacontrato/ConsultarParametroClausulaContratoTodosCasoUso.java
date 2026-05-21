@@ -1,9 +1,8 @@
 package com.inmocontrol.negocio.casouso.parametroclausulacontrato;
 
-import com.inmocontrol.negocio.casouso.CasoUsoConRetorno;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
+import com.inmocontrol.negocio.casouso.CasoUsoSinParametro;
 import java.util.List;
 
 public interface ConsultarParametroClausulaContratoTodosCasoUso
-		extends CasoUsoConRetorno<Void, List<ParametroClausulaContratoEntidad>> {
-}
+    extends CasoUsoSinParametro<List<ParametroClausulaContratoEntidad>> {}

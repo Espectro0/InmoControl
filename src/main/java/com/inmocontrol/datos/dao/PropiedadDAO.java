@@ -10,7 +10,9 @@ import com.inmocontrol.entidad.PropiedadEntidad;
 import java.util.UUID;
 
 public interface PropiedadDAO
-		extends ConsultarPorIdDAO<PropiedadEntidad, UUID>, ConsultarTodosDAO<PropiedadEntidad>,
-				ConsultarPorFiltroDAO<PropiedadEntidad>, CrearDAO<PropiedadEntidad>,
-				ActualizarDAO<PropiedadEntidad, UUID>, EliminarDAO<UUID> {
-}
+    extends ConsultarPorIdDAO<PropiedadEntidad, UUID>,
+        ConsultarTodosDAO<PropiedadEntidad>,
+        ConsultarPorFiltroDAO<PropiedadEntidad>,
+        CrearDAO<PropiedadEntidad>,
+        ActualizarDAO<PropiedadEntidad, UUID>,
+        EliminarDAO<UUID> {}

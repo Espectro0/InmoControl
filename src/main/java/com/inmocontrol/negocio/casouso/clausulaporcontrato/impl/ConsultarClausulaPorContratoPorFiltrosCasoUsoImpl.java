@@ -8,21 +8,25 @@ import com.inmocontrol.transversal.UtilObjeto;
 import java.util.List;
 
 public class ConsultarClausulaPorContratoPorFiltrosCasoUsoImpl
-		implements ConsultarClausulaPorContratoPorFiltrosCasoUso {
+    implements ConsultarClausulaPorContratoPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarClausulaPorContratoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarClausulaPorContratoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<ClausulaPorContratoEntidad> ejecutar(ClausulaPorContratoDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerClausulaPorContratoDAO().consultarTodos();
-		}
-		return daoFactory.obtenerClausulaPorContratoDAO().consultarPorFiltro(
-				new ClausulaPorContratoEntidad.Builder().numeroClausula(datos.getNumeroClausula()).build());
-	}
+  @Override
+  public List<ClausulaPorContratoEntidad> ejecutar(ClausulaPorContratoDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerClausulaPorContratoDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerClausulaPorContratoDAO()
+        .consultarPorFiltro(
+            new ClausulaPorContratoEntidad.Builder()
+                .numeroClausula(datos.getNumeroClausula())
+                .build());
+  }
 }

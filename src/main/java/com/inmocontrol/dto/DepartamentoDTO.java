@@ -4,62 +4,78 @@ import com.inmocontrol.transversal.UtilTexto;
 import java.util.UUID;
 
 public final class DepartamentoDTO {
+  private UUID id;
+  private String nombre;
+  private PaisDTO pais;
+  private UUID paisId;
+
+  private DepartamentoDTO(final Builder builder) {
+    setId(builder.id);
+    setNombre(builder.nombre);
+    setPais(builder.pais);
+    setPaisId(builder.paisId);
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public PaisDTO getPais() {
+    return pais;
+  }
+
+  public UUID getPaisId() {
+    return paisId;
+  }
+
+  private void setId(final UUID id) {
+    this.id = id;
+  }
+
+  private void setNombre(final String nombre) {
+    this.nombre = UtilTexto.aplicarTrim(nombre);
+  }
+
+  private void setPais(final PaisDTO pais) {
+    this.pais = pais;
+  }
+
+  private void setPaisId(final UUID paisId) {
+    this.paisId = paisId;
+  }
+
+  public static class Builder {
     private UUID id;
     private String nombre;
     private PaisDTO pais;
+    private UUID paisId;
 
-    private DepartamentoDTO(final Builder builder) {
-        setId(builder.id);
-        setNombre(builder.nombre);
-        setPais(builder.pais);
+    public Builder id(final UUID id) {
+      this.id = id;
+      return this;
     }
 
-    public UUID getId() {
-        return id;
+    public Builder nombre(final String nombre) {
+      this.nombre = nombre;
+      return this;
     }
 
-    public String getNombre() {
-        return nombre;
+    public Builder pais(final PaisDTO pais) {
+      this.pais = pais;
+      return this;
     }
 
-    public PaisDTO getPais() {
-        return pais;
+    public Builder paisId(final UUID paisId) {
+      this.paisId = paisId;
+      return this;
     }
 
-    private void setId(final UUID id) {
-        this.id = id;
+    public DepartamentoDTO build() {
+      return new DepartamentoDTO(this);
     }
-
-    private void setNombre(final String nombre) {
-        this.nombre = UtilTexto.aplicarTrim(nombre);
-    }
-
-    private void setPais(final PaisDTO pais) {
-        this.pais = pais;
-    }
-
-    public static class Builder {
-        private UUID id;
-        private String nombre;
-        private PaisDTO pais;
-
-        public Builder id(final UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder nombre(final String nombre) {
-            this.nombre = nombre;
-            return this;
-        }
-
-        public Builder pais(final PaisDTO pais) {
-            this.pais = pais;
-            return this;
-        }
-
-        public DepartamentoDTO build() {
-            return new DepartamentoDTO(this);
-        }
-    }
+  }
 }

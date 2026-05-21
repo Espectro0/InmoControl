@@ -9,33 +9,33 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarPersonaPorIdCasoUsoImpl implements ConsultarPersonaPorIdCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarPersonaPorIdCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarPersonaPorIdCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public PersonaEntidad ejecutar(PersonaDominio datos) {
-		validarObligatoriedadIdPersona(datos);
-		return consultarPersona(datos);
-	}
+  @Override
+  public PersonaEntidad ejecutar(PersonaDominio datos) {
+    validarObligatoriedadIdPersona(datos);
+    return consultarPersona(datos);
+  }
 
-	private void validarObligatoriedadIdPersona(PersonaDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("La persona a consultar no es valida.");
-		}
-		if (UtilObjeto.esNulo(datos.getId())) {
-			throw new ValidacionExcepcion("El ID de la persona es obligatorio.");
-		}
-	}
+  private void validarObligatoriedadIdPersona(PersonaDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      throw new ValidacionExcepcion("La persona a consultar no es valida.");
+    }
+    if (UtilObjeto.esNulo(datos.getId())) {
+      throw new ValidacionExcepcion("El ID de la persona es obligatorio.");
+    }
+  }
 
-	private PersonaEntidad consultarPersona(PersonaDominio datos) {
-		PersonaEntidad personaEntidad = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getId());
-		if (UtilObjeto.esNulo(personaEntidad)) {
-			throw new ValidacionExcepcion("No existe una persona con el ID: " + datos.getId());
-		}
-		return personaEntidad;
-	}
+  private PersonaEntidad consultarPersona(PersonaDominio datos) {
+    PersonaEntidad personaEntidad = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getId());
+    if (UtilObjeto.esNulo(personaEntidad)) {
+      throw new ValidacionExcepcion("No existe una persona con el ID: " + datos.getId());
+    }
+    return personaEntidad;
+  }
 }

@@ -10,7 +10,9 @@ import com.inmocontrol.entidad.ClausulaContratoEntidad;
 import java.util.UUID;
 
 public interface ClausulaContratoDAO
-		extends ConsultarPorIdDAO<ClausulaContratoEntidad, UUID>, ConsultarTodosDAO<ClausulaContratoEntidad>,
-				ConsultarPorFiltroDAO<ClausulaContratoEntidad>, CrearDAO<ClausulaContratoEntidad>,
-				ActualizarDAO<ClausulaContratoEntidad, UUID>, EliminarDAO<UUID> {
-}
+    extends ConsultarPorIdDAO<ClausulaContratoEntidad, UUID>,
+        ConsultarTodosDAO<ClausulaContratoEntidad>,
+        ConsultarPorFiltroDAO<ClausulaContratoEntidad>,
+        CrearDAO<ClausulaContratoEntidad>,
+        ActualizarDAO<ClausulaContratoEntidad, UUID>,
+        EliminarDAO<UUID> {}

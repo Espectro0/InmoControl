@@ -8,26 +8,27 @@ import com.inmocontrol.negocio.fachada.tipoaplicacion.ConsultarTipoAplicacionTod
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import java.util.List;
 
-public class ConsultarTipoAplicacionTodosFachadaImpl implements ConsultarTipoAplicacionTodosFachada {
+public class ConsultarTipoAplicacionTodosFachadaImpl
+    implements ConsultarTipoAplicacionTodosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarTipoAplicacionTodosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarTipoAplicacionTodosCasoUso casoUso;
 
-	public ConsultarTipoAplicacionTodosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarTipoAplicacionTodosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarTipoAplicacionTodosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarTipoAplicacionTodosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<TipoAplicacionEntidad> ejecutar(Void datos) {
-		try {
-			return casoUso.ejecutar(datos);
+  @Override
+  public List<TipoAplicacionEntidad> ejecutar() {
+    try {
+      return casoUso.ejecutar();
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }

@@ -7,21 +7,27 @@ import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import java.util.List;
 
-public class ConsultarParametroPorFiltrosCasoUsoImpl implements ConsultarParametroPorFiltrosCasoUso {
+public class ConsultarParametroPorFiltrosCasoUsoImpl
+    implements ConsultarParametroPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarParametroPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarParametroPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<ParametroEntidad> ejecutar(ParametroDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerParametroDAO().consultarTodos();
-		}
-		return daoFactory.obtenerParametroDAO().consultarPorFiltro(new ParametroEntidad.Builder()
-				.placeholder(datos.getPlaceholder()).descripcion(datos.getDescripcion()).build());
-	}
+  @Override
+  public List<ParametroEntidad> ejecutar(ParametroDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerParametroDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerParametroDAO()
+        .consultarPorFiltro(
+            new ParametroEntidad.Builder()
+                .placeholder(datos.getPlaceholder())
+                .descripcion(datos.getDescripcion())
+                .build());
+  }
 }

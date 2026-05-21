@@ -3,5 +3,5 @@ package com.inmocontrol.negocio.casouso.participantecontrato;
 import com.inmocontrol.negocio.casouso.CasoUsoSinRetorno;
 import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 
-public interface RegistrarParticipanteContratoCasoUso extends CasoUsoSinRetorno<ParticipanteContratoDominio> {
-}
+public interface RegistrarParticipanteContratoCasoUso
+    extends CasoUsoSinRetorno<ParticipanteContratoDominio> {}

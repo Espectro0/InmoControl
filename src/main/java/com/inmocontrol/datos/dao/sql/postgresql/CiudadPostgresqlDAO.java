@@ -14,87 +14,88 @@ import java.util.UUID;
 
 public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
-    public CiudadPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public CiudadPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public CiudadEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre, departamento_id FROM ciudad WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar la ciudad por id.", e);
     }
 
-    @Override
-    public CiudadEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre, departamento_id FROM ciudad WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<CiudadEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre, departamento_id FROM ciudad";
+    List<CiudadEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar la ciudad por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar las ciudades.", e);
     }
 
-    @Override
-    public List<CiudadEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre, departamento_id FROM ciudad";
-        List<CiudadEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<CiudadEntidad> consultarPorFiltro(CiudadEntidad filtro) {
+    String sql = "SELECT id, nombre, departamento_id FROM ciudad WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar las ciudades.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<CiudadEntidad> consultarPorFiltro(CiudadEntidad filtro) {
-        String sql = "SELECT id, nombre, departamento_id FROM ciudad WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
-
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
-
-        if (filtro.getDepartamento() != null && filtro.getDepartamento().getId() != null) {
-            sql += " AND departamento_id = ?";
-            parametros.add(filtro.getDepartamento().getId());
-        }
-
-        List<CiudadEntidad> resultados = new ArrayList<>();
-
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar ciudades por filtro.", e);
-        }
-
-        return resultados;
+    if (filtro.getDepartamento() != null && filtro.getDepartamento().getId() != null) {
+      sql += " AND departamento_id = ?";
+      parametros.add(filtro.getDepartamento().getId());
     }
 
-    private CiudadEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new CiudadEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .departamento(new com.inmocontrol.entidad.DepartamentoEntidad.Builder()
-                        .id(rs.getObject("departamento_id", UUID.class))
-                        .build())
-                .build();
+    List<CiudadEntidad> resultados = new ArrayList<>();
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
+
+      ResultSet rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar ciudades por filtro.", e);
     }
+
+    return resultados;
+  }
+
+  private CiudadEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new CiudadEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .departamento(
+            new com.inmocontrol.entidad.DepartamentoEntidad.Builder()
+                .id(rs.getObject("departamento_id", UUID.class))
+                .build())
+        .build();
+  }
 }

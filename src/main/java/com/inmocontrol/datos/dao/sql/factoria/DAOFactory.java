@@ -1,7 +1,5 @@
 package com.inmocontrol.datos.dao.sql.factoria;
 
-import java.sql.Connection;
-
 import com.inmocontrol.datos.dao.AreaReferenciaDAO;
 import com.inmocontrol.datos.dao.CiudadDAO;
 import com.inmocontrol.datos.dao.ClausulaContratoDAO;
@@ -21,62 +19,63 @@ import com.inmocontrol.datos.dao.TipoParticipanteDAO;
 import com.inmocontrol.datos.dao.TipoPropiedadDAO;
 import com.inmocontrol.datos.dao.sql.factoria.postgresql.PostgreSQLDAOFactory;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+import java.sql.Connection;
 
 public abstract class DAOFactory {
 
-	protected Connection conexion;
-	private static TipoFactoriaEnum FACTORIA_ACTUAL = TipoFactoriaEnum.POSTGRESQL;
+  protected Connection conexion;
+  private static TipoFactoriaEnum FACTORIA_ACTUAL = TipoFactoriaEnum.POSTGRESQL;
 
-	public static DAOFactory getFactory() {
-		switch (FACTORIA_ACTUAL) {
-		case POSTGRESQL:
-			return new PostgreSQLDAOFactory();
-		default:
-			throw new InmocontrolExcepcion("Tipo de factoria actual no soportada: " + FACTORIA_ACTUAL);
-		}
-	}
+  public static DAOFactory getFactory() {
+    switch (FACTORIA_ACTUAL) {
+      case POSTGRESQL:
+        return new PostgreSQLDAOFactory();
+      default:
+        throw new InmocontrolExcepcion("Tipo de factoria actual no soportada: " + FACTORIA_ACTUAL);
+    }
+  }
 
-	protected abstract void abrirConexion();
+  protected abstract void abrirConexion();
 
-	public abstract void cerrarConexion();
+  public abstract void cerrarConexion();
 
-	public abstract void iniciarTransaccion();
+  public abstract void iniciarTransaccion();
 
-	public abstract void confirmarTransaccion();
+  public abstract void confirmarTransaccion();
 
-	public abstract void cancelarTransaccion();
+  public abstract void cancelarTransaccion();
 
-	public abstract PaisDAO obtenerPaisDAO();
+  public abstract PaisDAO obtenerPaisDAO();
 
-	public abstract EstratoDAO obtenerEstratoDAO();
+  public abstract EstratoDAO obtenerEstratoDAO();
 
-	public abstract TipoDocumentoDAO obtenerTipoDocumentoDAO();
+  public abstract TipoDocumentoDAO obtenerTipoDocumentoDAO();
 
-	public abstract TipoPropiedadDAO obtenerTipoPropiedadDAO();
+  public abstract TipoPropiedadDAO obtenerTipoPropiedadDAO();
 
-	public abstract TipoParticipanteDAO obtenerTipoParticipanteDAO();
+  public abstract TipoParticipanteDAO obtenerTipoParticipanteDAO();
 
-	public abstract TipoAplicacionDAO obtenerTipoAplicacionDAO();
+  public abstract TipoAplicacionDAO obtenerTipoAplicacionDAO();
 
-	public abstract ParametroDAO obtenerParametroDAO();
+  public abstract ParametroDAO obtenerParametroDAO();
 
-	public abstract AreaReferenciaDAO obtenerAreaReferenciaDAO();
+  public abstract AreaReferenciaDAO obtenerAreaReferenciaDAO();
 
-	public abstract DepartamentoDAO obtenerDepartamentoDAO();
+  public abstract DepartamentoDAO obtenerDepartamentoDAO();
 
-	public abstract CiudadDAO obtenerCiudadDAO();
+  public abstract CiudadDAO obtenerCiudadDAO();
 
-	public abstract ClausulaContratoDAO obtenerClausulaContratoDAO();
+  public abstract ClausulaContratoDAO obtenerClausulaContratoDAO();
 
-	public abstract PersonaDAO obtenerPersonaDAO();
+  public abstract PersonaDAO obtenerPersonaDAO();
 
-	public abstract ParticipanteContratoDAO obtenerParticipanteContratoDAO();
+  public abstract ParticipanteContratoDAO obtenerParticipanteContratoDAO();
 
-	public abstract PropiedadDAO obtenerPropiedadDAO();
+  public abstract PropiedadDAO obtenerPropiedadDAO();
 
-	public abstract ParametroClausulaContratoDAO obtenerParametroClausulaContratoDAO();
+  public abstract ParametroClausulaContratoDAO obtenerParametroClausulaContratoDAO();
 
-	public abstract ContratoDAO obtenerContratoDAO();
+  public abstract ContratoDAO obtenerContratoDAO();
 
-	public abstract ClausulaPorContratoDAO obtenerClausulaPorContratoDAO();
+  public abstract ClausulaPorContratoDAO obtenerClausulaPorContratoDAO();
 }

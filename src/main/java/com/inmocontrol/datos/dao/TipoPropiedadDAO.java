@@ -7,6 +7,6 @@ import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import java.util.UUID;
 
 public interface TipoPropiedadDAO
-		extends ConsultarPorIdDAO<TipoPropiedadEntidad, UUID>, ConsultarTodosDAO<TipoPropiedadEntidad>,
-				ConsultarPorFiltroDAO<TipoPropiedadEntidad> {
-}
+    extends ConsultarPorIdDAO<TipoPropiedadEntidad, UUID>,
+        ConsultarTodosDAO<TipoPropiedadEntidad>,
+        ConsultarPorFiltroDAO<TipoPropiedadEntidad> {}

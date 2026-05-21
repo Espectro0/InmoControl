@@ -10,7 +10,9 @@ import com.inmocontrol.entidad.PersonaEntidad;
 import java.util.UUID;
 
 public interface PersonaDAO
-		extends ConsultarPorIdDAO<PersonaEntidad, UUID>, ConsultarTodosDAO<PersonaEntidad>,
-				ConsultarPorFiltroDAO<PersonaEntidad>, CrearDAO<PersonaEntidad>,
-				ActualizarDAO<PersonaEntidad, UUID>, EliminarDAO<UUID> {
-}
+    extends ConsultarPorIdDAO<PersonaEntidad, UUID>,
+        ConsultarTodosDAO<PersonaEntidad>,
+        ConsultarPorFiltroDAO<PersonaEntidad>,
+        CrearDAO<PersonaEntidad>,
+        ActualizarDAO<PersonaEntidad, UUID>,
+        EliminarDAO<UUID> {}

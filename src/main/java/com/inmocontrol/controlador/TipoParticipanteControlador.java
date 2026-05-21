@@ -14,44 +14,67 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tipos-participante")
 public class TipoParticipanteControlador {
 
-	@GetMapping
-	public ResponseEntity<RespuestaExito<List<TipoParticipanteEntidad>>> consultarTodos() {
-		ConsultarTipoParticipanteTodosFachada fachada = new ConsultarTipoParticipanteTodosFachadaImpl();
-		List<TipoParticipanteEntidad> resultado = fachada.ejecutar(null);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipos de participante obtenidos exitosamente", resultado));
-	}
+  @GetMapping("/{id}")
+  public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> consultarPorId(
+      @PathVariable UUID id) {
+    TipoParticipanteDTO dto = new TipoParticipanteDTO.Builder().id(id).build();
+    ConsultarTipoParticipantePorIdFachada fachada = new ConsultarTipoParticipantePorIdFachadaImpl();
+    TipoParticipanteEntidad resultado = fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Tipo de participante obtenido exitosamente", resultado));
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> consultarPorId(@PathVariable UUID id) {
-		TipoParticipanteDTO dto = new TipoParticipanteDTO.Builder().id(id).build();
-		ConsultarTipoParticipantePorIdFachada fachada = new ConsultarTipoParticipantePorIdFachadaImpl();
-		TipoParticipanteEntidad resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipo de participante obtenido exitosamente", resultado));
-	}
+  @GetMapping
+  public ResponseEntity<RespuestaExito<List<TipoParticipanteEntidad>>> consultar(
+      @RequestParam(required = false) String nombre) {
 
-	@GetMapping("/buscar")
-	public ResponseEntity<RespuestaExito<List<TipoParticipanteEntidad>>> consultarPorFiltros(
-			@RequestParam(required = false) String nombre) {
-		TipoParticipanteDTO dto = new TipoParticipanteDTO.Builder().nombre(nombre).build();
-		ConsultarTipoParticipantePorFiltrosFachada fachada = new ConsultarTipoParticipantePorFiltrosFachadaImpl();
-		List<TipoParticipanteEntidad> resultado = fachada.ejecutar(dto);
-		return ResponseEntity
-				.ok(RespuestaExito.crear("Tipos de participante filtrados obtenidos exitosamente", resultado));
-	}
+    TipoParticipanteDTO dto = new TipoParticipanteDTO.Builder().nombre(nombre).build();
 
-	@PostMapping
-	public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> registrar(@RequestBody TipoParticipanteDTO dto) {
-		RegistrarTipoParticipanteFachada fachada = new RegistrarTipoParticipanteFachadaImpl();
-		TipoParticipanteEntidad resultado = new TipoParticipanteEntidad.Builder().build();
-		fachada.ejecutar(dto);
-		return ResponseEntity.status(201).body(RespuestaExito.crear("Tipo de participante registrado exitosamente", resultado));
-	}
+    List<TipoParticipanteEntidad> resultado;
+    boolean tieneFiltros = nombre != null;
 
-	@PutMapping
-	public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> modificar(@RequestBody TipoParticipanteDTO dto) {
-		ModificarTipoParticipanteFachada fachada = new ModificarTipoParticipanteFachadaImpl();
-		TipoParticipanteEntidad resultado = new TipoParticipanteEntidad.Builder().build();
-		fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipo de participante modificado exitosamente", resultado));
-	}
+    if (tieneFiltros) {
+      ConsultarTipoParticipantePorFiltrosFachada fachadaFiltros =
+          new ConsultarTipoParticipantePorFiltrosFachadaImpl();
+      resultado = fachadaFiltros.ejecutar(dto);
+      return ResponseEntity.ok(
+          RespuestaExito.crear(
+              "Tipos de participante filtrados obtenidos exitosamente", resultado));
+    } else {
+      ConsultarTipoParticipanteTodosFachada fachadaTodos =
+          new ConsultarTipoParticipanteTodosFachadaImpl();
+      resultado = fachadaTodos.ejecutar();
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Tipos de participante obtenidos exitosamente", resultado));
+    }
+  }
+
+  @PostMapping
+  public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> registrar(
+      @RequestBody TipoParticipanteDTO dto) {
+    RegistrarTipoParticipanteFachada fachada = new RegistrarTipoParticipanteFachadaImpl();
+    TipoParticipanteEntidad resultado = new TipoParticipanteEntidad.Builder().build();
+    fachada.ejecutar(dto);
+    return ResponseEntity.status(201)
+        .body(RespuestaExito.crear("Tipo de participante registrado exitosamente", resultado));
+  }
+
+  @PutMapping
+  public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> modificar(
+      @RequestBody TipoParticipanteDTO dto) {
+    ModificarTipoParticipanteFachada fachada = new ModificarTipoParticipanteFachadaImpl();
+    TipoParticipanteEntidad resultado = new TipoParticipanteEntidad.Builder().build();
+    fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Tipo de participante modificado exitosamente", resultado));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
+    TipoParticipanteDTO dto = new TipoParticipanteDTO.Builder().id(id).build();
+    EliminarTipoParticipanteFachada fachada = new EliminarTipoParticipanteFachadaImpl();
+    fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Tipo de participante eliminado exitosamente", null));
+  }
 }

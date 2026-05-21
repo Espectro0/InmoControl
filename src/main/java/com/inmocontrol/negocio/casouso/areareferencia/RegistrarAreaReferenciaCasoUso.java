@@ -3,5 +3,4 @@ package com.inmocontrol.negocio.casouso.areareferencia;
 import com.inmocontrol.negocio.casouso.CasoUsoSinRetorno;
 import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 
-public interface RegistrarAreaReferenciaCasoUso extends CasoUsoSinRetorno<AreaReferenciaDominio> {
-}
+public interface RegistrarAreaReferenciaCasoUso extends CasoUsoSinRetorno<AreaReferenciaDominio> {}

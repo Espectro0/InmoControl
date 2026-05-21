@@ -10,24 +10,24 @@ import java.util.List;
 
 public class ConsultarDepartamentoTodosFachadaImpl implements ConsultarDepartamentoTodosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarDepartamentoTodosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarDepartamentoTodosCasoUso casoUso;
 
-	public ConsultarDepartamentoTodosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarDepartamentoTodosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarDepartamentoTodosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarDepartamentoTodosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<DepartamentoEntidad> ejecutar(Void datos) {
-		try {
-			return casoUso.ejecutar(datos);
+  @Override
+  public List<DepartamentoEntidad> ejecutar() {
+    try {
+      return casoUso.ejecutar();
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }

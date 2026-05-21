@@ -7,15 +7,15 @@ import java.util.List;
 
 public class ConsultarContratoTodosCasoUsoImpl implements ConsultarContratoTodosCasoUso {
 
-    private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-    public ConsultarContratoTodosCasoUsoImpl(DAOFactory daoFactory) {
-        super();
-        this.daoFactory = daoFactory;
-    }
+  public ConsultarContratoTodosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-    @Override
-    public List<ContratoEntidad> ejecutar(Void datos) {
-        return daoFactory.obtenerContratoDAO().consultarTodos();
-    }
+  @Override
+  public List<ContratoEntidad> ejecutar() {
+    return daoFactory.obtenerContratoDAO().consultarTodos();
+  }
 }

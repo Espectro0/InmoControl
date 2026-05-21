@@ -14,87 +14,88 @@ import java.util.UUID;
 
 public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO {
 
-    public DepartamentoPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public DepartamentoPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public DepartamentoEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre, pais_id FROM departamento WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el departamento por id.", e);
     }
 
-    @Override
-    public DepartamentoEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre, pais_id FROM departamento WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<DepartamentoEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre, pais_id FROM departamento";
+    List<DepartamentoEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el departamento por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los departamentos.", e);
     }
 
-    @Override
-    public List<DepartamentoEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre, pais_id FROM departamento";
-        List<DepartamentoEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<DepartamentoEntidad> consultarPorFiltro(DepartamentoEntidad filtro) {
+    String sql = "SELECT id, nombre, pais_id FROM departamento WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los departamentos.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<DepartamentoEntidad> consultarPorFiltro(DepartamentoEntidad filtro) {
-        String sql = "SELECT id, nombre, pais_id FROM departamento WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
-
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
-
-        if (filtro.getPais() != null && filtro.getPais().getId() != null) {
-            sql += " AND pais_id = ?";
-            parametros.add(filtro.getPais().getId());
-        }
-
-        List<DepartamentoEntidad> resultados = new ArrayList<>();
-
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar departamentos por filtro.", e);
-        }
-
-        return resultados;
+    if (filtro.getPais() != null && filtro.getPais().getId() != null) {
+      sql += " AND pais_id = ?";
+      parametros.add(filtro.getPais().getId());
     }
 
-    private DepartamentoEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new DepartamentoEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .pais(new com.inmocontrol.entidad.PaisEntidad.Builder()
-                        .id(rs.getObject("pais_id", UUID.class))
-                        .build())
-                .build();
+    List<DepartamentoEntidad> resultados = new ArrayList<>();
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
+
+      ResultSet rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar departamentos por filtro.", e);
     }
+
+    return resultados;
+  }
+
+  private DepartamentoEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new DepartamentoEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .pais(
+            new com.inmocontrol.entidad.PaisEntidad.Builder()
+                .id(rs.getObject("pais_id", UUID.class))
+                .build())
+        .build();
+  }
 }

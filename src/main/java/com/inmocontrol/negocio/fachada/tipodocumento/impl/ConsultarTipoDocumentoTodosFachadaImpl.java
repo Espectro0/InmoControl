@@ -10,24 +10,24 @@ import java.util.List;
 
 public class ConsultarTipoDocumentoTodosFachadaImpl implements ConsultarTipoDocumentoTodosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarTipoDocumentoTodosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarTipoDocumentoTodosCasoUso casoUso;
 
-	public ConsultarTipoDocumentoTodosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarTipoDocumentoTodosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarTipoDocumentoTodosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarTipoDocumentoTodosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<TipoDocumentoEntidad> ejecutar(Void datos) {
-		try {
-			return casoUso.ejecutar(datos);
+  @Override
+  public List<TipoDocumentoEntidad> ejecutar() {
+    try {
+      return casoUso.ejecutar();
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }

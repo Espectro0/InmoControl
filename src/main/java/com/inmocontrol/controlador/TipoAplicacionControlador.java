@@ -22,28 +22,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/tipos-aplicacion")
 public class TipoAplicacionControlador {
 
-	@GetMapping
-	public ResponseEntity<RespuestaExito<List<TipoAplicacionEntidad>>> consultarTodos() {
-		ConsultarTipoAplicacionTodosFachada fachada = new ConsultarTipoAplicacionTodosFachadaImpl();
-		List<TipoAplicacionEntidad> resultado = fachada.ejecutar(null);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipos de aplicacion obtenidos exitosamente", resultado));
-	}
+  @GetMapping("/{id}")
+  public ResponseEntity<RespuestaExito<TipoAplicacionEntidad>> consultarPorId(
+      @PathVariable UUID id) {
+    TipoAplicacionDTO dto = new TipoAplicacionDTO.Builder().id(id).build();
+    ConsultarTipoAplicacionPorIdFachada fachada = new ConsultarTipoAplicacionPorIdFachadaImpl();
+    TipoAplicacionEntidad resultado = fachada.ejecutar(dto);
+    return ResponseEntity.ok(
+        RespuestaExito.crear("Tipo de aplicacion obtenido exitosamente", resultado));
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<RespuestaExito<TipoAplicacionEntidad>> consultarPorId(@PathVariable UUID id) {
-		TipoAplicacionDTO dto = new TipoAplicacionDTO.Builder().id(id).build();
-		ConsultarTipoAplicacionPorIdFachada fachada = new ConsultarTipoAplicacionPorIdFachadaImpl();
-		TipoAplicacionEntidad resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Tipo de aplicacion obtenido exitosamente", resultado));
-	}
+  @GetMapping
+  public ResponseEntity<RespuestaExito<List<TipoAplicacionEntidad>>> consultar(
+      @RequestParam(required = false) String nombre) {
 
-	@GetMapping("/buscar")
-	public ResponseEntity<RespuestaExito<List<TipoAplicacionEntidad>>> consultarPorFiltros(
-			@RequestParam(required = false) String nombre) {
-		TipoAplicacionDTO dto = new TipoAplicacionDTO.Builder().nombre(nombre).build();
-		ConsultarTipoAplicacionPorFiltrosFachada fachada = new ConsultarTipoAplicacionPorFiltrosFachadaImpl();
-		List<TipoAplicacionEntidad> resultado = fachada.ejecutar(dto);
-		return ResponseEntity
-				.ok(RespuestaExito.crear("Tipos de aplicacion filtrados obtenidos exitosamente", resultado));
-	}
+    TipoAplicacionDTO dto = new TipoAplicacionDTO.Builder().nombre(nombre).build();
+
+    List<TipoAplicacionEntidad> resultado;
+    boolean tieneFiltros = nombre != null;
+
+    if (tieneFiltros) {
+      ConsultarTipoAplicacionPorFiltrosFachada fachadaFiltros =
+          new ConsultarTipoAplicacionPorFiltrosFachadaImpl();
+      resultado = fachadaFiltros.ejecutar(dto);
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Tipos de aplicacion filtrados obtenidos exitosamente", resultado));
+    } else {
+      ConsultarTipoAplicacionTodosFachada fachadaTodos =
+          new ConsultarTipoAplicacionTodosFachadaImpl();
+      resultado = fachadaTodos.ejecutar();
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Tipos de aplicacion obtenidos exitosamente", resultado));
+    }
+  }
 }

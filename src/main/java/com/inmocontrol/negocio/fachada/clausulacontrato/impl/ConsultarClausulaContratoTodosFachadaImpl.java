@@ -2,32 +2,33 @@ package com.inmocontrol.negocio.fachada.clausulacontrato.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ClausulaContratoEntidad;
-import com.inmocontrol.negocio.casouso.clausulacontrato.impl.ConsultarClausulaContratoTodosCasoUsoImpl;
 import com.inmocontrol.negocio.casouso.clausulacontrato.ConsultarClausulaContratoTodosCasoUso;
+import com.inmocontrol.negocio.casouso.clausulacontrato.impl.ConsultarClausulaContratoTodosCasoUsoImpl;
 import com.inmocontrol.negocio.fachada.clausulacontrato.ConsultarClausulaContratoTodosFachada;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import java.util.List;
 
-public class ConsultarClausulaContratoTodosFachadaImpl implements ConsultarClausulaContratoTodosFachada {
+public class ConsultarClausulaContratoTodosFachadaImpl
+    implements ConsultarClausulaContratoTodosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarClausulaContratoTodosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarClausulaContratoTodosCasoUso casoUso;
 
-	public ConsultarClausulaContratoTodosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarClausulaContratoTodosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarClausulaContratoTodosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarClausulaContratoTodosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<ClausulaContratoEntidad> ejecutar(Void datos) {
-		try {
-			return casoUso.ejecutar(datos);
+  @Override
+  public List<ClausulaContratoEntidad> ejecutar() {
+    try {
+      return casoUso.ejecutar();
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }

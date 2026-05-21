@@ -1,8 +1,8 @@
 package com.inmocontrol.negocio.casouso.tipopropiedad;
 
+import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.negocio.casouso.CasoUsoConRetorno;
 import com.inmocontrol.negocio.dominio.TipoPropiedadDominio;
-import com.inmocontrol.entidad.TipoPropiedadEntidad;
 
-public interface ConsultarTipoPropiedadPorIdCasoUso extends CasoUsoConRetorno<TipoPropiedadDominio, TipoPropiedadEntidad> {
-}
+public interface ConsultarTipoPropiedadPorIdCasoUso
+    extends CasoUsoConRetorno<TipoPropiedadDominio, TipoPropiedadEntidad> {}

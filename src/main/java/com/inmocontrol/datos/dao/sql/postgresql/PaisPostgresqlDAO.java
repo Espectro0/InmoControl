@@ -13,82 +13,84 @@ import java.util.List;
 import java.util.UUID;
 
 public class PaisPostgresqlDAO extends SQLDAO implements PaisDAO {
-	
-    public PaisPostgresqlDAO(Connection conexion) {
-        super(conexion);
+
+  public PaisPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public PaisEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre FROM pais WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return new PaisEntidad.Builder()
+            .id(rs.getObject("id", UUID.class))
+            .nombre(rs.getString("nombre"))
+            .build();
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el pais por id.", e);
     }
 
-    @Override
-    public PaisEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre FROM pais WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<PaisEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre FROM pais";
+    List<PaisEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return new PaisEntidad.Builder()
-                        .id(rs.getObject("id", UUID.class))
-                        .nombre(rs.getString("nombre"))
-                        .build();
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el pais por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(
+            new PaisEntidad.Builder()
+                .id(rs.getObject("id", UUID.class))
+                .nombre(rs.getString("nombre"))
+                .build());
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los paises.", e);
     }
 
-    @Override
-    public List<PaisEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre FROM pais";
-        List<PaisEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<PaisEntidad> consultarPorFiltro(PaisEntidad filtro) {
+    String sql = "SELECT id, nombre FROM pais WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(new PaisEntidad.Builder()
-                        .id(rs.getObject("id", UUID.class))
-                        .nombre(rs.getString("nombre"))
-                        .build());
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los paises.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<PaisEntidad> consultarPorFiltro(PaisEntidad filtro) {
-        String sql = "SELECT id, nombre FROM pais WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
+    List<PaisEntidad> resultados = new ArrayList<>();
 
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
 
-        List<PaisEntidad> resultados = new ArrayList<>();
+      ResultSet rs = stmt.executeQuery();
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(new PaisEntidad.Builder()
-                        .id(rs.getObject("id", UUID.class))
-                        .nombre(rs.getString("nombre"))
-                        .build());
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar paises por filtro.", e);
-        }
-
-        return resultados;
+      while (rs.next()) {
+        resultados.add(
+            new PaisEntidad.Builder()
+                .id(rs.getObject("id", UUID.class))
+                .nombre(rs.getString("nombre"))
+                .build());
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar paises por filtro.", e);
     }
+
+    return resultados;
+  }
 }

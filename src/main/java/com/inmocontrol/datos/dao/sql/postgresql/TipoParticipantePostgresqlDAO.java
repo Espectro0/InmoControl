@@ -14,103 +14,119 @@ import java.util.UUID;
 
 public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoParticipanteDAO {
 
-	public TipoParticipantePostgresqlDAO(Connection conexion) {
-		super(conexion);
-	}
+  public TipoParticipantePostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
 
-	@Override
-	public TipoParticipanteEntidad consultarPorId(UUID id) {
-		String sql = "SELECT id, nombre FROM tipo_participante WHERE id = ?";
+  @Override
+  public TipoParticipanteEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre FROM tipo_participante WHERE id = ?";
 
-		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-			stmt.setObject(1, id);
-			ResultSet rs = stmt.executeQuery();
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
 
-			if (rs.next()) {
-				return mapearResultado(rs);
-			}
-		} catch (SQLException e) {
-			throw new TransaccionExcepcion("Ocurrio un error al consultar el tipo participante por id.", e);
-		}
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion(
+          "Ocurrio un error al consultar el tipo participante por id.", e);
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public List<TipoParticipanteEntidad> consultarTodos() {
-		String sql = "SELECT id, nombre FROM tipo_participante";
-		List<TipoParticipanteEntidad> resultados = new ArrayList<>();
+  @Override
+  public List<TipoParticipanteEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre FROM tipo_participante";
+    List<TipoParticipanteEntidad> resultados = new ArrayList<>();
 
-		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-			ResultSet rs = stmt.executeQuery();
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				resultados.add(mapearResultado(rs));
-			}
-		} catch (SQLException e) {
-			throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos participante.", e);
-		}
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos participante.", e);
+    }
 
-		return resultados;
-	}
+    return resultados;
+  }
 
-	@Override
-	public List<TipoParticipanteEntidad> consultarPorFiltro(TipoParticipanteEntidad filtro) {
-		String sql = "SELECT id, nombre FROM tipo_participante WHERE 1=1";
-		List<Object> parametros = new ArrayList<>();
+  @Override
+  public List<TipoParticipanteEntidad> consultarPorFiltro(TipoParticipanteEntidad filtro) {
+    String sql = "SELECT id, nombre FROM tipo_participante WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-		if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-			sql += " AND nombre = ?";
-			parametros.add(filtro.getNombre());
-		}
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
+    }
 
-		List<TipoParticipanteEntidad> resultados = new ArrayList<>();
+    List<TipoParticipanteEntidad> resultados = new ArrayList<>();
 
-		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-			for (int i = 0; i < parametros.size(); i++) {
-				stmt.setObject(i + 1, parametros.get(i));
-			}
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
 
-			ResultSet rs = stmt.executeQuery();
+      ResultSet rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				resultados.add(mapearResultado(rs));
-			}
-		} catch (SQLException e) {
-			throw new TransaccionExcepcion("Ocurrio un error al consultar tipos participante por filtro.", e);
-		}
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion(
+          "Ocurrio un error al consultar tipos participante por filtro.", e);
+    }
 
-		return resultados;
-	}
+    return resultados;
+  }
 
-	@Override
-	public void crear(TipoParticipanteEntidad entidad) {
-		String sql = "INSERT INTO tipo_participante (id, nombre) VALUES (?, ?)";
+  @Override
+  public void crear(TipoParticipanteEntidad entidad) {
+    String sql = "INSERT INTO tipo_participante (id, nombre) VALUES (?, ?)";
 
-		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-			stmt.setObject(1, entidad.getId());
-			stmt.setString(2, entidad.getNombre());
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new TransaccionExcepcion("Ocurrio un error al crear el tipo participante.", e);
-		}
-	}
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, entidad.getId());
+      stmt.setString(2, entidad.getNombre());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al crear el tipo participante.", e);
+    }
+  }
 
-	@Override
-	public void actualizar(UUID id, TipoParticipanteEntidad entidad) {
-		String sql = "UPDATE tipo_participante SET nombre = ? WHERE id = ?";
+  @Override
+  public void actualizar(UUID id, TipoParticipanteEntidad entidad) {
+    String sql = "UPDATE tipo_participante SET nombre = ? WHERE id = ?";
 
-		try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-			stmt.setString(1, entidad.getNombre());
-			stmt.setObject(2, id);
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new TransaccionExcepcion("Ocurrio un error al actualizar el tipo participante.", e);
-		}
-	}
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setString(1, entidad.getNombre());
+      stmt.setObject(2, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al actualizar el tipo participante.", e);
+    }
+  }
 
-	private TipoParticipanteEntidad mapearResultado(ResultSet rs) throws SQLException {
-		return new TipoParticipanteEntidad.Builder().id(rs.getObject("id", UUID.class)).nombre(rs.getString("nombre"))
-				.build();
-	}
+  @Override
+  public void eliminar(UUID id) {
+    String sql = "DELETE FROM tipo_participante WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al eliminar el tipo participante.", e);
+    }
+  }
+
+  private TipoParticipanteEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new TipoParticipanteEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .build();
+  }
 }

@@ -10,7 +10,9 @@ import com.inmocontrol.entidad.ParametroEntidad;
 import java.util.UUID;
 
 public interface ParametroDAO
-		extends ConsultarPorIdDAO<ParametroEntidad, UUID>, ConsultarTodosDAO<ParametroEntidad>,
-				ConsultarPorFiltroDAO<ParametroEntidad>, CrearDAO<ParametroEntidad>,
-				ActualizarDAO<ParametroEntidad, UUID>, EliminarDAO<UUID> {
-}
+    extends ConsultarPorIdDAO<ParametroEntidad, UUID>,
+        ConsultarTodosDAO<ParametroEntidad>,
+        ConsultarPorFiltroDAO<ParametroEntidad>,
+        CrearDAO<ParametroEntidad>,
+        ActualizarDAO<ParametroEntidad, UUID>,
+        EliminarDAO<UUID> {}

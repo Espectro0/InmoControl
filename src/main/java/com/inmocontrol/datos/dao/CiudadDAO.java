@@ -7,6 +7,6 @@ import com.inmocontrol.entidad.CiudadEntidad;
 import java.util.UUID;
 
 public interface CiudadDAO
-		extends ConsultarPorIdDAO<CiudadEntidad, UUID>, ConsultarTodosDAO<CiudadEntidad>,
-				ConsultarPorFiltroDAO<CiudadEntidad> {
-}
+    extends ConsultarPorIdDAO<CiudadEntidad, UUID>,
+        ConsultarTodosDAO<CiudadEntidad>,
+        ConsultarPorFiltroDAO<CiudadEntidad> {}

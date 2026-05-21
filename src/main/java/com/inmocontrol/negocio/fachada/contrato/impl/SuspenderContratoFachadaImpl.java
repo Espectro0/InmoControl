@@ -2,44 +2,42 @@ package com.inmocontrol.negocio.fachada.contrato.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.dto.ContratoDTO;
-import com.inmocontrol.negocio.casouso.contrato.impl.SuspenderContratoCasoUsoImpl;
 import com.inmocontrol.negocio.casouso.contrato.SuspenderContratoCasoUso;
+import com.inmocontrol.negocio.casouso.contrato.impl.SuspenderContratoCasoUsoImpl;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.negocio.fachada.contrato.SuspenderContratoFachada;
+import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
-import com.inmocontrol.transversal.UtilObjeto;
 
 public class SuspenderContratoFachadaImpl implements SuspenderContratoFachada {
 
-    private DAOFactory daoFactory;
-    private SuspenderContratoCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private SuspenderContratoCasoUso casoUso;
 
-    public SuspenderContratoFachadaImpl() {
-        daoFactory = DAOFactory.getFactory();
-        casoUso = new SuspenderContratoCasoUsoImpl(daoFactory);
+  public SuspenderContratoFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new SuspenderContratoCasoUsoImpl(daoFactory);
+  }
+
+  @Override
+  public void ejecutar(ContratoDTO datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
     }
 
-    @Override
-    public void ejecutar(ContratoDTO datos) {
-        if (UtilObjeto.esNulo(datos)) {
-            throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
-        }
+    try {
+      daoFactory.iniciarTransaccion();
+      ContratoDominio dominio = new ContratoDominio.Builder().id(datos.getId()).build();
+      casoUso.ejecutar(dominio);
+      daoFactory.confirmarTransaccion();
 
-        try {
-            daoFactory.iniciarTransaccion();
-            ContratoDominio dominio = new ContratoDominio.Builder()
-                    .id(datos.getId())
-                    .build();
-            casoUso.ejecutar(dominio);
-            daoFactory.confirmarTransaccion();
+    } catch (Exception excepcion) {
+      daoFactory.cancelarTransaccion();
+      throw new InmocontrolExcepcion("Ocurrio un error suspendiendo el contrato", excepcion);
 
-        } catch (Exception excepcion) {
-            daoFactory.cancelarTransaccion();
-            throw new InmocontrolExcepcion("Ocurrio un error suspendiendo el contrato", excepcion);
-
-        } finally {
-            daoFactory.cerrarConexion();
-        }
+    } finally {
+      daoFactory.cerrarConexion();
     }
+  }
 }

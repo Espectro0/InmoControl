@@ -10,24 +10,24 @@ import java.util.List;
 
 public class ConsultarEstratoTodosFachadaImpl implements ConsultarEstratoTodosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarEstratoTodosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarEstratoTodosCasoUso casoUso;
 
-	public ConsultarEstratoTodosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarEstratoTodosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarEstratoTodosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarEstratoTodosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<EstratoEntidad> ejecutar(Void datos) {
-		try {
-			return casoUso.ejecutar(datos);
+  @Override
+  public List<EstratoEntidad> ejecutar() {
+    try {
+      return casoUso.ejecutar();
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }

@@ -9,20 +9,25 @@ import java.util.List;
 
 public class ConsultarPersonaPorFiltrosCasoUsoImpl implements ConsultarPersonaPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarPersonaPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarPersonaPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<PersonaEntidad> ejecutar(PersonaDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerPersonaDAO().consultarTodos();
-		}
-		return daoFactory.obtenerPersonaDAO()
-				.consultarPorFiltro(new PersonaEntidad.Builder().numeroIdentificacion(datos.getNumeroIdentificacion())
-						.primerNombre(datos.getPrimerNombre()).primerApellido(datos.getPrimerApellido()).build());
-	}
+  @Override
+  public List<PersonaEntidad> ejecutar(PersonaDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerPersonaDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerPersonaDAO()
+        .consultarPorFiltro(
+            new PersonaEntidad.Builder()
+                .numeroIdentificacion(datos.getNumeroIdentificacion())
+                .primerNombre(datos.getPrimerNombre())
+                .primerApellido(datos.getPrimerApellido())
+                .build());
+  }
 }

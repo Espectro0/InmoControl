@@ -7,15 +7,15 @@ import java.util.List;
 
 public class ConsultarPropiedadTodosCasoUsoImpl implements ConsultarPropiedadTodosCasoUso {
 
-    private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-    public ConsultarPropiedadTodosCasoUsoImpl(DAOFactory daoFactory) {
-        super();
-        this.daoFactory = daoFactory;
-    }
+  public ConsultarPropiedadTodosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-    @Override
-    public List<PropiedadEntidad> ejecutar(Void datos) {
-        return daoFactory.obtenerPropiedadDAO().consultarTodos();
-    }
+  @Override
+  public List<PropiedadEntidad> ejecutar() {
+    return daoFactory.obtenerPropiedadDAO().consultarTodos();
+  }
 }

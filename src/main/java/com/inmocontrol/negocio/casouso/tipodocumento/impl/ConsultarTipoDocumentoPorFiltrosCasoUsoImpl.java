@@ -7,21 +7,23 @@ import com.inmocontrol.negocio.dominio.TipoDocumentoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import java.util.List;
 
-public class ConsultarTipoDocumentoPorFiltrosCasoUsoImpl implements ConsultarTipoDocumentoPorFiltrosCasoUso {
+public class ConsultarTipoDocumentoPorFiltrosCasoUsoImpl
+    implements ConsultarTipoDocumentoPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarTipoDocumentoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarTipoDocumentoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<TipoDocumentoEntidad> ejecutar(TipoDocumentoDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerTipoDocumentoDAO().consultarTodos();
-		}
-		return daoFactory.obtenerTipoDocumentoDAO()
-				.consultarPorFiltro(new TipoDocumentoEntidad.Builder().nombre(datos.getNombre()).build());
-	}
+  @Override
+  public List<TipoDocumentoEntidad> ejecutar(TipoDocumentoDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerTipoDocumentoDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerTipoDocumentoDAO()
+        .consultarPorFiltro(new TipoDocumentoEntidad.Builder().nombre(datos.getNombre()).build());
+  }
 }

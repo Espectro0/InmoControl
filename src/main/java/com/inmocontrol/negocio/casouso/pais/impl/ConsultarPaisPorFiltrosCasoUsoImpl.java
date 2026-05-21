@@ -9,19 +9,20 @@ import java.util.List;
 
 public class ConsultarPaisPorFiltrosCasoUsoImpl implements ConsultarPaisPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarPaisPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarPaisPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<PaisEntidad> ejecutar(PaisDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerPaisDAO().consultarTodos();
-		}
-		return daoFactory.obtenerPaisDAO()
-				.consultarPorFiltro(new PaisEntidad.Builder().nombre(datos.getNombre()).build());
-	}
+  @Override
+  public List<PaisEntidad> ejecutar(PaisDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerPaisDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerPaisDAO()
+        .consultarPorFiltro(new PaisEntidad.Builder().nombre(datos.getNombre()).build());
+  }
 }

@@ -14,85 +14,85 @@ import java.util.UUID;
 
 public class EstratoPostgresqlDAO extends SQLDAO implements EstratoDAO {
 
-    public EstratoPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public EstratoPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public EstratoEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre, descripcion FROM estrato WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el estrato por id.", e);
     }
 
-    @Override
-    public EstratoEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre, descripcion FROM estrato WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<EstratoEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre, descripcion FROM estrato";
+    List<EstratoEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el estrato por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los estratos.", e);
     }
 
-    @Override
-    public List<EstratoEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre, descripcion FROM estrato";
-        List<EstratoEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<EstratoEntidad> consultarPorFiltro(EstratoEntidad filtro) {
+    String sql = "SELECT id, nombre, descripcion FROM estrato WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los estratos.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<EstratoEntidad> consultarPorFiltro(EstratoEntidad filtro) {
-        String sql = "SELECT id, nombre, descripcion FROM estrato WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
-
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
-
-        if (filtro.getDescripcion() != null && !filtro.getDescripcion().isEmpty()) {
-            sql += " AND descripcion = ?";
-            parametros.add(filtro.getDescripcion());
-        }
-
-        List<EstratoEntidad> resultados = new ArrayList<>();
-
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar estratos por filtro.", e);
-        }
-
-        return resultados;
+    if (filtro.getDescripcion() != null && !filtro.getDescripcion().isEmpty()) {
+      sql += " AND descripcion = ?";
+      parametros.add(filtro.getDescripcion());
     }
 
-    private EstratoEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new EstratoEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .descripcion(rs.getString("descripcion"))
-                .build();
+    List<EstratoEntidad> resultados = new ArrayList<>();
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
+
+      ResultSet rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar estratos por filtro.", e);
     }
+
+    return resultados;
+  }
+
+  private EstratoEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new EstratoEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .descripcion(rs.getString("descripcion"))
+        .build();
+  }
 }

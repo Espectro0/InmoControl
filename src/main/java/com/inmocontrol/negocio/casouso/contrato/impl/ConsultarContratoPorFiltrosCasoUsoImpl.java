@@ -9,19 +9,24 @@ import java.util.List;
 
 public class ConsultarContratoPorFiltrosCasoUsoImpl implements ConsultarContratoPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarContratoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarContratoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<ContratoEntidad> ejecutar(ContratoDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerContratoDAO().consultarTodos();
-		}
-		return daoFactory.obtenerContratoDAO().consultarPorFiltro(new ContratoEntidad.Builder()
-				.codigoContrato(datos.getCodigoContrato()).esActivo(datos.getEsActivo()).build());
-	}
+  @Override
+  public List<ContratoEntidad> ejecutar(ContratoDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerContratoDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerContratoDAO()
+        .consultarPorFiltro(
+            new ContratoEntidad.Builder()
+                .codigoContrato(datos.getCodigoContrato())
+                .esActivo(datos.getEsActivo())
+                .build());
+  }
 }

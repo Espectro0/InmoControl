@@ -23,28 +23,38 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/departamentos")
 public class DepartamentoControlador {
 
-	@GetMapping
-	public ResponseEntity<RespuestaExito<List<DepartamentoEntidad>>> consultarTodos() {
-		ConsultarDepartamentoTodosFachada fachada = new ConsultarDepartamentoTodosFachadaImpl();
-		List<DepartamentoEntidad> resultado = fachada.ejecutar(null);
-		return ResponseEntity.ok(RespuestaExito.crear("Departamentos obtenidos exitosamente", resultado));
-	}
+  @GetMapping("/{id}")
+  public ResponseEntity<RespuestaExito<DepartamentoEntidad>> consultarPorId(@PathVariable UUID id) {
+    DepartamentoDTO dto = new DepartamentoDTO.Builder().id(id).build();
+    ConsultarDepartamentoPorIdFachada fachada = new ConsultarDepartamentoPorIdFachadaImpl();
+    DepartamentoEntidad resultado = fachada.ejecutar(dto);
+    return ResponseEntity.ok(RespuestaExito.crear("Departamento obtenido exitosamente", resultado));
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<RespuestaExito<DepartamentoEntidad>> consultarPorId(@PathVariable UUID id) {
-		DepartamentoDTO dto = new DepartamentoDTO.Builder().id(id).build();
-		ConsultarDepartamentoPorIdFachada fachada = new ConsultarDepartamentoPorIdFachadaImpl();
-		DepartamentoEntidad resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Departamento obtenido exitosamente", resultado));
-	}
+  @GetMapping
+  public ResponseEntity<RespuestaExito<List<DepartamentoEntidad>>> consultar(
+      @RequestParam(required = false) String nombre, @RequestParam(required = false) UUID paisId) {
 
-	@GetMapping("/buscar")
-	public ResponseEntity<RespuestaExito<List<DepartamentoEntidad>>> consultarPorFiltros(
-			@RequestParam(required = false) String nombre, @RequestParam(required = false) UUID paisId) {
-		DepartamentoDTO dto = new DepartamentoDTO.Builder().nombre(nombre)
-				.pais(paisId != null ? new PaisDTO.Builder().id(paisId).build() : null).build();
-		ConsultarDepartamentoPorFiltrosFachada fachada = new ConsultarDepartamentoPorFiltrosFachadaImpl();
-		List<DepartamentoEntidad> resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Departamentos filtrados obtenidos exitosamente", resultado));
-	}
+    DepartamentoDTO dto =
+        new DepartamentoDTO.Builder()
+            .nombre(nombre)
+            .pais(paisId != null ? new PaisDTO.Builder().id(paisId).build() : null)
+            .build();
+
+    List<DepartamentoEntidad> resultado;
+    boolean tieneFiltros = nombre != null || paisId != null;
+
+    if (tieneFiltros) {
+      ConsultarDepartamentoPorFiltrosFachada fachadaFiltros =
+          new ConsultarDepartamentoPorFiltrosFachadaImpl();
+      resultado = fachadaFiltros.ejecutar(dto);
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Departamentos filtrados obtenidos exitosamente", resultado));
+    } else {
+      ConsultarDepartamentoTodosFachada fachadaTodos = new ConsultarDepartamentoTodosFachadaImpl();
+      resultado = fachadaTodos.ejecutar();
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Departamentos obtenidos exitosamente", resultado));
+    }
+  }
 }

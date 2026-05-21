@@ -1,8 +1,7 @@
 package com.inmocontrol.negocio.fachada.estrato;
 
-import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import com.inmocontrol.entidad.EstratoEntidad;
+import com.inmocontrol.negocio.fachada.FachadaSinParametro;
 import java.util.List;
 
-public interface ConsultarEstratoTodosFachada extends FachadaConRetorno<Void, List<EstratoEntidad>> {
-}
+public interface ConsultarEstratoTodosFachada extends FachadaSinParametro<List<EstratoEntidad>> {}

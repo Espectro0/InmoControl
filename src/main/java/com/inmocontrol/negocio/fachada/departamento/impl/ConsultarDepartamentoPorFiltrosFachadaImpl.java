@@ -7,36 +7,38 @@ import com.inmocontrol.negocio.casouso.departamento.ConsultarDepartamentoPorFilt
 import com.inmocontrol.negocio.casouso.departamento.impl.ConsultarDepartamentoPorFiltrosCasoUsoImpl;
 import com.inmocontrol.negocio.dominio.DepartamentoDominio;
 import com.inmocontrol.negocio.fachada.departamento.ConsultarDepartamentoPorFiltrosFachada;
+import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
-import com.inmocontrol.transversal.UtilObjeto;
 import java.util.List;
 
-public class ConsultarDepartamentoPorFiltrosFachadaImpl implements ConsultarDepartamentoPorFiltrosFachada {
+public class ConsultarDepartamentoPorFiltrosFachadaImpl
+    implements ConsultarDepartamentoPorFiltrosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarDepartamentoPorFiltrosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarDepartamentoPorFiltrosCasoUso casoUso;
 
-	public ConsultarDepartamentoPorFiltrosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarDepartamentoPorFiltrosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarDepartamentoPorFiltrosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarDepartamentoPorFiltrosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<DepartamentoEntidad> ejecutar(DepartamentoDTO datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del departamento no pueden ser nulos");
-		}
+  @Override
+  public List<DepartamentoEntidad> ejecutar(DepartamentoDTO datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      throw new ValidacionExcepcion("Los datos del departamento no pueden ser nulos");
+    }
 
-		try {
-			DepartamentoDominio dominio = new DepartamentoDominio.Builder().nombre(datos.getNombre()).build();
-			return casoUso.ejecutar(dominio);
+    try {
+      DepartamentoDominio dominio =
+          new DepartamentoDominio.Builder().nombre(datos.getNombre()).build();
+      return casoUso.ejecutar(dominio);
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }

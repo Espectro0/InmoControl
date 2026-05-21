@@ -1,8 +1,8 @@
 package com.inmocontrol.negocio.fachada.estrato;
 
-import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import com.inmocontrol.dto.EstratoDTO;
 import com.inmocontrol.entidad.EstratoEntidad;
+import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 
-public interface ConsultarEstratoPorIdFachada extends FachadaConRetorno<EstratoDTO, EstratoEntidad> {
-}
+public interface ConsultarEstratoPorIdFachada
+    extends FachadaConRetorno<EstratoDTO, EstratoEntidad> {}

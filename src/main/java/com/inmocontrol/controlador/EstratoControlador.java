@@ -22,27 +22,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/estratos")
 public class EstratoControlador {
 
-	@GetMapping
-	public ResponseEntity<RespuestaExito<List<EstratoEntidad>>> consultarTodos() {
-		ConsultarEstratoTodosFachada fachada = new ConsultarEstratoTodosFachadaImpl();
-		List<EstratoEntidad> resultado = fachada.ejecutar(null);
-		return ResponseEntity.ok(RespuestaExito.crear("Estratos obtenidos exitosamente", resultado));
-	}
+  @GetMapping("/{id}")
+  public ResponseEntity<RespuestaExito<EstratoEntidad>> consultarPorId(@PathVariable UUID id) {
+    EstratoDTO dto = new EstratoDTO.Builder().id(id).build();
+    ConsultarEstratoPorIdFachada fachada = new ConsultarEstratoPorIdFachadaImpl();
+    EstratoEntidad resultado = fachada.ejecutar(dto);
+    return ResponseEntity.ok(RespuestaExito.crear("Estrato obtenido exitosamente", resultado));
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<RespuestaExito<EstratoEntidad>> consultarPorId(@PathVariable UUID id) {
-		EstratoDTO dto = new EstratoDTO.Builder().id(id).build();
-		ConsultarEstratoPorIdFachada fachada = new ConsultarEstratoPorIdFachadaImpl();
-		EstratoEntidad resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Estrato obtenido exitosamente", resultado));
-	}
+  @GetMapping
+  public ResponseEntity<RespuestaExito<List<EstratoEntidad>>> consultar(
+      @RequestParam(required = false) String nombre,
+      @RequestParam(required = false) String descripcion) {
 
-	@GetMapping("/buscar")
-	public ResponseEntity<RespuestaExito<List<EstratoEntidad>>> consultarPorFiltros(
-			@RequestParam(required = false) String nombre, @RequestParam(required = false) String descripcion) {
-		EstratoDTO dto = new EstratoDTO.Builder().nombre(nombre).descripcion(descripcion).build();
-		ConsultarEstratoPorFiltrosFachada fachada = new ConsultarEstratoPorFiltrosFachadaImpl();
-		List<EstratoEntidad> resultado = fachada.ejecutar(dto);
-		return ResponseEntity.ok(RespuestaExito.crear("Estratos filtrados obtenidos exitosamente", resultado));
-	}
+    EstratoDTO dto = new EstratoDTO.Builder().nombre(nombre).descripcion(descripcion).build();
+
+    List<EstratoEntidad> resultado;
+    boolean tieneFiltros = nombre != null || descripcion != null;
+
+    if (tieneFiltros) {
+      ConsultarEstratoPorFiltrosFachada fachadaFiltros =
+          new ConsultarEstratoPorFiltrosFachadaImpl();
+      resultado = fachadaFiltros.ejecutar(dto);
+      return ResponseEntity.ok(
+          RespuestaExito.crear("Estratos filtrados obtenidos exitosamente", resultado));
+    } else {
+      ConsultarEstratoTodosFachada fachadaTodos = new ConsultarEstratoTodosFachadaImpl();
+      resultado = fachadaTodos.ejecutar();
+      return ResponseEntity.ok(RespuestaExito.crear("Estratos obtenidos exitosamente", resultado));
+    }
+  }
 }

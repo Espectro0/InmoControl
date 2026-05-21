@@ -7,15 +7,15 @@ import java.util.List;
 
 public class ConsultarParametroTodosCasoUsoImpl implements ConsultarParametroTodosCasoUso {
 
-    private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-    public ConsultarParametroTodosCasoUsoImpl(DAOFactory daoFactory) {
-        super();
-        this.daoFactory = daoFactory;
-    }
+  public ConsultarParametroTodosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-    @Override
-    public List<ParametroEntidad> ejecutar(Void datos) {
-        return daoFactory.obtenerParametroDAO().consultarTodos();
-    }
+  @Override
+  public List<ParametroEntidad> ejecutar() {
+    return daoFactory.obtenerParametroDAO().consultarTodos();
+  }
 }

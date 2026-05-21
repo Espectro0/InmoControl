@@ -1,8 +1,7 @@
 package com.inmocontrol.negocio.casouso.ciudad;
 
-import com.inmocontrol.negocio.casouso.CasoUsoConRetorno;
 import com.inmocontrol.entidad.CiudadEntidad;
+import com.inmocontrol.negocio.casouso.CasoUsoSinParametro;
 import java.util.List;
 
-public interface ConsultarCiudadTodosCasoUso extends CasoUsoConRetorno<Void, List<CiudadEntidad>> {
-}
+public interface ConsultarCiudadTodosCasoUso extends CasoUsoSinParametro<List<CiudadEntidad>> {}

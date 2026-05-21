@@ -1,7 +1,7 @@
 package com.inmocontrol.negocio.fachada.clausulaporcontrato;
 
-import com.inmocontrol.negocio.fachada.FachadaSinRetorno;
 import com.inmocontrol.dto.ClausulaPorContratoDTO;
+import com.inmocontrol.negocio.fachada.FachadaSinRetorno;
 
-public interface ModificarClausulaPorContratoFachada extends FachadaSinRetorno<ClausulaPorContratoDTO> {
-}
+public interface ModificarClausulaPorContratoFachada
+    extends FachadaSinRetorno<ClausulaPorContratoDTO> {}

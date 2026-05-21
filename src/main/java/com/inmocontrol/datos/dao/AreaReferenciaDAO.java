@@ -10,7 +10,9 @@ import com.inmocontrol.entidad.AreaReferenciaEntidad;
 import java.util.UUID;
 
 public interface AreaReferenciaDAO
-		extends ConsultarPorIdDAO<AreaReferenciaEntidad, UUID>, ConsultarTodosDAO<AreaReferenciaEntidad>,
-				ConsultarPorFiltroDAO<AreaReferenciaEntidad>, CrearDAO<AreaReferenciaEntidad>,
-				ActualizarDAO<AreaReferenciaEntidad, UUID>, EliminarDAO<UUID> {
-}
+    extends ConsultarPorIdDAO<AreaReferenciaEntidad, UUID>,
+        ConsultarTodosDAO<AreaReferenciaEntidad>,
+        ConsultarPorFiltroDAO<AreaReferenciaEntidad>,
+        CrearDAO<AreaReferenciaEntidad>,
+        ActualizarDAO<AreaReferenciaEntidad, UUID>,
+        EliminarDAO<UUID> {}

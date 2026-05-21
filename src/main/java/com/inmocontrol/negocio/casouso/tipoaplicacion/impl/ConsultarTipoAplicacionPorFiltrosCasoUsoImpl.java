@@ -7,21 +7,23 @@ import com.inmocontrol.negocio.dominio.TipoAplicacionDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import java.util.List;
 
-public class ConsultarTipoAplicacionPorFiltrosCasoUsoImpl implements ConsultarTipoAplicacionPorFiltrosCasoUso {
+public class ConsultarTipoAplicacionPorFiltrosCasoUsoImpl
+    implements ConsultarTipoAplicacionPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarTipoAplicacionPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarTipoAplicacionPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<TipoAplicacionEntidad> ejecutar(TipoAplicacionDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerTipoAplicacionDAO().consultarTodos();
-		}
-		return daoFactory.obtenerTipoAplicacionDAO()
-				.consultarPorFiltro(new TipoAplicacionEntidad.Builder().nombre(datos.getNombre()).build());
-	}
+  @Override
+  public List<TipoAplicacionEntidad> ejecutar(TipoAplicacionDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerTipoAplicacionDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerTipoAplicacionDAO()
+        .consultarPorFiltro(new TipoAplicacionEntidad.Builder().nombre(datos.getNombre()).build());
+  }
 }

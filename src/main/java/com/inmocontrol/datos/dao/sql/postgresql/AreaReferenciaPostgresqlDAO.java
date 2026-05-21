@@ -14,117 +14,118 @@ import java.util.UUID;
 
 public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenciaDAO {
 
-    public AreaReferenciaPostgresqlDAO(Connection conexion) {
-        super(conexion);
+  public AreaReferenciaPostgresqlDAO(Connection conexion) {
+    super(conexion);
+  }
+
+  @Override
+  public AreaReferenciaEntidad consultarPorId(UUID id) {
+    String sql = "SELECT id, nombre FROM area_referencia WHERE id = ?";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return mapearResultado(rs);
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar el area referencia por id.", e);
     }
 
-    @Override
-    public AreaReferenciaEntidad consultarPorId(UUID id) {
-        String sql = "SELECT id, nombre FROM area_referencia WHERE id = ?";
+    return null;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<AreaReferenciaEntidad> consultarTodos() {
+    String sql = "SELECT id, nombre FROM area_referencia";
+    List<AreaReferenciaEntidad> resultados = new ArrayList<>();
 
-            if (rs.next()) {
-                return mapearResultado(rs);
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar el area referencia por id.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
 
-        return null;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al consultar los areas referencia.", e);
     }
 
-    @Override
-    public List<AreaReferenciaEntidad> consultarTodos() {
-        String sql = "SELECT id, nombre FROM area_referencia";
-        List<AreaReferenciaEntidad> resultados = new ArrayList<>();
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+  @Override
+  public List<AreaReferenciaEntidad> consultarPorFiltro(AreaReferenciaEntidad filtro) {
+    String sql = "SELECT id, nombre FROM area_referencia WHERE 1=1";
+    List<Object> parametros = new ArrayList<>();
 
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar los areas referencia.", e);
-        }
-
-        return resultados;
+    if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
+      sql += " AND nombre = ?";
+      parametros.add(filtro.getNombre());
     }
 
-    @Override
-    public List<AreaReferenciaEntidad> consultarPorFiltro(AreaReferenciaEntidad filtro) {
-        String sql = "SELECT id, nombre FROM area_referencia WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
+    List<AreaReferenciaEntidad> resultados = new ArrayList<>();
 
-        if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-            sql += " AND nombre = ?";
-            parametros.add(filtro.getNombre());
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      for (int i = 0; i < parametros.size(); i++) {
+        stmt.setObject(i + 1, parametros.get(i));
+      }
 
-        List<AreaReferenciaEntidad> resultados = new ArrayList<>();
+      ResultSet rs = stmt.executeQuery();
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                resultados.add(mapearResultado(rs));
-            }
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al consultar areas referencia por filtro.", e);
-        }
-
-        return resultados;
+      while (rs.next()) {
+        resultados.add(mapearResultado(rs));
+      }
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion(
+          "Ocurrio un error al consultar areas referencia por filtro.", e);
     }
 
-    @Override
-    public void crear(AreaReferenciaEntidad entidad) {
-        String sql = "INSERT INTO area_referencia (id, nombre) VALUES (?, ?)";
+    return resultados;
+  }
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, entidad.getId());
-            stmt.setString(2, entidad.getNombre());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al crear el area referencia.", e);
-        }
+  @Override
+  public void crear(AreaReferenciaEntidad entidad) {
+    String sql = "INSERT INTO area_referencia (id, nombre) VALUES (?, ?)";
+
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, entidad.getId());
+      stmt.setString(2, entidad.getNombre());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al crear el area referencia.", e);
     }
+  }
 
-    @Override
-    public void actualizar(UUID id, AreaReferenciaEntidad entidad) {
-        String sql = "UPDATE area_referencia SET nombre = ? WHERE id = ?";
+  @Override
+  public void actualizar(UUID id, AreaReferenciaEntidad entidad) {
+    String sql = "UPDATE area_referencia SET nombre = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setString(1, entidad.getNombre());
-            stmt.setObject(2, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al actualizar el area referencia.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setString(1, entidad.getNombre());
+      stmt.setObject(2, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al actualizar el area referencia.", e);
     }
+  }
 
-    @Override
-    public void eliminar(UUID id) {
-        String sql = "DELETE FROM area_referencia WHERE id = ?";
+  @Override
+  public void eliminar(UUID id) {
+    String sql = "DELETE FROM area_referencia WHERE id = ?";
 
-        try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
-            stmt.setObject(1, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new TransaccionExcepcion("Ocurrio un error al eliminar el area referencia.", e);
-        }
+    try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
+      stmt.setObject(1, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new TransaccionExcepcion("Ocurrio un error al eliminar el area referencia.", e);
     }
+  }
 
-    private AreaReferenciaEntidad mapearResultado(ResultSet rs) throws SQLException {
-        return new AreaReferenciaEntidad.Builder()
-                .id(rs.getObject("id", UUID.class))
-                .nombre(rs.getString("nombre"))
-                .build();
-    }
+  private AreaReferenciaEntidad mapearResultado(ResultSet rs) throws SQLException {
+    return new AreaReferenciaEntidad.Builder()
+        .id(rs.getObject("id", UUID.class))
+        .nombre(rs.getString("nombre"))
+        .build();
+  }
 }

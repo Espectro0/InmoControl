@@ -9,19 +9,20 @@ import java.util.List;
 
 public class ConsultarEstratoPorFiltrosCasoUsoImpl implements ConsultarEstratoPorFiltrosCasoUso {
 
-	private DAOFactory daoFactory;
+  private DAOFactory daoFactory;
 
-	public ConsultarEstratoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-		super();
-		this.daoFactory = daoFactory;
-	}
+  public ConsultarEstratoPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+    super();
+    this.daoFactory = daoFactory;
+  }
 
-	@Override
-	public List<EstratoEntidad> ejecutar(EstratoDominio datos) {
-		if (UtilObjeto.esNulo(datos)) {
-			return daoFactory.obtenerEstratoDAO().consultarTodos();
-		}
-		return daoFactory.obtenerEstratoDAO()
-				.consultarPorFiltro(new EstratoEntidad.Builder().nombre(datos.getNombre()).build());
-	}
+  @Override
+  public List<EstratoEntidad> ejecutar(EstratoDominio datos) {
+    if (UtilObjeto.esNulo(datos)) {
+      return daoFactory.obtenerEstratoDAO().consultarTodos();
+    }
+    return daoFactory
+        .obtenerEstratoDAO()
+        .consultarPorFiltro(new EstratoEntidad.Builder().nombre(datos.getNombre()).build());
+  }
 }

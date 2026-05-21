@@ -6,6 +6,7 @@ import com.inmocontrol.datos.ConsultarTodosDAO;
 import com.inmocontrol.entidad.PaisEntidad;
 import java.util.UUID;
 
-public interface PaisDAO extends ConsultarPorIdDAO<PaisEntidad, UUID>, ConsultarTodosDAO<PaisEntidad>,
-		ConsultarPorFiltroDAO<PaisEntidad> {
-}
+public interface PaisDAO
+    extends ConsultarPorIdDAO<PaisEntidad, UUID>,
+        ConsultarTodosDAO<PaisEntidad>,
+        ConsultarPorFiltroDAO<PaisEntidad> {}

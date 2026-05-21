@@ -10,24 +10,24 @@ import java.util.List;
 
 public class ConsultarPaisTodosFachadaImpl implements ConsultarPaisTodosFachada {
 
-	private DAOFactory daoFactory;
-	private ConsultarPaisTodosCasoUso casoUso;
+  private DAOFactory daoFactory;
+  private ConsultarPaisTodosCasoUso casoUso;
 
-	public ConsultarPaisTodosFachadaImpl() {
-		daoFactory = DAOFactory.getFactory();
-		casoUso = new ConsultarPaisTodosCasoUsoImpl(daoFactory);
-	}
+  public ConsultarPaisTodosFachadaImpl() {
+    daoFactory = DAOFactory.getFactory();
+    casoUso = new ConsultarPaisTodosCasoUsoImpl(daoFactory);
+  }
 
-	@Override
-	public List<PaisEntidad> ejecutar(Void datos) {
-		try {
-			return casoUso.ejecutar(datos);
+  @Override
+  public List<PaisEntidad> ejecutar() {
+    try {
+      return casoUso.ejecutar();
 
-		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+    } catch (Exception excepcion) {
+      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-		} finally {
-			daoFactory.cerrarConexion();
-		}
-	}
+    } finally {
+      daoFactory.cerrarConexion();
+    }
+  }
 }
