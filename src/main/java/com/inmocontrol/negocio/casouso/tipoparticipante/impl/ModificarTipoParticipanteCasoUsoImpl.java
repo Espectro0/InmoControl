@@ -20,6 +20,7 @@ public class ModificarTipoParticipanteCasoUsoImpl implements ModificarTipoPartic
   public void ejecutar(TipoParticipanteDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaTipoParticipante(datos);
+    validarUnicoNombre(datos);
     modificarTipoParticipante(datos);
   }
 
@@ -38,6 +39,18 @@ public class ModificarTipoParticipanteCasoUsoImpl implements ModificarTipoPartic
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion(
           "No existe un tipo de participante con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarUnicoNombre(TipoParticipanteDominio datos) {
+    TipoParticipanteEntidad filtro =
+        new TipoParticipanteEntidad.Builder().nombre(datos.getNombre()).build();
+    var resultados = daoFactory.obtenerTipoParticipanteDAO().consultarPorFiltro(filtro);
+    for (TipoParticipanteEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe un tipo de participante con el nombre: " + datos.getNombre());
+      }
     }
   }
 

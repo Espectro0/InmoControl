@@ -21,6 +21,7 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
   @Override
   public void ejecutar(PersonaDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoNumeroIdentificacion(datos);
     registrarPersona(datos);
   }
 
@@ -41,6 +42,17 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
     }
     if (UtilObjeto.esNulo(datos.getPrimerApellido()) || datos.getPrimerApellido().isEmpty()) {
       throw new ValidacionExcepcion("El primer apellido es obligatorio.");
+    }
+  }
+
+  private void validarUnicoNumeroIdentificacion(PersonaDominio datos) {
+    PersonaEntidad existente =
+        new PersonaEntidad.Builder().numeroIdentificacion(datos.getNumeroIdentificacion()).build();
+    var resultados = daoFactory.obtenerPersonaDAO().consultarPorFiltro(existente);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe una persona con el numero de identificacion: "
+              + datos.getNumeroIdentificacion());
     }
   }
 

@@ -21,6 +21,7 @@ public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaCo
   @Override
   public void ejecutar(ClausulaContratoDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoAreaTipoTitulo(datos);
     registrarClausulaContrato(datos);
   }
 
@@ -41,6 +42,22 @@ public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaCo
     }
     if (UtilObjeto.esNulo(datos.getContenidoLegal()) || datos.getContenidoLegal().isEmpty()) {
       throw new ValidacionExcepcion("El contenido legal es obligatorio.");
+    }
+  }
+
+  private void validarUnicoAreaTipoTitulo(ClausulaContratoDominio datos) {
+    ClausulaContratoEntidad filtro =
+        new ClausulaContratoEntidad.Builder()
+            .areaReferencia(
+                new AreaReferenciaEntidad.Builder().id(datos.getAreaReferencia().getId()).build())
+            .tipoAplicacion(
+                new TipoAplicacionEntidad.Builder().id(datos.getTipoAplicacion().getId()).build())
+            .titulo(datos.getTitulo())
+            .build();
+    var resultados = daoFactory.obtenerClausulaContratoDAO().consultarPorFiltro(filtro);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe una clausula con el area, tipo de aplicacion y titulo especificados");
     }
   }
 

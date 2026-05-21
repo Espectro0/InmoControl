@@ -20,6 +20,7 @@ public class ModificarAreaReferenciaCasoUsoImpl implements ModificarAreaReferenc
   public void ejecutar(AreaReferenciaDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaAreaReferencia(datos);
+    validarUnicoNombre(datos);
     modificarAreaReferencia(datos);
   }
 
@@ -37,6 +38,18 @@ public class ModificarAreaReferenciaCasoUsoImpl implements ModificarAreaReferenc
         daoFactory.obtenerAreaReferenciaDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe un area de referencia con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarUnicoNombre(AreaReferenciaDominio datos) {
+    AreaReferenciaEntidad filtro =
+        new AreaReferenciaEntidad.Builder().nombre(datos.getNombre()).build();
+    var resultados = daoFactory.obtenerAreaReferenciaDAO().consultarPorFiltro(filtro);
+    for (AreaReferenciaEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe un area de referencia con el nombre: " + datos.getNombre());
+      }
     }
   }
 

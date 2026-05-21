@@ -19,6 +19,7 @@ public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenc
   @Override
   public void ejecutar(AreaReferenciaDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoNombre(datos);
     registrarAreaReferencia(datos);
   }
 
@@ -28,6 +29,16 @@ public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenc
     }
     if (UtilObjeto.esNulo(datos.getNombre()) || datos.getNombre().isEmpty()) {
       throw new ValidacionExcepcion("El nombre del area de referencia es obligatorio.");
+    }
+  }
+
+  private void validarUnicoNombre(AreaReferenciaDominio datos) {
+    AreaReferenciaEntidad existente =
+        new AreaReferenciaEntidad.Builder().nombre(datos.getNombre()).build();
+    var resultados = daoFactory.obtenerAreaReferenciaDAO().consultarPorFiltro(existente);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe un area de referencia con el nombre: " + datos.getNombre());
     }
   }
 

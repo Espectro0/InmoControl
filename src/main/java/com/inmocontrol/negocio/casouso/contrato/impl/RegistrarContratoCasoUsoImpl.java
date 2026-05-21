@@ -20,6 +20,7 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
   @Override
   public void ejecutar(ContratoDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoCodigoContrato(datos);
     registrarContrato(datos);
   }
 
@@ -36,6 +37,16 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
     if (UtilObjeto.esNulo(datos.getPropiedad())
         || UtilObjeto.esNulo(datos.getPropiedad().getId())) {
       throw new ValidacionExcepcion("La propiedad es obligatoria.");
+    }
+  }
+
+  private void validarUnicoCodigoContrato(ContratoDominio datos) {
+    ContratoEntidad filtro =
+        new ContratoEntidad.Builder().codigoContrato(datos.getCodigoContrato()).build();
+    var resultados = daoFactory.obtenerContratoDAO().consultarPorFiltro(filtro);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe un contrato con el codigo: " + datos.getCodigoContrato());
     }
   }
 

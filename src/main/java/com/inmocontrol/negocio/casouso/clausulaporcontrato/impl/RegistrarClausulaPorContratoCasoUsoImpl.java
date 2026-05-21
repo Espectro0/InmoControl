@@ -22,6 +22,7 @@ public class RegistrarClausulaPorContratoCasoUsoImpl
   @Override
   public void ejecutar(ClausulaPorContratoDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoContratoClausula(datos);
     registrarClausulaPorContrato(datos);
   }
 
@@ -48,5 +49,17 @@ public class RegistrarClausulaPorContratoCasoUsoImpl
             .clausula(new ClausulaContratoEntidad.Builder().id(datos.getClausula().getId()).build())
             .build();
     daoFactory.obtenerClausulaPorContratoDAO().crear(entidad);
+  }
+
+  private void validarUnicoContratoClausula(ClausulaPorContratoDominio datos) {
+    ClausulaPorContratoEntidad filtro =
+        new ClausulaPorContratoEntidad.Builder()
+            .contrato(new ContratoEntidad.Builder().id(datos.getContrato().getId()).build())
+            .clausula(new ClausulaContratoEntidad.Builder().id(datos.getClausula().getId()).build())
+            .build();
+    var resultados = daoFactory.obtenerClausulaPorContratoDAO().consultarPorFiltro(filtro);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion("Ya existe esta clausula agregada a este contrato");
+    }
   }
 }

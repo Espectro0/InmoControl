@@ -21,6 +21,7 @@ public class ModificarContratoCasoUsoImpl implements ModificarContratoCasoUso {
   public void ejecutar(ContratoDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaContrato(datos);
+    validarUnicoCodigoContrato(datos);
     modificarContrato(datos);
   }
 
@@ -37,6 +38,18 @@ public class ModificarContratoCasoUsoImpl implements ModificarContratoCasoUso {
     ContratoEntidad existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe un contrato con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarUnicoCodigoContrato(ContratoDominio datos) {
+    ContratoEntidad filtro =
+        new ContratoEntidad.Builder().codigoContrato(datos.getCodigoContrato()).build();
+    var resultados = daoFactory.obtenerContratoDAO().consultarPorFiltro(filtro);
+    for (ContratoEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe un contrato con el codigo: " + datos.getCodigoContrato());
+      }
     }
   }
 

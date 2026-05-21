@@ -23,6 +23,7 @@ public class ModificarPropiedadCasoUsoImpl implements ModificarPropiedadCasoUso 
   public void ejecutar(PropiedadDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaPropiedad(datos);
+    validarUnicoNombreDireccion(datos);
     modificarPropiedad(datos);
   }
 
@@ -39,6 +40,24 @@ public class ModificarPropiedadCasoUsoImpl implements ModificarPropiedadCasoUso 
     PropiedadEntidad existente = daoFactory.obtenerPropiedadDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe una propiedad con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarUnicoNombreDireccion(PropiedadDominio datos) {
+    PropiedadEntidad filtro =
+        new PropiedadEntidad.Builder()
+            .nombreInmueble(datos.getNombreInmueble())
+            .direccion(datos.getDireccion())
+            .build();
+    var resultados = daoFactory.obtenerPropiedadDAO().consultarPorFiltro(filtro);
+    for (PropiedadEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe una propiedad con el nombre: "
+                + datos.getNombreInmueble()
+                + " y direccion: "
+                + datos.getDireccion());
+      }
     }
   }
 

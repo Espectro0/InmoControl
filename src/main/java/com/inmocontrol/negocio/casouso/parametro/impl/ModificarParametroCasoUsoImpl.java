@@ -40,6 +40,7 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
   }
 
   private void modificarParametro(ParametroDominio datos) {
+    validarUnicoPlaceholder(datos);
     ParametroEntidad entidad =
         new ParametroEntidad.Builder()
             .id(datos.getId())
@@ -47,5 +48,17 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
             .descripcion(datos.getDescripcion())
             .build();
     daoFactory.obtenerParametroDAO().actualizar(entidad.getId(), entidad);
+  }
+
+  private void validarUnicoPlaceholder(ParametroDominio datos) {
+    ParametroEntidad filtro =
+        new ParametroEntidad.Builder().placeholder(datos.getPlaceholder()).build();
+    var resultados = daoFactory.obtenerParametroDAO().consultarPorFiltro(filtro);
+    for (ParametroEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe un parametro con el placeholder: " + datos.getPlaceholder());
+      }
+    }
   }
 }

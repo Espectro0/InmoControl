@@ -22,6 +22,7 @@ public class ModificarClausulaContratoCasoUsoImpl implements ModificarClausulaCo
   public void ejecutar(ClausulaContratoDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaClausulaContrato(datos);
+    validarUnicoAreaTipoTitulo(datos);
     modificarClausulaContrato(datos);
   }
 
@@ -39,6 +40,32 @@ public class ModificarClausulaContratoCasoUsoImpl implements ModificarClausulaCo
         daoFactory.obtenerClausulaContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe una clausula contrato con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarUnicoAreaTipoTitulo(ClausulaContratoDominio datos) {
+    ClausulaContratoEntidad filtro =
+        new ClausulaContratoEntidad.Builder()
+            .areaReferencia(
+                datos.getAreaReferencia() != null
+                    ? new AreaReferenciaEntidad.Builder()
+                        .id(datos.getAreaReferencia().getId())
+                        .build()
+                    : null)
+            .tipoAplicacion(
+                datos.getTipoAplicacion() != null
+                    ? new TipoAplicacionEntidad.Builder()
+                        .id(datos.getTipoAplicacion().getId())
+                        .build()
+                    : null)
+            .titulo(datos.getTitulo())
+            .build();
+    var resultados = daoFactory.obtenerClausulaContratoDAO().consultarPorFiltro(filtro);
+    for (ClausulaContratoEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe una clausula con el area, tipo de aplicacion y titulo especificados");
+      }
     }
   }
 

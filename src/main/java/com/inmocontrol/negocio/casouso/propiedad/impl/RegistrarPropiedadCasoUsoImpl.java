@@ -22,6 +22,7 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
   @Override
   public void ejecutar(PropiedadDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoNombreDireccion(datos);
     registrarPropiedad(datos);
   }
 
@@ -41,6 +42,22 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
     }
     if (UtilObjeto.esNulo(datos.getCiudad()) || UtilObjeto.esNulo(datos.getCiudad().getId())) {
       throw new ValidacionExcepcion("La ciudad es obligatoria.");
+    }
+  }
+
+  private void validarUnicoNombreDireccion(PropiedadDominio datos) {
+    PropiedadEntidad filtro =
+        new PropiedadEntidad.Builder()
+            .nombreInmueble(datos.getNombreInmueble())
+            .direccion(datos.getDireccion())
+            .build();
+    var resultados = daoFactory.obtenerPropiedadDAO().consultarPorFiltro(filtro);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe una propiedad con el nombre: "
+              + datos.getNombreInmueble()
+              + " y direccion: "
+              + datos.getDireccion());
     }
   }
 

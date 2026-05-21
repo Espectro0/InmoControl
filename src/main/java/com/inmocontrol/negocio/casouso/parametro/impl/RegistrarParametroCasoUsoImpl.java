@@ -35,11 +35,22 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
   }
 
   private void registrarParametro(ParametroDominio datos) {
+    validarUnicoPlaceholder(datos);
     ParametroEntidad entidad =
         new ParametroEntidad.Builder()
             .placeholder(datos.getPlaceholder())
             .descripcion(datos.getDescripcion())
             .build();
     daoFactory.obtenerParametroDAO().crear(entidad);
+  }
+
+  private void validarUnicoPlaceholder(ParametroDominio datos) {
+    ParametroEntidad filtro =
+        new ParametroEntidad.Builder().placeholder(datos.getPlaceholder()).build();
+    var resultados = daoFactory.obtenerParametroDAO().consultarPorFiltro(filtro);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe un parametro con el placeholder: " + datos.getPlaceholder());
+    }
   }
 }

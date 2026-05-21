@@ -22,6 +22,7 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
   public void ejecutar(PersonaDominio datos) {
     validarObligatoriedadId(datos);
     validarExistenciaPersona(datos);
+    validarUnicoNumeroIdentificacion(datos);
     modificarPersona(datos);
   }
 
@@ -38,6 +39,19 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
     PersonaEntidad existente = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
       throw new ValidacionExcepcion("No existe una persona con el ID: " + datos.getId());
+    }
+  }
+
+  private void validarUnicoNumeroIdentificacion(PersonaDominio datos) {
+    PersonaEntidad filtro =
+        new PersonaEntidad.Builder().numeroIdentificacion(datos.getNumeroIdentificacion()).build();
+    var resultados = daoFactory.obtenerPersonaDAO().consultarPorFiltro(filtro);
+    for (PersonaEntidad item : resultados) {
+      if (!item.getId().equals(datos.getId())) {
+        throw new ValidacionExcepcion(
+            "Ya existe una persona con el numero de identificacion: "
+                + datos.getNumeroIdentificacion());
+      }
     }
   }
 

@@ -19,6 +19,7 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
   @Override
   public void ejecutar(TipoParticipanteDominio datos) {
     validarObligatoriedadCampos(datos);
+    validarUnicoNombre(datos);
     registrarTipoParticipante(datos);
   }
 
@@ -28,6 +29,16 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
     }
     if (UtilObjeto.esNulo(datos.getNombre()) || datos.getNombre().isEmpty()) {
       throw new ValidacionExcepcion("El nombre del tipo de participante es obligatorio.");
+    }
+  }
+
+  private void validarUnicoNombre(TipoParticipanteDominio datos) {
+    TipoParticipanteEntidad existente =
+        new TipoParticipanteEntidad.Builder().nombre(datos.getNombre()).build();
+    var resultados = daoFactory.obtenerTipoParticipanteDAO().consultarPorFiltro(existente);
+    if (!resultados.isEmpty()) {
+      throw new ValidacionExcepcion(
+          "Ya existe un tipo de participante con el nombre: " + datos.getNombre());
     }
   }
 
