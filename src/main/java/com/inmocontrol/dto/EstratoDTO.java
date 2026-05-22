@@ -8,6 +8,8 @@ public final class EstratoDTO {
   private String nombre;
   private String descripcion;
 
+  public EstratoDTO() {}
+
   private EstratoDTO(final Builder builder) {
     setId(builder.id);
     setNombre(builder.nombre);
@@ -26,15 +28,15 @@ public final class EstratoDTO {
     return descripcion;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setNombre(final String nombre) {
+  public void setNombre(final String nombre) {
     this.nombre = UtilTexto.aplicarTrim(nombre);
   }
 
-  private void setDescripcion(final String descripcion) {
+  public void setDescripcion(final String descripcion) {
     this.descripcion = UtilTexto.aplicarTrim(descripcion);
   }
 

@@ -8,6 +8,7 @@ import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.participantecontrato.RegistrarParticipanteContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarParticipanteContratoCasoUsoImpl
@@ -43,8 +44,12 @@ public class RegistrarParticipanteContratoCasoUsoImpl
   }
 
   private void registrarParticipanteContrato(ParticipanteContratoDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerParticipanteContratoDAO().consultarPorId(uuid) != null);
     ParticipanteContratoEntidad entidad =
         new ParticipanteContratoEntidad.Builder()
+            .id(idUnico)
             .persona(new PersonaEntidad.Builder().id(datos.getPersona().getId()).build())
             .tipoParticipante(
                 new TipoParticipanteEntidad.Builder()

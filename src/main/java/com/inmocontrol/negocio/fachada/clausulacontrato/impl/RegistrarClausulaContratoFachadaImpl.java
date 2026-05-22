@@ -14,49 +14,39 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarClausulaContratoFachadaImpl implements RegistrarClausulaContratoFachada {
 
-  private DAOFactory daoFactory;
-  private RegistrarClausulaContratoCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private RegistrarClausulaContratoCasoUso casoUso;
 
-  public RegistrarClausulaContratoFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new RegistrarClausulaContratoCasoUsoImpl(daoFactory);
-  }
+	public RegistrarClausulaContratoFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new RegistrarClausulaContratoCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(ClausulaContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la clausula contrato no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(ClausulaContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la clausula contrato no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      ClausulaContratoDominio dominio =
-          new ClausulaContratoDominio.Builder()
-              .areaReferencia(
-                  datos.getAreaReferencia() != null
-                      ? new AreaReferenciaDominio.Builder()
-                          .id(datos.getAreaReferencia().getId())
-                          .build()
-                      : null)
-              .tipoAplicacion(
-                  datos.getTipoAplicacion() != null
-                      ? new TipoAplicacionDominio.Builder()
-                          .id(datos.getTipoAplicacion().getId())
-                          .build()
-                      : null)
-              .titulo(datos.getTitulo())
-              .contenidoLegal(datos.getContenidoLegal())
-              .build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			ClausulaContratoDominio dominio = new ClausulaContratoDominio.Builder()
+					.areaReferencia(datos.getAreaReferencia() != null
+							? new AreaReferenciaDominio.Builder().id(datos.getAreaReferencia().getId()).build()
+							: null)
+					.tipoAplicacion(datos.getTipoAplicacion() != null
+							? new TipoAplicacionDominio.Builder().id(datos.getTipoAplicacion().getId()).build()
+							: null)
+					.titulo(datos.getTitulo()).contenidoLegal(datos.getContenidoLegal()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion(
-          "Ocurrio un error registrando la clausula contrato", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error registrando la clausula contrato", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

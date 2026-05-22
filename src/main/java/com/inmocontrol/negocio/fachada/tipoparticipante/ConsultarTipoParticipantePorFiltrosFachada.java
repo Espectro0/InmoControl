@@ -6,4 +6,5 @@ import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import java.util.List;
 
 public interface ConsultarTipoParticipantePorFiltrosFachada
-    extends FachadaConRetorno<TipoParticipanteDTO, List<TipoParticipanteEntidad>> {}
+		extends FachadaConRetorno<TipoParticipanteDTO, List<TipoParticipanteEntidad>> {
+}

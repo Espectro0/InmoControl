@@ -28,6 +28,11 @@ public class EliminarTipoParticipanteFachadaImpl implements EliminarTipoParticip
 
     try {
       daoFactory.iniciarTransaccion();
+      var existente = daoFactory.obtenerTipoParticipanteDAO().consultarPorId(datos.getId());
+      if (existente == null) {
+        throw new ValidacionExcepcion(
+            "El tipo de participante con id " + datos.getId() + " no existe.");
+      }
       TipoParticipanteDominio dominio =
           new TipoParticipanteDominio.Builder().id(datos.getId()).build();
       casoUso.ejecutar(dominio);

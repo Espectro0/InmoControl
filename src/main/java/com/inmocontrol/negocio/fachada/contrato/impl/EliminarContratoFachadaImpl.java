@@ -12,32 +12,37 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarContratoFachadaImpl implements EliminarContratoFachada {
 
-  private DAOFactory daoFactory;
-  private EliminarContratoCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private EliminarContratoCasoUso casoUso;
 
-  public EliminarContratoFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new EliminarContratoCasoUsoImpl(daoFactory);
-  }
+	public EliminarContratoFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new EliminarContratoCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(ContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(ContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      ContratoDominio dominio = new ContratoDominio.Builder().id(datos.getId()).build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			var existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
+			if (existente == null) {
+				throw new ValidacionExcepcion(
+				    "El contrato con id " + datos.getId() + " no existe.");
+			}
+			ContratoDominio dominio = new ContratoDominio.Builder().id(datos.getId()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion("Ocurrio un error eliminando el contrato", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error eliminando el contrato", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

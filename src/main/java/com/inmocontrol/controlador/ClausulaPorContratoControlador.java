@@ -63,13 +63,11 @@ public class ClausulaPorContratoControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<ClausulaPorContratoEntidad>> registrar(
-      @RequestBody ClausulaPorContratoDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody ClausulaPorContratoDTO dto) {
     RegistrarClausulaPorContratoFachada fachada = new RegistrarClausulaPorContratoFachadaImpl();
-    ClausulaPorContratoEntidad resultado = new ClausulaPorContratoEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Clausula por contrato registrada exitosamente", resultado));
+        .body(RespuestaExito.crear("Clausula por contrato registrada exitosamente"));
   }
 
   @PutMapping
@@ -88,6 +86,6 @@ public class ClausulaPorContratoControlador {
     EliminarClausulaPorContratoFachada fachada = new EliminarClausulaPorContratoFachadaImpl();
     fachada.ejecutar(dto);
     return ResponseEntity.ok(
-        RespuestaExito.crear("Clausula por contrato eliminada exitosamente", null));
+        RespuestaExito.crear("Clausula por contrato eliminada exitosamente"));
   }
 }

@@ -6,6 +6,7 @@ import com.inmocontrol.negocio.casouso.tipoparticipante.RegistrarTipoParticipant
 import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
@@ -53,8 +54,12 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
   }
 
   private void registrarTipoParticipante(TipoParticipanteDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerTipoParticipanteDAO().consultarPorId(uuid) != null);
     TipoParticipanteEntidad entidad =
         new TipoParticipanteEntidad.Builder()
+            .id(idUnico)
             .nombre(UtilSanitizacion.sanitizar(datos.getNombre()))
             .build();
     daoFactory.obtenerTipoParticipanteDAO().crear(entidad);

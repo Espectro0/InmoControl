@@ -28,6 +28,11 @@ public class EliminarAreaReferenciaFachadaImpl implements EliminarAreaReferencia
 
     try {
       daoFactory.iniciarTransaccion();
+      var existente = daoFactory.obtenerAreaReferenciaDAO().consultarPorId(datos.getId());
+      if (existente == null) {
+        throw new ValidacionExcepcion(
+            "El area de referencia con id " + datos.getId() + " no existe.");
+      }
       AreaReferenciaDominio dominio = new AreaReferenciaDominio.Builder().id(datos.getId()).build();
       casoUso.ejecutar(dominio);
       daoFactory.confirmarTransaccion();

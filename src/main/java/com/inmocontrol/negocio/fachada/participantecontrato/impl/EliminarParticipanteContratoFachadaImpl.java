@@ -10,37 +10,39 @@ import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
-public class EliminarParticipanteContratoFachadaImpl
-    implements EliminarParticipanteContratoFachada {
+public class EliminarParticipanteContratoFachadaImpl implements EliminarParticipanteContratoFachada {
 
-  private DAOFactory daoFactory;
-  private EliminarParticipanteContratoCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private EliminarParticipanteContratoCasoUso casoUso;
 
-  public EliminarParticipanteContratoFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new EliminarParticipanteContratoCasoUsoImpl(daoFactory);
-  }
+	public EliminarParticipanteContratoFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new EliminarParticipanteContratoCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(ParticipanteContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del participante contrato no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(ParticipanteContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del participante contrato no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      ParticipanteContratoDominio dominio =
-          new ParticipanteContratoDominio.Builder().id(datos.getId()).build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			var existente = daoFactory.obtenerParticipanteContratoDAO().consultarPorId(datos.getId());
+			if (existente == null) {
+				throw new ValidacionExcepcion(
+				    "El participante contrato con id " + datos.getId() + " no existe.");
+			}
+			ParticipanteContratoDominio dominio = new ParticipanteContratoDominio.Builder().id(datos.getId()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion(
-          "Ocurrio un error eliminando el participante contrato", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error eliminando el participante contrato", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

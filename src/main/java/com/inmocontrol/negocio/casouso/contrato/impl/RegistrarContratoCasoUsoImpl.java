@@ -7,6 +7,7 @@ import com.inmocontrol.negocio.casouso.contrato.RegistrarContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
@@ -51,8 +52,9 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
   }
 
   private void validarFechas(ContratoDominio datos) {
-    if (datos.getFechaFin() != null && datos.getFechaInicio().after(datos.getFechaFin())) {
-      throw new ValidacionExcepcion("La fecha de inicio debe ser anterior a la fecha de fin.");
+    if (datos.getFechaFin() != null && datos.getFechaInicio().compareTo(datos.getFechaFin()) >= 0) {
+      throw new ValidacionExcepcion(
+          "La fecha de fin debe ser estrictamente mayor a la fecha de inicio.");
     }
   }
 
@@ -67,12 +69,16 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
   }
 
   private void registrarContrato(ContratoDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerContratoDAO().consultarPorId(uuid) != null);
     ContratoEntidad entidad =
         new ContratoEntidad.Builder()
+            .id(idUnico)
             .codigoContrato(UtilSanitizacion.sanitizar(datos.getCodigoContrato()))
             .fechaInicio(datos.getFechaInicio())
             .fechaFin(datos.getFechaFin())
-            .esActivo(true)
+            .esActivo(datos.getEsActivo() != null ? datos.getEsActivo() : false)
             .propiedad(new PropiedadEntidad.Builder().id(datos.getPropiedad().getId()).build())
             .build();
     daoFactory.obtenerContratoDAO().crear(entidad);

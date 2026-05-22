@@ -7,6 +7,8 @@ public final class TipoAplicacionDTO {
   private UUID id;
   private String nombre;
 
+  public TipoAplicacionDTO() {}
+
   private TipoAplicacionDTO(final Builder builder) {
     setId(builder.id);
     setNombre(builder.nombre);
@@ -20,11 +22,11 @@ public final class TipoAplicacionDTO {
     return nombre;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setNombre(final String nombre) {
+  public void setNombre(final String nombre) {
     this.nombre = UtilTexto.aplicarTrim(nombre);
   }
 

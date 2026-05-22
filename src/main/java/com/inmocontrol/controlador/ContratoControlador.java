@@ -4,8 +4,22 @@ import com.inmocontrol.controlador.respuesta.RespuestaExito;
 import com.inmocontrol.dto.ContratoDTO;
 import com.inmocontrol.dto.PropiedadDTO;
 import com.inmocontrol.entidad.ContratoEntidad;
-import com.inmocontrol.negocio.fachada.contrato.*;
-import com.inmocontrol.negocio.fachada.contrato.impl.*;
+import com.inmocontrol.negocio.fachada.contrato.ActivarContratoFachada;
+import com.inmocontrol.negocio.fachada.contrato.ConsultarContratoPorFiltrosFachada;
+import com.inmocontrol.negocio.fachada.contrato.ConsultarContratoPorIdFachada;
+import com.inmocontrol.negocio.fachada.contrato.ConsultarContratoTodosFachada;
+import com.inmocontrol.negocio.fachada.contrato.EliminarContratoFachada;
+import com.inmocontrol.negocio.fachada.contrato.ModificarContratoFachada;
+import com.inmocontrol.negocio.fachada.contrato.RegistrarContratoFachada;
+import com.inmocontrol.negocio.fachada.contrato.SuspenderContratoFachada;
+import com.inmocontrol.negocio.fachada.contrato.impl.ActivarContratoFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.ConsultarContratoPorFiltrosFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.ConsultarContratoPorIdFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.ConsultarContratoTodosFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.EliminarContratoFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.ModificarContratoFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.RegistrarContratoFachadaImpl;
+import com.inmocontrol.negocio.fachada.contrato.impl.SuspenderContratoFachadaImpl;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
@@ -61,12 +75,11 @@ public class ContratoControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<ContratoEntidad>> registrar(@RequestBody ContratoDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody ContratoDTO dto) {
     RegistrarContratoFachada fachada = new RegistrarContratoFachadaImpl();
-    ContratoEntidad resultado = new ContratoEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Contrato registrado exitosamente", resultado));
+        .body(RespuestaExito.crear("Contrato registrado exitosamente"));
   }
 
   @PutMapping
@@ -82,20 +95,20 @@ public class ContratoControlador {
     ContratoDTO dto = new ContratoDTO.Builder().id(id).build();
     EliminarContratoFachada fachada = new EliminarContratoFachadaImpl();
     fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Contrato eliminado exitosamente", null));
+    return ResponseEntity.ok(RespuestaExito.crear("Contrato eliminado exitosamente"));
   }
 
   @PostMapping("/suspender")
   public ResponseEntity<RespuestaExito<Void>> suspender(@RequestBody ContratoDTO dto) {
     SuspenderContratoFachada fachada = new SuspenderContratoFachadaImpl();
     fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Contrato suspendido exitosamente", null));
+    return ResponseEntity.ok(RespuestaExito.crear("Contrato suspendido exitosamente"));
   }
 
   @PostMapping("/activar")
   public ResponseEntity<RespuestaExito<Void>> activar(@RequestBody ContratoDTO dto) {
     ActivarContratoFachada fachada = new ActivarContratoFachadaImpl();
     fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Contrato activado exitosamente", null));
+    return ResponseEntity.ok(RespuestaExito.crear("Contrato activado exitosamente"));
   }
 }

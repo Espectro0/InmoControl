@@ -6,11 +6,13 @@ import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.RegistrarPersonaCasoUso;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
+import com.inmocontrol.transversal.UtilDate;
 import com.inmocontrol.transversal.UtilEmail;
 import com.inmocontrol.transversal.UtilIdentificador;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilTelefono;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
@@ -106,8 +108,12 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
   }
 
   private void registrarPersona(PersonaDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerPersonaDAO().consultarPorId(uuid) != null);
     PersonaEntidad entidad =
         new PersonaEntidad.Builder()
+            .id(idUnico)
             .tipoDocumento(
                 new TipoDocumentoEntidad.Builder().id(datos.getTipoDocumento().getId()).build())
             .numeroIdentificacion(UtilSanitizacion.sanitizar(datos.getNumeroIdentificacion()))
@@ -131,7 +137,7 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
                     ? new CiudadEntidad.Builder().id(datos.getCiudadResidencia().getId()).build()
                     : null)
             .fechaNacimiento(datos.getFechaNacimiento())
-            .edad(datos.getEdad())
+            .edad(UtilDate.calcularEdad(datos.getFechaNacimiento()))
             .build();
     daoFactory.obtenerPersonaDAO().crear(entidad);
   }

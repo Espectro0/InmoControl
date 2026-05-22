@@ -23,6 +23,10 @@ public class ConsultarEstratoPorFiltrosCasoUsoImpl implements ConsultarEstratoPo
     }
     return daoFactory
         .obtenerEstratoDAO()
-        .consultarPorFiltro(new EstratoEntidad.Builder().nombre(datos.getNombre()).build());
+        .consultarPorFiltro(
+            new EstratoEntidad.Builder()
+                .nombre(datos.getNombre())
+                .descripcion(datos.getDescripcion())
+                .build());
   }
 }

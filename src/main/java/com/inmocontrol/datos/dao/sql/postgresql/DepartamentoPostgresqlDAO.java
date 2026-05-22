@@ -20,7 +20,8 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
 
   @Override
   public DepartamentoEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre, pais FROM departamento WHERE id = ?";
+    String sql =
+        "SELECT d.id, d.nombre, d.pais, p.nombre as pais_nombre FROM departamento d JOIN pais p ON d.pais = p.id WHERE d.id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +39,8 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
 
   @Override
   public List<DepartamentoEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre, pais FROM departamento";
+    String sql =
+        "SELECT d.id, d.nombre, d.pais, p.nombre as pais_nombre FROM departamento d JOIN pais p ON d.pais = p.id";
     List<DepartamentoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,16 +58,17 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
 
   @Override
   public List<DepartamentoEntidad> consultarPorFiltro(DepartamentoEntidad filtro) {
-    String sql = "SELECT id, nombre, pais FROM departamento WHERE 1=1";
+    String sql =
+        "SELECT d.id, d.nombre, d.pais, p.nombre as pais_nombre FROM departamento d JOIN pais p ON d.pais = p.id WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-      sql += " AND nombre = ?";
+      sql += " AND d.nombre = ?";
       parametros.add(filtro.getNombre());
     }
 
     if (filtro.getPais() != null && filtro.getPais().getId() != null) {
-      sql += " AND pais = ?";
+      sql += " AND d.pais = ?";
       parametros.add(filtro.getPais().getId());
     }
 
@@ -95,6 +98,7 @@ public class DepartamentoPostgresqlDAO extends SQLDAO implements DepartamentoDAO
         .pais(
             new com.inmocontrol.entidad.PaisEntidad.Builder()
                 .id(rs.getObject("pais", UUID.class))
+                .nombre(rs.getString("pais_nombre"))
                 .build())
         .build();
   }

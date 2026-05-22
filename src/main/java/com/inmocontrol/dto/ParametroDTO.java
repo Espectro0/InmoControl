@@ -8,6 +8,8 @@ public final class ParametroDTO {
   private String placeholder;
   private String descripcion;
 
+  public ParametroDTO() {}
+
   private ParametroDTO(final Builder builder) {
     setId(builder.id);
     setPlaceholder(builder.placeholder);
@@ -30,11 +32,11 @@ public final class ParametroDTO {
     this.id = id;
   }
 
-  private void setPlaceholder(final String placeholder) {
+  public void setPlaceholder(final String placeholder) {
     this.placeholder = UtilTexto.aplicarTrim(placeholder);
   }
 
-  private void setDescripcion(final String descripcion) {
+  public void setDescripcion(final String descripcion) {
     this.descripcion = UtilTexto.aplicarTrim(descripcion);
   }
 

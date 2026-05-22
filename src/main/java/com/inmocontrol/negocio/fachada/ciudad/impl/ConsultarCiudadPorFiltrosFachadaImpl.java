@@ -6,6 +6,8 @@ import com.inmocontrol.entidad.CiudadEntidad;
 import com.inmocontrol.negocio.casouso.ciudad.ConsultarCiudadPorFiltrosCasoUso;
 import com.inmocontrol.negocio.casouso.ciudad.impl.ConsultarCiudadPorFiltrosCasoUsoImpl;
 import com.inmocontrol.negocio.dominio.CiudadDominio;
+import com.inmocontrol.negocio.dominio.DepartamentoDominio;
+import com.inmocontrol.negocio.dominio.PaisDominio;
 import com.inmocontrol.negocio.fachada.ciudad.ConsultarCiudadPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
@@ -29,7 +31,22 @@ public class ConsultarCiudadPorFiltrosFachadaImpl implements ConsultarCiudadPorF
     }
 
     try {
-      CiudadDominio dominio = new CiudadDominio.Builder().nombre(datos.getNombre()).build();
+      CiudadDominio dominio =
+          new CiudadDominio.Builder()
+              .nombre(datos.getNombre())
+              .departamento(
+                  datos.getDepartamento() != null
+                      ? new DepartamentoDominio.Builder()
+                          .id(datos.getDepartamento().getId())
+                          .pais(
+                              datos.getDepartamento().getPais() != null
+                                  ? new PaisDominio.Builder()
+                                      .id(datos.getDepartamento().getPais().getId())
+                                      .build()
+                                  : null)
+                          .build()
+                      : null)
+              .build();
       return casoUso.ejecutar(dominio);
 
     } catch (Exception excepcion) {

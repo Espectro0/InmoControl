@@ -9,6 +9,8 @@ public final class CiudadDTO {
   private DepartamentoDTO departamento;
   private UUID departamentoId;
 
+  public CiudadDTO() {}
+
   private CiudadDTO(final Builder builder) {
     setId(builder.id);
     setNombre(builder.nombre);
@@ -32,19 +34,19 @@ public final class CiudadDTO {
     return departamentoId;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setNombre(final String nombre) {
+  public void setNombre(final String nombre) {
     this.nombre = UtilTexto.aplicarTrim(nombre);
   }
 
-  private void setDepartamento(final DepartamentoDTO departamento) {
+  public void setDepartamento(final DepartamentoDTO departamento) {
     this.departamento = departamento;
   }
 
-  private void setDepartamentoId(final UUID departamentoId) {
+  public void setDepartamentoId(final UUID departamentoId) {
     this.departamentoId = departamentoId;
   }
 

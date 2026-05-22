@@ -13,6 +13,8 @@ public final class ContratoDTO {
   private Boolean esActivo;
   private PropiedadDTO propiedad;
 
+  public ContratoDTO() {}
+
   private ContratoDTO(final Builder builder) {
     setId(builder.id);
     setCodigoContrato(builder.codigoContrato);
@@ -46,27 +48,27 @@ public final class ContratoDTO {
     return propiedad;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setCodigoContrato(final String codigoContrato) {
+  public void setCodigoContrato(final String codigoContrato) {
     this.codigoContrato = UtilTexto.aplicarTrim(codigoContrato);
   }
 
-  private void setFechaInicio(final Date fechaInicio) {
+  public void setFechaInicio(final Date fechaInicio) {
     this.fechaInicio = UtilDate.obtenerValorDefecto(fechaInicio);
   }
 
-  private void setFechaFin(final Date fechaFin) {
+  public void setFechaFin(final Date fechaFin) {
     this.fechaFin = UtilDate.obtenerValorDefecto(fechaFin);
   }
 
-  private void setEsActivo(final Boolean esActivo) {
+  public void setEsActivo(final Boolean esActivo) {
     this.esActivo = esActivo;
   }
 
-  private void setPropiedad(final PropiedadDTO propiedad) {
+  public void setPropiedad(final PropiedadDTO propiedad) {
     this.propiedad = propiedad;
   }
 

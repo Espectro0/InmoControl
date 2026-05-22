@@ -24,8 +24,8 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public ParticipanteContratoEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, persona, tipo_participante, contrato "
-            + "FROM participante_contrato WHERE id = ?";
+        "SELECT id, persona, tipoparticipante, contrato "
+            + "FROM participantecontrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -45,7 +45,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public void crear(ParticipanteContratoEntidad entidad) {
     String sql =
-        "INSERT INTO participante_contrato (id, persona, tipo_participante, contrato) "
+        "INSERT INTO participantecontrato (id, persona, tipoparticipante, contrato) "
             + "VALUES (?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -63,7 +63,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public void actualizar(UUID id, ParticipanteContratoEntidad entidad) {
     String sql =
-        "UPDATE participante_contrato SET persona = ?, tipo_participante = ?, "
+        "UPDATE participantecontrato SET persona = ?, tipoparticipante = ?, "
             + "contrato = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -80,7 +80,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
 
   @Override
   public void eliminar(UUID id) {
-    String sql = "DELETE FROM participante_contrato WHERE id = ?";
+    String sql = "DELETE FROM participantecontrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -92,7 +92,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
 
   @Override
   public List<ParticipanteContratoEntidad> consultarTodos() {
-    String sql = "SELECT id, persona, tipo_participante, contrato FROM participante_contrato";
+    String sql = "SELECT id, persona, tipoparticipante, contrato FROM participantecontrato";
     List<ParticipanteContratoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -112,7 +112,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
   @Override
   public List<ParticipanteContratoEntidad> consultarPorFiltro(ParticipanteContratoEntidad filtro) {
     String sql =
-        "SELECT id, persona, tipo_participante, contrato FROM participante_contrato WHERE 1=1";
+        "SELECT id, persona, tipoparticipante, contrato FROM participantecontrato WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getPersona() != null && filtro.getPersona().getId() != null) {
@@ -121,7 +121,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
     }
 
     if (filtro.getTipoParticipante() != null && filtro.getTipoParticipante().getId() != null) {
-      sql += " AND tipo_participante = ?";
+      sql += " AND tipoparticipante = ?";
       parametros.add(filtro.getTipoParticipante().getId());
     }
 
@@ -156,7 +156,7 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
         .persona(new PersonaEntidad.Builder().id(rs.getObject("persona", UUID.class)).build())
         .tipoParticipante(
             new TipoParticipanteEntidad.Builder()
-                .id(rs.getObject("tipo_participante", UUID.class))
+                .id(rs.getObject("tipoparticipante", UUID.class))
                 .build())
         .contrato(new ContratoEntidad.Builder().id(rs.getObject("contrato", UUID.class)).build())
         .build();

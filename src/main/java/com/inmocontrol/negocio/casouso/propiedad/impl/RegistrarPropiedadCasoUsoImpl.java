@@ -9,6 +9,7 @@ import com.inmocontrol.negocio.casouso.propiedad.RegistrarPropiedadCasoUso;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
@@ -84,8 +85,12 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
   }
 
   private void registrarPropiedad(PropiedadDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerPropiedadDAO().consultarPorId(uuid) != null);
     PropiedadEntidad entidad =
         new PropiedadEntidad.Builder()
+            .id(idUnico)
             .tipoPropiedad(
                 new TipoPropiedadEntidad.Builder().id(datos.getTipoPropiedad().getId()).build())
             .estrato(

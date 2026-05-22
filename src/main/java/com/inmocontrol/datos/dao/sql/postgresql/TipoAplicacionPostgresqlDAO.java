@@ -20,7 +20,7 @@ public class TipoAplicacionPostgresqlDAO extends SQLDAO implements TipoAplicacio
 
   @Override
   public TipoAplicacionEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE id = ?";
+    String sql = "SELECT id, nombre FROM tipoaplicacion WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +38,7 @@ public class TipoAplicacionPostgresqlDAO extends SQLDAO implements TipoAplicacio
 
   @Override
   public List<TipoAplicacionEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre FROM tipo_aplicacion";
+    String sql = "SELECT id, nombre FROM tipoaplicacion";
     List<TipoAplicacionEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,7 +56,7 @@ public class TipoAplicacionPostgresqlDAO extends SQLDAO implements TipoAplicacio
 
   @Override
   public List<TipoAplicacionEntidad> consultarPorFiltro(TipoAplicacionEntidad filtro) {
-    String sql = "SELECT id, nombre FROM tipo_aplicacion WHERE 1=1";
+    String sql = "SELECT id, nombre FROM tipoaplicacion WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {

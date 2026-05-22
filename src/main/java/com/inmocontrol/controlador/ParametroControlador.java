@@ -48,12 +48,11 @@ public class ParametroControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<ParametroEntidad>> registrar(@RequestBody ParametroDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody ParametroDTO dto) {
     RegistrarParametroFachada fachada = new RegistrarParametroFachadaImpl();
-    ParametroEntidad resultado = new ParametroEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Parametro registrado exitosamente", resultado));
+        .body(RespuestaExito.crear("Parametro registrado exitosamente"));
   }
 
   @PutMapping
@@ -69,6 +68,6 @@ public class ParametroControlador {
     ParametroDTO dto = new ParametroDTO.Builder().id(id).build();
     EliminarParametroFachada fachada = new EliminarParametroFachadaImpl();
     fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Parametro eliminado exitosamente", null));
+    return ResponseEntity.ok(RespuestaExito.crear("Parametro eliminado exitosamente"));
   }
 }

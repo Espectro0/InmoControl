@@ -23,8 +23,12 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public ClausulaContratoEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, area_referencia, tipo_aplicacion, titulo, contenido_legal "
-            + "FROM clausula_contrato WHERE id = ?";
+        "SELECT c.id, c.areareferencia, c.tipoaplicacion, c.titulo, c.contenidolegal, "
+            + "ar.nombre as ar_nombre, ta.nombre as ta_nombre "
+            + "FROM clausulacontrato c "
+            + "JOIN areareferencia ar ON c.areareferencia = ar.id "
+            + "JOIN tipoaplicacion ta ON c.tipoaplicacion = ta.id "
+            + "WHERE c.id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -44,8 +48,11 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public List<ClausulaContratoEntidad> consultarTodos() {
     String sql =
-        "SELECT id, area_referencia, tipo_aplicacion, titulo, contenido_legal "
-            + "FROM clausula_contrato";
+        "SELECT c.id, c.areareferencia, c.tipoaplicacion, c.titulo, c.contenidolegal, "
+            + "ar.nombre as ar_nombre, ta.nombre as ta_nombre "
+            + "FROM clausulacontrato c "
+            + "JOIN areareferencia ar ON c.areareferencia = ar.id "
+            + "JOIN tipoaplicacion ta ON c.tipoaplicacion = ta.id";
     List<ClausulaContratoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -64,17 +71,21 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public List<ClausulaContratoEntidad> consultarPorFiltro(ClausulaContratoEntidad filtro) {
     String sql =
-        "SELECT id, area_referencia, tipo_aplicacion, titulo, contenido_legal "
-            + "FROM clausula_contrato WHERE 1=1";
+        "SELECT c.id, c.areareferencia, c.tipoaplicacion, c.titulo, c.contenidolegal, "
+            + "ar.nombre as ar_nombre, ta.nombre as ta_nombre "
+            + "FROM clausulacontrato c "
+            + "JOIN areareferencia ar ON c.areareferencia = ar.id "
+            + "JOIN tipoaplicacion ta ON c.tipoaplicacion = ta.id "
+            + "WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getTitulo() != null && !filtro.getTitulo().isEmpty()) {
-      sql += " AND titulo = ?";
+      sql += " AND c.titulo = ?";
       parametros.add(filtro.getTitulo());
     }
 
     if (filtro.getAreaReferencia() != null && filtro.getAreaReferencia().getId() != null) {
-      sql += " AND area_referencia = ?";
+      sql += " AND c.areareferencia = ?";
       parametros.add(filtro.getAreaReferencia().getId());
     }
 
@@ -101,7 +112,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public void crear(ClausulaContratoEntidad entidad) {
     String sql =
-        "INSERT INTO clausula_contrato (id, area_referencia, tipo_aplicacion, titulo, contenido_legal) "
+        "INSERT INTO clausulacontrato (id, areareferencia, tipoaplicacion, titulo, contenidolegal) "
             + "VALUES (?, ?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -121,8 +132,8 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
   @Override
   public void actualizar(UUID id, ClausulaContratoEntidad entidad) {
     String sql =
-        "UPDATE clausula_contrato SET area_referencia = ?, tipo_aplicacion = ?, "
-            + "titulo = ?, contenido_legal = ? WHERE id = ?";
+        "UPDATE clausulacontrato SET areareferencia = ?, tipoaplicacion = ?, "
+            + "titulo = ?, contenidolegal = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(
@@ -140,7 +151,7 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
 
   @Override
   public void eliminar(UUID id) {
-    String sql = "DELETE FROM clausula_contrato WHERE id = ?";
+    String sql = "DELETE FROM clausulacontrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -155,14 +166,16 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
         .id(rs.getObject("id", UUID.class))
         .areaReferencia(
             new AreaReferenciaEntidad.Builder()
-                .id(rs.getObject("area_referencia", UUID.class))
+                .id(rs.getObject("areareferencia", UUID.class))
+                .nombre(rs.getString("ar_nombre"))
                 .build())
         .tipoAplicacion(
             new TipoAplicacionEntidad.Builder()
-                .id(rs.getObject("tipo_aplicacion", UUID.class))
+                .id(rs.getObject("tipoaplicacion", UUID.class))
+                .nombre(rs.getString("ta_nombre"))
                 .build())
         .titulo(rs.getString("titulo"))
-        .contenidoLegal(rs.getString("contenido_legal"))
+        .contenidoLegal(rs.getString("contenidolegal"))
         .build();
   }
 }

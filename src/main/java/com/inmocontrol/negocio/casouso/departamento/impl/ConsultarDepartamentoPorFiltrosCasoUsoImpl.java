@@ -2,6 +2,7 @@ package com.inmocontrol.negocio.casouso.departamento.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.DepartamentoEntidad;
+import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.negocio.casouso.departamento.ConsultarDepartamentoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.DepartamentoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -24,6 +25,13 @@ public class ConsultarDepartamentoPorFiltrosCasoUsoImpl
     }
     return daoFactory
         .obtenerDepartamentoDAO()
-        .consultarPorFiltro(new DepartamentoEntidad.Builder().nombre(datos.getNombre()).build());
+        .consultarPorFiltro(
+            new DepartamentoEntidad.Builder()
+                .nombre(datos.getNombre())
+                .pais(
+                    datos.getPais() != null
+                        ? new PaisEntidad.Builder().id(datos.getPais().getId()).build()
+                        : null)
+                .build());
   }
 }

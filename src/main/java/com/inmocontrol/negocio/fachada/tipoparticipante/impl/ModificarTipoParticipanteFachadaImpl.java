@@ -12,34 +12,33 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarTipoParticipanteFachadaImpl implements ModificarTipoParticipanteFachada {
 
-  private DAOFactory daoFactory;
-  private ModificarTipoParticipanteCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ModificarTipoParticipanteCasoUso casoUso;
 
-  public ModificarTipoParticipanteFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ModificarTipoParticipanteCasoUsoImpl(daoFactory);
-  }
+	public ModificarTipoParticipanteFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ModificarTipoParticipanteCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(TipoParticipanteDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(TipoParticipanteDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      TipoParticipanteDominio dominio =
-          new TipoParticipanteDominio.Builder().id(datos.getId()).nombre(datos.getNombre()).build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			TipoParticipanteDominio dominio = new TipoParticipanteDominio.Builder().id(datos.getId())
+					.nombre(datos.getNombre()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion(
-          "Ocurrio un error modificando el tipo de participante", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error modificando el tipo de participante", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

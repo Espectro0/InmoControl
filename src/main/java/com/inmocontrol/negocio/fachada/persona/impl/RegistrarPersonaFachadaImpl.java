@@ -14,54 +14,43 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarPersonaFachadaImpl implements RegistrarPersonaFachada {
 
-  private DAOFactory daoFactory;
-  private RegistrarPersonaCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private RegistrarPersonaCasoUso casoUso;
 
-  public RegistrarPersonaFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new RegistrarPersonaCasoUsoImpl(daoFactory);
-  }
+	public RegistrarPersonaFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new RegistrarPersonaCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(PersonaDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(PersonaDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      PersonaDominio dominio =
-          new PersonaDominio.Builder()
-              .tipoDocumento(
-                  datos.getTipoDocumento() != null
-                      ? new TipoDocumentoDominio.Builder()
-                          .id(datos.getTipoDocumento().getId())
-                          .build()
-                      : null)
-              .numeroIdentificacion(datos.getNumeroIdentificacion())
-              .primerNombre(datos.getPrimerNombre())
-              .segundoNombre(datos.getSegundoNombre())
-              .primerApellido(datos.getPrimerApellido())
-              .segundoApellido(datos.getSegundoApellido())
-              .numeroTelefonico(datos.getNumeroTelefonico())
-              .correoElectronico(datos.getCorreoElectronico())
-              .direccionResidencia(datos.getDireccionResidencia())
-              .ciudadResidencia(
-                  datos.getCiudadResidencia() != null
-                      ? new CiudadDominio.Builder().id(datos.getCiudadResidencia().getId()).build()
-                      : null)
-              .fechaNacimiento(datos.getFechaNacimiento())
-              .edad(datos.getEdad())
-              .build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			PersonaDominio dominio = new PersonaDominio.Builder()
+					.tipoDocumento(datos.getTipoDocumento() != null
+							? new TipoDocumentoDominio.Builder().id(datos.getTipoDocumento().getId()).build()
+							: null)
+					.numeroIdentificacion(datos.getNumeroIdentificacion()).primerNombre(datos.getPrimerNombre())
+					.segundoNombre(datos.getSegundoNombre()).primerApellido(datos.getPrimerApellido())
+					.segundoApellido(datos.getSegundoApellido()).numeroTelefonico(datos.getNumeroTelefonico())
+					.correoElectronico(datos.getCorreoElectronico()).direccionResidencia(datos.getDireccionResidencia())
+					.ciudadResidencia(datos.getCiudadResidencia() != null
+							? new CiudadDominio.Builder().id(datos.getCiudadResidencia().getId()).build()
+							: null)
+					.fechaNacimiento(datos.getFechaNacimiento()).edad(datos.getEdad()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion("Ocurrio un error registrando la persona", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error registrando la persona", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

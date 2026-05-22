@@ -6,6 +6,7 @@ import com.inmocontrol.entidad.DepartamentoEntidad;
 import com.inmocontrol.negocio.casouso.departamento.ConsultarDepartamentoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.casouso.departamento.impl.ConsultarDepartamentoPorFiltrosCasoUsoImpl;
 import com.inmocontrol.negocio.dominio.DepartamentoDominio;
+import com.inmocontrol.negocio.dominio.PaisDominio;
 import com.inmocontrol.negocio.fachada.departamento.ConsultarDepartamentoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
@@ -31,7 +32,13 @@ public class ConsultarDepartamentoPorFiltrosFachadaImpl
 
     try {
       DepartamentoDominio dominio =
-          new DepartamentoDominio.Builder().nombre(datos.getNombre()).build();
+          new DepartamentoDominio.Builder()
+              .nombre(datos.getNombre())
+              .pais(
+                  datos.getPais() != null
+                      ? new PaisDominio.Builder().id(datos.getPais().getId()).build()
+                      : null)
+              .build();
       return casoUso.ejecutar(dominio);
 
     } catch (Exception excepcion) {

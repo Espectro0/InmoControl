@@ -5,4 +5,5 @@ import com.inmocontrol.entidad.ParticipanteContratoEntidad;
 import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 
 public interface ConsultarParticipanteContratoPorIdFachada
-    extends FachadaConRetorno<ParticipanteContratoDTO, ParticipanteContratoEntidad> {}
+		extends FachadaConRetorno<ParticipanteContratoDTO, ParticipanteContratoEntidad> {
+}

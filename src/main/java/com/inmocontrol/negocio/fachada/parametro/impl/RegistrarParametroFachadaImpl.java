@@ -12,36 +12,33 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarParametroFachadaImpl implements RegistrarParametroFachada {
 
-  private DAOFactory daoFactory;
-  private RegistrarParametroCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private RegistrarParametroCasoUso casoUso;
 
-  public RegistrarParametroFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new RegistrarParametroCasoUsoImpl(daoFactory);
-  }
+	public RegistrarParametroFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new RegistrarParametroCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(ParametroDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del parametro no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(ParametroDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del parametro no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      ParametroDominio dominio =
-          new ParametroDominio.Builder()
-              .placeholder(datos.getPlaceholder())
-              .descripcion(datos.getDescripcion())
-              .build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			ParametroDominio dominio = new ParametroDominio.Builder().placeholder(datos.getPlaceholder())
+					.descripcion(datos.getDescripcion()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion("Ocurrio un error registrando el parametro", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error registrando el parametro", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

@@ -1,7 +1,9 @@
 package com.inmocontrol.negocio.casouso.persona.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
+import com.inmocontrol.entidad.CiudadEntidad;
 import com.inmocontrol.entidad.PersonaEntidad;
+import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.ConsultarPersonaPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -28,6 +30,13 @@ public class ConsultarPersonaPorFiltrosCasoUsoImpl implements ConsultarPersonaPo
                 .numeroIdentificacion(datos.getNumeroIdentificacion())
                 .primerNombre(datos.getPrimerNombre())
                 .primerApellido(datos.getPrimerApellido())
+                .correoElectronico(datos.getCorreoElectronico())
+                .tipoDocumento(datos.getTipoDocumento() != null
+                    ? new TipoDocumentoEntidad.Builder().id(datos.getTipoDocumento().getId()).build()
+                    : null)
+                .ciudadResidencia(datos.getCiudadResidencia() != null
+                    ? new CiudadEntidad.Builder().id(datos.getCiudadResidencia().getId()).build()
+                    : null)
                 .build());
   }
 }

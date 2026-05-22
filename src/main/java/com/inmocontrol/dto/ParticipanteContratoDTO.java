@@ -11,6 +11,8 @@ public final class ParticipanteContratoDTO {
   private UUID tipoParticipanteId;
   private UUID contratoId;
 
+  public ParticipanteContratoDTO() {}
+
   private ParticipanteContratoDTO(final Builder builder) {
     setId(builder.id);
     setPersona(builder.persona);
@@ -49,31 +51,31 @@ public final class ParticipanteContratoDTO {
     return contratoId;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setPersona(final PersonaDTO persona) {
+  public void setPersona(final PersonaDTO persona) {
     this.persona = persona;
   }
 
-  private void setTipoParticipante(final TipoParticipanteDTO tipoParticipante) {
+  public void setTipoParticipante(final TipoParticipanteDTO tipoParticipante) {
     this.tipoParticipante = tipoParticipante;
   }
 
-  private void setContrato(final ContratoDTO contrato) {
+  public void setContrato(final ContratoDTO contrato) {
     this.contrato = contrato;
   }
 
-  private void setPersonaId(final UUID personaId) {
+  public void setPersonaId(final UUID personaId) {
     this.personaId = personaId;
   }
 
-  private void setTipoParticipanteId(final UUID tipoParticipanteId) {
+  public void setTipoParticipanteId(final UUID tipoParticipanteId) {
     this.tipoParticipanteId = tipoParticipanteId;
   }
 
-  private void setContratoId(final UUID contratoId) {
+  public void setContratoId(final UUID contratoId) {
     this.contratoId = contratoId;
   }
 

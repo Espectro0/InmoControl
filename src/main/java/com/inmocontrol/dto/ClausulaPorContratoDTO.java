@@ -9,6 +9,8 @@ public final class ClausulaPorContratoDTO {
   private ContratoDTO contrato;
   private ClausulaContratoDTO clausula;
 
+  public ClausulaPorContratoDTO() {}
+
   private ClausulaPorContratoDTO(final Builder builder) {
     setId(builder.id);
     setNumeroClausula(builder.numeroClausula);
@@ -32,19 +34,19 @@ public final class ClausulaPorContratoDTO {
     return clausula;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setNumeroClausula(final Integer numeroClausula) {
+  public void setNumeroClausula(final Integer numeroClausula) {
     this.numeroClausula = UtilNumero.obtenerValorDefecto(numeroClausula);
   }
 
-  private void setContrato(final ContratoDTO contrato) {
+  public void setContrato(final ContratoDTO contrato) {
     this.contrato = contrato;
   }
 
-  private void setClausula(final ClausulaContratoDTO clausula) {
+  public void setClausula(final ClausulaContratoDTO clausula) {
     this.clausula = clausula;
   }
 

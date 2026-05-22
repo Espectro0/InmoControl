@@ -50,13 +50,11 @@ public class TipoParticipanteControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<TipoParticipanteEntidad>> registrar(
-      @RequestBody TipoParticipanteDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody TipoParticipanteDTO dto) {
     RegistrarTipoParticipanteFachada fachada = new RegistrarTipoParticipanteFachadaImpl();
-    TipoParticipanteEntidad resultado = new TipoParticipanteEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Tipo de participante registrado exitosamente", resultado));
+        .body(RespuestaExito.crear("Tipo de participante registrado exitosamente"));
   }
 
   @PutMapping
@@ -75,6 +73,6 @@ public class TipoParticipanteControlador {
     EliminarTipoParticipanteFachada fachada = new EliminarTipoParticipanteFachadaImpl();
     fachada.ejecutar(dto);
     return ResponseEntity.ok(
-        RespuestaExito.crear("Tipo de participante eliminado exitosamente", null));
+        RespuestaExito.crear("Tipo de participante eliminado exitosamente"));
   }
 }

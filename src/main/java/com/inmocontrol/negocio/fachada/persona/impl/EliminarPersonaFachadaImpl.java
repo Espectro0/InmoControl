@@ -12,32 +12,37 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarPersonaFachadaImpl implements EliminarPersonaFachada {
 
-  private DAOFactory daoFactory;
-  private EliminarPersonaCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private EliminarPersonaCasoUso casoUso;
 
-  public EliminarPersonaFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new EliminarPersonaCasoUsoImpl(daoFactory);
-  }
+	public EliminarPersonaFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new EliminarPersonaCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(PersonaDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(PersonaDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      PersonaDominio dominio = new PersonaDominio.Builder().id(datos.getId()).build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			var existente = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getId());
+			if (existente == null) {
+				throw new ValidacionExcepcion(
+				    "La persona con id " + datos.getId() + " no existe.");
+			}
+			PersonaDominio dominio = new PersonaDominio.Builder().id(datos.getId()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion("Ocurrio un error eliminando la persona", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error eliminando la persona", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

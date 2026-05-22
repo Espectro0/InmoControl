@@ -6,6 +6,7 @@ import com.inmocontrol.negocio.casouso.areareferencia.RegistrarAreaReferenciaCas
 import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
@@ -53,8 +54,12 @@ public class RegistrarAreaReferenciaCasoUsoImpl implements RegistrarAreaReferenc
   }
 
   private void registrarAreaReferencia(AreaReferenciaDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerAreaReferenciaDAO().consultarPorId(uuid) != null);
     AreaReferenciaEntidad entidad =
         new AreaReferenciaEntidad.Builder()
+            .id(idUnico)
             .nombre(UtilSanitizacion.sanitizar(datos.getNombre()))
             .build();
     daoFactory.obtenerAreaReferenciaDAO().crear(entidad);

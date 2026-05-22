@@ -5,5 +5,5 @@ import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import java.util.List;
 
-public interface ConsultarContratoPorFiltrosFachada
-    extends FachadaConRetorno<ContratoDTO, List<ContratoEntidad>> {}
+public interface ConsultarContratoPorFiltrosFachada extends FachadaConRetorno<ContratoDTO, List<ContratoEntidad>> {
+}

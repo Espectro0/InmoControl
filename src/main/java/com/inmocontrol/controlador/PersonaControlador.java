@@ -72,12 +72,11 @@ public class PersonaControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<PersonaEntidad>> registrar(@RequestBody PersonaDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody PersonaDTO dto) {
     RegistrarPersonaFachada fachada = new RegistrarPersonaFachadaImpl();
-    PersonaEntidad resultado = new PersonaEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Persona registrada exitosamente", resultado));
+        .body(RespuestaExito.crear("Persona registrada exitosamente"));
   }
 
   @PutMapping
@@ -93,6 +92,6 @@ public class PersonaControlador {
     PersonaDTO dto = new PersonaDTO.Builder().id(id).build();
     EliminarPersonaFachada fachada = new EliminarPersonaFachadaImpl();
     fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Persona eliminada exitosamente", null));
+    return ResponseEntity.ok(RespuestaExito.crear("Persona eliminada exitosamente"));
   }
 }

@@ -21,6 +21,8 @@ public final class PersonaDTO {
   private Date fechaNacimiento;
   private Integer edad;
 
+  public PersonaDTO() {}
+
   private PersonaDTO(final Builder builder) {
     setId(builder.id);
     setTipoDocumento(builder.tipoDocumento);
@@ -89,55 +91,55 @@ public final class PersonaDTO {
     return edad;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setTipoDocumento(final TipoDocumentoDTO tipoDocumento) {
+  public void setTipoDocumento(final TipoDocumentoDTO tipoDocumento) {
     this.tipoDocumento = tipoDocumento;
   }
 
-  private void setNumeroIdentificacion(final String numeroIdentificacion) {
+  public void setNumeroIdentificacion(final String numeroIdentificacion) {
     this.numeroIdentificacion = UtilTexto.aplicarTrim(numeroIdentificacion);
   }
 
-  private void setPrimerNombre(final String primerNombre) {
+  public void setPrimerNombre(final String primerNombre) {
     this.primerNombre = UtilTexto.aplicarTrim(primerNombre);
   }
 
-  private void setSegundoNombre(final String segundoNombre) {
+  public void setSegundoNombre(final String segundoNombre) {
     this.segundoNombre = UtilTexto.aplicarTrim(segundoNombre);
   }
 
-  private void setPrimerApellido(final String primerApellido) {
+  public void setPrimerApellido(final String primerApellido) {
     this.primerApellido = UtilTexto.aplicarTrim(primerApellido);
   }
 
-  private void setSegundoApellido(final String segundoApellido) {
+  public void setSegundoApellido(final String segundoApellido) {
     this.segundoApellido = UtilTexto.aplicarTrim(segundoApellido);
   }
 
-  private void setNumeroTelefonico(final String numeroTelefonico) {
+  public void setNumeroTelefonico(final String numeroTelefonico) {
     this.numeroTelefonico = UtilTexto.aplicarTrim(numeroTelefonico);
   }
 
-  private void setCorreoElectronico(final String correoElectronico) {
+  public void setCorreoElectronico(final String correoElectronico) {
     this.correoElectronico = UtilTexto.aplicarTrim(correoElectronico);
   }
 
-  private void setDireccionResidencia(final String direccionResidencia) {
+  public void setDireccionResidencia(final String direccionResidencia) {
     this.direccionResidencia = UtilTexto.aplicarTrim(direccionResidencia);
   }
 
-  private void setCiudadResidencia(final CiudadDTO ciudadResidencia) {
+  public void setCiudadResidencia(final CiudadDTO ciudadResidencia) {
     this.ciudadResidencia = ciudadResidencia;
   }
 
-  private void setFechaNacimiento(final Date fechaNacimiento) {
+  public void setFechaNacimiento(final Date fechaNacimiento) {
     this.fechaNacimiento = UtilDate.obtenerValorDefecto(fechaNacimiento);
   }
 
-  private void setEdad(final Integer edad) {
+  public void setEdad(final Integer edad) {
     this.edad = UtilNumero.obtenerValorDefecto(edad);
   }
 

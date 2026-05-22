@@ -6,5 +6,5 @@ import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import java.util.List;
 
 public interface ConsultarParametroClausulaContratoPorFiltrosFachada
-    extends FachadaConRetorno<
-        ParametroClausulaContratoDTO, List<ParametroClausulaContratoEntidad>> {}
+		extends FachadaConRetorno<ParametroClausulaContratoDTO, List<ParametroClausulaContratoEntidad>> {
+}

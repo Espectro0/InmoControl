@@ -58,13 +58,11 @@ public class ParticipanteContratoControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<ParticipanteContratoEntidad>> registrar(
-      @RequestBody ParticipanteContratoDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody ParticipanteContratoDTO dto) {
     RegistrarParticipanteContratoFachada fachada = new RegistrarParticipanteContratoFachadaImpl();
-    ParticipanteContratoEntidad resultado = new ParticipanteContratoEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Participante de contrato registrado exitosamente", resultado));
+        .body(RespuestaExito.crear("Participante de contrato registrado exitosamente"));
   }
 
   @PutMapping
@@ -83,6 +81,6 @@ public class ParticipanteContratoControlador {
     EliminarParticipanteContratoFachada fachada = new EliminarParticipanteContratoFachadaImpl();
     fachada.ejecutar(dto);
     return ResponseEntity.ok(
-        RespuestaExito.crear("Participante de contrato eliminado exitosamente", null));
+        RespuestaExito.crear("Participante de contrato eliminado exitosamente"));
   }
 }

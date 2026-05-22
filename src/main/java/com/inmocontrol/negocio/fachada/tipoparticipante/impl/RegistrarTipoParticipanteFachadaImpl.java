@@ -12,34 +12,32 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarTipoParticipanteFachadaImpl implements RegistrarTipoParticipanteFachada {
 
-  private DAOFactory daoFactory;
-  private RegistrarTipoParticipanteCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private RegistrarTipoParticipanteCasoUso casoUso;
 
-  public RegistrarTipoParticipanteFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new RegistrarTipoParticipanteCasoUsoImpl(daoFactory);
-  }
+	public RegistrarTipoParticipanteFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new RegistrarTipoParticipanteCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(TipoParticipanteDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(TipoParticipanteDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      TipoParticipanteDominio dominio =
-          new TipoParticipanteDominio.Builder().nombre(datos.getNombre()).build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			TipoParticipanteDominio dominio = new TipoParticipanteDominio.Builder().nombre(datos.getNombre()).build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion(
-          "Ocurrio un error registrando el tipo de participante", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error registrando el tipo de participante", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

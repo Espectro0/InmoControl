@@ -1,6 +1,7 @@
 package com.inmocontrol.transversal;
 
 import java.util.UUID;
+import java.util.function.Function;
 
 public final class UtilUUID {
 
@@ -34,5 +35,17 @@ public final class UtilUUID {
 
   public static boolean esUUIDCero(final UUID uuid) {
     return UUID_CERO.equals(uuid);
+  }
+
+  public static UUID generar() {
+    return UUID.randomUUID();
+  }
+
+  public static UUID generarUnico(Function<UUID, Boolean> existeChecker) {
+    UUID uuid;
+    do {
+      uuid = UUID.randomUUID();
+    } while (existeChecker.apply(uuid));
+    return uuid;
   }
 }

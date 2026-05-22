@@ -13,29 +13,29 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarPropiedadPorIdFachadaImpl implements ConsultarPropiedadPorIdFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarPropiedadPorIdCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarPropiedadPorIdCasoUso casoUso;
 
-  public ConsultarPropiedadPorIdFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarPropiedadPorIdCasoUsoImpl(daoFactory);
-  }
+	public ConsultarPropiedadPorIdFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarPropiedadPorIdCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public PropiedadEntidad ejecutar(PropiedadDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la propiedad no pueden ser nulos");
-    }
+	@Override
+	public PropiedadEntidad ejecutar(PropiedadDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la propiedad no pueden ser nulos");
+		}
 
-    try {
-      PropiedadDominio dominio = new PropiedadDominio.Builder().id(datos.getId()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			PropiedadDominio dominio = new PropiedadDominio.Builder().id(datos.getId()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

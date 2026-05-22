@@ -13,41 +13,38 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarContratoFachadaImpl implements RegistrarContratoFachada {
 
-  private DAOFactory daoFactory;
-  private RegistrarContratoCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private RegistrarContratoCasoUso casoUso;
 
-  public RegistrarContratoFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new RegistrarContratoCasoUsoImpl(daoFactory);
-  }
+	public RegistrarContratoFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new RegistrarContratoCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(ContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(ContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      ContratoDominio dominio =
-          new ContratoDominio.Builder()
-              .codigoContrato(datos.getCodigoContrato())
-              .fechaInicio(datos.getFechaInicio())
-              .fechaFin(datos.getFechaFin())
-              .propiedad(
-                  datos.getPropiedad() != null
-                      ? new PropiedadDominio.Builder().id(datos.getPropiedad().getId()).build()
-                      : null)
-              .build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			ContratoDominio dominio = new ContratoDominio.Builder().codigoContrato(datos.getCodigoContrato())
+					.fechaInicio(datos.getFechaInicio()).fechaFin(datos.getFechaFin())
+					.esActivo(datos.getEsActivo() != null ? datos.getEsActivo() : false)
+					.propiedad(datos.getPropiedad() != null
+							? new PropiedadDominio.Builder().id(datos.getPropiedad().getId()).build()
+							: null)
+					.build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion("Ocurrio un error registrando el contrato", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error registrando el contrato", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

@@ -10,6 +10,8 @@ public final class ClausulaContratoDTO {
   private String titulo;
   private String contenidoLegal;
 
+  public ClausulaContratoDTO() {}
+
   private ClausulaContratoDTO(final Builder builder) {
     setId(builder.id);
     setAreaReferencia(builder.areaReferencia);
@@ -38,23 +40,23 @@ public final class ClausulaContratoDTO {
     return contenidoLegal;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setAreaReferencia(final AreaReferenciaDTO areaReferencia) {
+  public void setAreaReferencia(final AreaReferenciaDTO areaReferencia) {
     this.areaReferencia = areaReferencia;
   }
 
-  private void setTipoAplicacion(final TipoAplicacionDTO tipoAplicacion) {
+  public void setTipoAplicacion(final TipoAplicacionDTO tipoAplicacion) {
     this.tipoAplicacion = tipoAplicacion;
   }
 
-  private void setTitulo(final String titulo) {
+  public void setTitulo(final String titulo) {
     this.titulo = UtilTexto.aplicarTrim(titulo);
   }
 
-  private void setContenidoLegal(final String contenidoLegal) {
+  public void setContenidoLegal(final String contenidoLegal) {
     this.contenidoLegal = UtilTexto.aplicarTrim(contenidoLegal);
   }
 

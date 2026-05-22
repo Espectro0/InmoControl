@@ -12,33 +12,31 @@ import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 import java.util.List;
 
-public class ConsultarTipoParticipantePorFiltrosFachadaImpl
-    implements ConsultarTipoParticipantePorFiltrosFachada {
+public class ConsultarTipoParticipantePorFiltrosFachadaImpl implements ConsultarTipoParticipantePorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarTipoParticipantePorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarTipoParticipantePorFiltrosCasoUso casoUso;
 
-  public ConsultarTipoParticipantePorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarTipoParticipantePorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarTipoParticipantePorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarTipoParticipantePorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<TipoParticipanteEntidad> ejecutar(TipoParticipanteDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
-    }
+	@Override
+	public List<TipoParticipanteEntidad> ejecutar(TipoParticipanteDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
+		}
 
-    try {
-      TipoParticipanteDominio dominio =
-          new TipoParticipanteDominio.Builder().nombre(datos.getNombre()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			TipoParticipanteDominio dominio = new TipoParticipanteDominio.Builder().nombre(datos.getNombre()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

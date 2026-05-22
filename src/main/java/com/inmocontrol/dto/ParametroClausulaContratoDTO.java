@@ -9,6 +9,8 @@ public final class ParametroClausulaContratoDTO {
   private ClausulaPorContratoDTO clausulaPorContrato;
   private String valor;
 
+  public ParametroClausulaContratoDTO() {}
+
   private ParametroClausulaContratoDTO(final Builder builder) {
     setId(builder.id);
     setParametro(builder.parametro);
@@ -32,19 +34,19 @@ public final class ParametroClausulaContratoDTO {
     return valor;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setParametro(final ParametroDTO parametro) {
+  public void setParametro(final ParametroDTO parametro) {
     this.parametro = parametro;
   }
 
-  private void setClausulaPorContrato(final ClausulaPorContratoDTO clausulaPorContrato) {
+  public void setClausulaPorContrato(final ClausulaPorContratoDTO clausulaPorContrato) {
     this.clausulaPorContrato = clausulaPorContrato;
   }
 
-  private void setValor(final String valor) {
+  public void setValor(final String valor) {
     this.valor = UtilTexto.aplicarTrim(valor);
   }
 

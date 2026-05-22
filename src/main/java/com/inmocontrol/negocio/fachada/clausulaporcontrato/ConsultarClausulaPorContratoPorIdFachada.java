@@ -5,4 +5,5 @@ import com.inmocontrol.entidad.ClausulaPorContratoEntidad;
 import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 
 public interface ConsultarClausulaPorContratoPorIdFachada
-    extends FachadaConRetorno<ClausulaPorContratoDTO, ClausulaPorContratoEntidad> {}
+		extends FachadaConRetorno<ClausulaPorContratoDTO, ClausulaPorContratoEntidad> {
+}

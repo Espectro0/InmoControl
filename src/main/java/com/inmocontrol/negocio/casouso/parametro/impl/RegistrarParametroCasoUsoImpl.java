@@ -6,6 +6,7 @@ import com.inmocontrol.negocio.casouso.parametro.RegistrarParametroCasoUso;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
@@ -58,8 +59,12 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
   }
 
   private void registrarParametro(ParametroDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerParametroDAO().consultarPorId(uuid) != null);
     ParametroEntidad entidad =
         new ParametroEntidad.Builder()
+            .id(idUnico)
             .placeholder(UtilSanitizacion.sanitizar(datos.getPlaceholder()))
             .descripcion(UtilSanitizacion.sanitizar(datos.getDescripcion()))
             .build();

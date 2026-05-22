@@ -20,7 +20,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
 
   @Override
   public AreaReferenciaEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre FROM area_referencia WHERE id = ?";
+    String sql = "SELECT id, nombre FROM areareferencia WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +38,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
 
   @Override
   public List<AreaReferenciaEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre FROM area_referencia";
+    String sql = "SELECT id, nombre FROM areareferencia";
     List<AreaReferenciaEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,7 +56,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
 
   @Override
   public List<AreaReferenciaEntidad> consultarPorFiltro(AreaReferenciaEntidad filtro) {
-    String sql = "SELECT id, nombre FROM area_referencia WHERE 1=1";
+    String sql = "SELECT id, nombre FROM areareferencia WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
@@ -86,7 +86,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
 
   @Override
   public void crear(AreaReferenciaEntidad entidad) {
-    String sql = "INSERT INTO area_referencia (id, nombre) VALUES (?, ?)";
+    String sql = "INSERT INTO areareferencia (id, nombre) VALUES (?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, entidad.getId());
@@ -99,7 +99,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
 
   @Override
   public void actualizar(UUID id, AreaReferenciaEntidad entidad) {
-    String sql = "UPDATE area_referencia SET nombre = ? WHERE id = ?";
+    String sql = "UPDATE areareferencia SET nombre = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setString(1, entidad.getNombre());
@@ -112,7 +112,7 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
 
   @Override
   public void eliminar(UUID id) {
-    String sql = "DELETE FROM area_referencia WHERE id = ?";
+    String sql = "DELETE FROM areareferencia WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);

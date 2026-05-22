@@ -13,29 +13,29 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarPersonaPorIdFachadaImpl implements ConsultarPersonaPorIdFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarPersonaPorIdCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarPersonaPorIdCasoUso casoUso;
 
-  public ConsultarPersonaPorIdFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarPersonaPorIdCasoUsoImpl(daoFactory);
-  }
+	public ConsultarPersonaPorIdFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarPersonaPorIdCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public PersonaEntidad ejecutar(PersonaDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
-    }
+	@Override
+	public PersonaEntidad ejecutar(PersonaDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
+		}
 
-    try {
-      PersonaDominio dominio = new PersonaDominio.Builder().id(datos.getId()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			PersonaDominio dominio = new PersonaDominio.Builder().id(datos.getId()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

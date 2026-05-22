@@ -14,6 +14,8 @@ public final class PropiedadDTO {
   private String direccion;
   private CiudadDTO ciudad;
 
+  public PropiedadDTO() {}
+
   private PropiedadDTO(final Builder builder) {
     setId(builder.id);
     setTipoPropiedad(builder.tipoPropiedad);
@@ -57,35 +59,35 @@ public final class PropiedadDTO {
     return ciudad;
   }
 
-  private void setId(final UUID id) {
+  public void setId(final UUID id) {
     this.id = id;
   }
 
-  private void setTipoPropiedad(final TipoPropiedadDTO tipoPropiedad) {
+  public void setTipoPropiedad(final TipoPropiedadDTO tipoPropiedad) {
     this.tipoPropiedad = tipoPropiedad;
   }
 
-  private void setEstrato(final EstratoDTO estrato) {
+  public void setEstrato(final EstratoDTO estrato) {
     this.estrato = estrato;
   }
 
-  private void setNombreInmueble(final String nombreInmueble) {
+  public void setNombreInmueble(final String nombreInmueble) {
     this.nombreInmueble = UtilTexto.aplicarTrim(nombreInmueble);
   }
 
-  private void setDescripcionInmueble(final String descripcionInmueble) {
+  public void setDescripcionInmueble(final String descripcionInmueble) {
     this.descripcionInmueble = UtilTexto.aplicarTrim(descripcionInmueble);
   }
 
-  private void setAreaMetros(final Integer areaMetros) {
+  public void setAreaMetros(final Integer areaMetros) {
     this.areaMetros = UtilNumero.obtenerValorDefecto(areaMetros);
   }
 
-  private void setDireccion(final String direccion) {
+  public void setDireccion(final String direccion) {
     this.direccion = UtilTexto.aplicarTrim(direccion);
   }
 
-  private void setCiudad(final CiudadDTO ciudad) {
+  public void setCiudad(final CiudadDTO ciudad) {
     this.ciudad = ciudad;
   }
 

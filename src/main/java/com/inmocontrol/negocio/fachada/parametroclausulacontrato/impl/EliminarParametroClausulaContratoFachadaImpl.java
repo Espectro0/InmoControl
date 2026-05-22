@@ -10,38 +10,40 @@ import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
-public class EliminarParametroClausulaContratoFachadaImpl
-    implements EliminarParametroClausulaContratoFachada {
+public class EliminarParametroClausulaContratoFachadaImpl implements EliminarParametroClausulaContratoFachada {
 
-  private DAOFactory daoFactory;
-  private EliminarParametroClausulaContratoCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private EliminarParametroClausulaContratoCasoUso casoUso;
 
-  public EliminarParametroClausulaContratoFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new EliminarParametroClausulaContratoCasoUsoImpl(daoFactory);
-  }
+	public EliminarParametroClausulaContratoFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new EliminarParametroClausulaContratoCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public void ejecutar(ParametroClausulaContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion(
-          "Los datos del parametro clausula contrato no pueden ser nulos");
-    }
+	@Override
+	public void ejecutar(ParametroClausulaContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del parametro clausula contrato no pueden ser nulos");
+		}
 
-    try {
-      daoFactory.iniciarTransaccion();
-      ParametroClausulaContratoDominio dominio =
-          new ParametroClausulaContratoDominio.Builder().id(datos.getId()).build();
-      casoUso.ejecutar(dominio);
-      daoFactory.confirmarTransaccion();
+		try {
+			daoFactory.iniciarTransaccion();
+			var existente = daoFactory.obtenerParametroClausulaContratoDAO().consultarPorId(datos.getId());
+			if (existente == null) {
+				throw new ValidacionExcepcion(
+				    "El parametro clausula contrato con id " + datos.getId() + " no existe.");
+			}
+			ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder().id(datos.getId())
+					.build();
+			casoUso.ejecutar(dominio);
+			daoFactory.confirmarTransaccion();
 
-    } catch (Exception excepcion) {
-      daoFactory.cancelarTransaccion();
-      throw new InmocontrolExcepcion(
-          "Ocurrio un error eliminando el parametro clausula contrato", excepcion);
+		} catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw new InmocontrolExcepcion("Ocurrio un error eliminando el parametro clausula contrato", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

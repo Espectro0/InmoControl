@@ -13,34 +13,32 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 import java.util.List;
 
 public class ConsultarClausulaPorContratoPorFiltrosFachadaImpl
-    implements ConsultarClausulaPorContratoPorFiltrosFachada {
+		implements ConsultarClausulaPorContratoPorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarClausulaPorContratoPorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarClausulaPorContratoPorFiltrosCasoUso casoUso;
 
-  public ConsultarClausulaPorContratoPorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarClausulaPorContratoPorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarClausulaPorContratoPorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarClausulaPorContratoPorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<ClausulaPorContratoEntidad> ejecutar(ClausulaPorContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la clausula por contrato no pueden ser nulos");
-    }
+	@Override
+	public List<ClausulaPorContratoEntidad> ejecutar(ClausulaPorContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la clausula por contrato no pueden ser nulos");
+		}
 
-    try {
-      ClausulaPorContratoDominio dominio =
-          new ClausulaPorContratoDominio.Builder()
-              .numeroClausula(datos.getNumeroClausula())
-              .build();
-      return casoUso.ejecutar(dominio);
+		try {
+			ClausulaPorContratoDominio dominio = new ClausulaPorContratoDominio.Builder()
+					.numeroClausula(datos.getNumeroClausula()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

@@ -3,7 +3,9 @@ package com.inmocontrol.datos.dao.sql.postgresql;
 import com.inmocontrol.datos.dao.PropiedadDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.CiudadEntidad;
+import com.inmocontrol.entidad.DepartamentoEntidad;
 import com.inmocontrol.entidad.EstratoEntidad;
+import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
@@ -24,8 +26,20 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public PropiedadEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, tipo_propiedad, estrato, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad FROM propiedad WHERE id = ?";
+        "SELECT p.id, p.tipopropiedad, p.estrato, p.nombreinmueble, "
+            + "p.descripcioninmueble, p.areametros, p.direccion, p.ciudad, "
+            + "c.nombre as ciudad_nombre, c.departamento, "
+            + "d.nombre as departamento_nombre, d.pais, "
+            + "ps.nombre as pais_nombre, "
+            + "e.nombre as estrato_nombre, e.descripcion as estrato_descripcion, "
+            + "tp.nombre as tipopropiedad_nombre "
+            + "FROM propiedad p "
+            + "JOIN ciudad c ON p.ciudad = c.id "
+            + "JOIN departamento d ON c.departamento = d.id "
+            + "JOIN pais ps ON d.pais = ps.id "
+            + "JOIN estrato e ON p.estrato = e.id "
+            + "JOIN tipopropiedad tp ON p.tipopropiedad = tp.id "
+            + "WHERE p.id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -44,8 +58,19 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public List<PropiedadEntidad> consultarTodos() {
     String sql =
-        "SELECT id, tipo_propiedad, estrato, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad FROM propiedad";
+        "SELECT p.id, p.tipopropiedad, p.estrato, p.nombreinmueble, "
+            + "p.descripcioninmueble, p.areametros, p.direccion, p.ciudad, "
+            + "c.nombre as ciudad_nombre, c.departamento, "
+            + "d.nombre as departamento_nombre, d.pais, "
+            + "ps.nombre as pais_nombre, "
+            + "e.nombre as estrato_nombre, e.descripcion as estrato_descripcion, "
+            + "tp.nombre as tipopropiedad_nombre "
+            + "FROM propiedad p "
+            + "JOIN ciudad c ON p.ciudad = c.id "
+            + "JOIN departamento d ON c.departamento = d.id "
+            + "JOIN pais ps ON d.pais = ps.id "
+            + "JOIN estrato e ON p.estrato = e.id "
+            + "JOIN tipopropiedad tp ON p.tipopropiedad = tp.id";
     List<PropiedadEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -64,17 +89,29 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public List<PropiedadEntidad> consultarPorFiltro(PropiedadEntidad filtro) {
     String sql =
-        "SELECT id, tipo_propiedad, estrato, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad FROM propiedad WHERE 1=1";
+        "SELECT p.id, p.tipopropiedad, p.estrato, p.nombreinmueble, "
+            + "p.descripcioninmueble, p.areametros, p.direccion, p.ciudad, "
+            + "c.nombre as ciudad_nombre, c.departamento, "
+            + "d.nombre as departamento_nombre, d.pais, "
+            + "ps.nombre as pais_nombre, "
+            + "e.nombre as estrato_nombre, e.descripcion as estrato_descripcion, "
+            + "tp.nombre as tipopropiedad_nombre "
+            + "FROM propiedad p "
+            + "JOIN ciudad c ON p.ciudad = c.id "
+            + "JOIN departamento d ON c.departamento = d.id "
+            + "JOIN pais ps ON d.pais = ps.id "
+            + "JOIN estrato e ON p.estrato = e.id "
+            + "JOIN tipopropiedad tp ON p.tipopropiedad = tp.id "
+            + "WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombreInmueble() != null && !filtro.getNombreInmueble().isEmpty()) {
-      sql += " AND nombre_inmueble = ?";
+      sql += " AND p.nombreinmueble = ?";
       parametros.add(filtro.getNombreInmueble());
     }
 
     if (filtro.getDireccion() != null && !filtro.getDireccion().isEmpty()) {
-      sql += " AND direccion = ?";
+      sql += " AND p.direccion = ?";
       parametros.add(filtro.getDireccion());
     }
 
@@ -100,8 +137,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public void crear(PropiedadEntidad entidad) {
     String sql =
-        "INSERT INTO propiedad (id, tipo_propiedad, estrato, nombre_inmueble, "
-            + "descripcion_inmueble, area_metros, direccion, ciudad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO propiedad (id, tipopropiedad, estrato, nombreinmueble, "
+            + "descripcioninmueble, areametros, direccion, ciudad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, entidad.getId());
@@ -122,8 +159,8 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
   @Override
   public void actualizar(UUID id, PropiedadEntidad entidad) {
     String sql =
-        "UPDATE propiedad SET tipo_propiedad = ?, estrato = ?, nombre_inmueble = ?, "
-            + "descripcion_inmueble = ?, area_metros = ?, direccion = ?, ciudad = ? WHERE id = ?";
+        "UPDATE propiedad SET tipopropiedad = ?, estrato = ?, nombreinmueble = ?, "
+            + "descripcioninmueble = ?, areametros = ?, direccion = ?, ciudad = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(
@@ -158,14 +195,34 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
         .id(rs.getObject("id", UUID.class))
         .tipoPropiedad(
             new TipoPropiedadEntidad.Builder()
-                .id(rs.getObject("tipo_propiedad", UUID.class))
+                .id(rs.getObject("tipopropiedad", UUID.class))
+                .nombre(rs.getString("tipopropiedad_nombre"))
                 .build())
-        .estrato(new EstratoEntidad.Builder().id(rs.getObject("estrato", UUID.class)).build())
-        .nombreInmueble(rs.getString("nombre_inmueble"))
-        .descripcionInmueble(rs.getString("descripcion_inmueble"))
-        .areaMetros(rs.getObject("area_metros", Integer.class))
+        .estrato(
+            new EstratoEntidad.Builder()
+                .id(rs.getObject("estrato", UUID.class))
+                .nombre(rs.getString("estrato_nombre"))
+                .descripcion(rs.getString("estrato_descripcion"))
+                .build())
+        .nombreInmueble(rs.getString("nombreinmueble"))
+        .descripcionInmueble(rs.getString("descripcioninmueble"))
+        .areaMetros(rs.getObject("areametros", Integer.class))
         .direccion(rs.getString("direccion"))
-        .ciudad(new CiudadEntidad.Builder().id(rs.getObject("ciudad", UUID.class)).build())
+        .ciudad(
+            new CiudadEntidad.Builder()
+                .id(rs.getObject("ciudad", UUID.class))
+                .nombre(rs.getString("ciudad_nombre"))
+                .departamento(
+                    new DepartamentoEntidad.Builder()
+                        .id(rs.getObject("departamento", UUID.class))
+                        .nombre(rs.getString("departamento_nombre"))
+                        .pais(
+                            new PaisEntidad.Builder()
+                                .id(rs.getObject("pais", UUID.class))
+                                .nombre(rs.getString("pais_nombre"))
+                                .build())
+                        .build())
+                .build())
         .build();
   }
 }

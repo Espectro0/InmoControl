@@ -5,6 +5,7 @@ import com.inmocontrol.dto.PaisDTO;
 import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.negocio.fachada.pais.*;
 import com.inmocontrol.negocio.fachada.pais.impl.*;
+import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ public class PaisControlador {
 
   @GetMapping("/{id}")
   public ResponseEntity<RespuestaExito<PaisEntidad>> consultarPorId(@PathVariable UUID id) {
+    if (id == null) {
+      throw new ValidacionExcepcion("El ID no puede estar vacío para realizar la búsqueda");
+    }
     PaisDTO dto = new PaisDTO.Builder().id(id).build();
     ConsultarPaisPorIdFachada fachada = new ConsultarPaisPorIdFachadaImpl();
     PaisEntidad resultado = fachada.ejecutar(dto);

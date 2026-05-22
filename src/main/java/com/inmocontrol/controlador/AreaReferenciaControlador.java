@@ -49,13 +49,11 @@ public class AreaReferenciaControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<AreaReferenciaEntidad>> registrar(
-      @RequestBody AreaReferenciaDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody AreaReferenciaDTO dto) {
     RegistrarAreaReferenciaFachada fachada = new RegistrarAreaReferenciaFachadaImpl();
-    AreaReferenciaEntidad resultado = new AreaReferenciaEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Area de referencia registrada exitosamente", resultado));
+        .body(RespuestaExito.crear("Area de referencia registrada exitosamente"));
   }
 
   @PutMapping
@@ -74,6 +72,6 @@ public class AreaReferenciaControlador {
     EliminarAreaReferenciaFachada fachada = new EliminarAreaReferenciaFachadaImpl();
     fachada.ejecutar(dto);
     return ResponseEntity.ok(
-        RespuestaExito.crear("Area de referencia eliminada exitosamente", null));
+        RespuestaExito.crear("Area de referencia eliminada exitosamente"));
   }
 }

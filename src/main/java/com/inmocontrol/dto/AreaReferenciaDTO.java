@@ -7,6 +7,8 @@ public final class AreaReferenciaDTO {
   private UUID id;
   private String nombre;
 
+  public AreaReferenciaDTO() {}
+
   private AreaReferenciaDTO(final Builder builder) {
     setId(builder.id);
     setNombre(builder.nombre);
@@ -24,7 +26,7 @@ public final class AreaReferenciaDTO {
     this.id = id;
   }
 
-  private void setNombre(final String nombre) {
+  public void setNombre(final String nombre) {
     this.nombre = UtilTexto.aplicarTrim(nombre);
   }
 

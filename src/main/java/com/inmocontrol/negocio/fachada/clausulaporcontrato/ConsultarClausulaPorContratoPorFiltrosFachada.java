@@ -6,4 +6,5 @@ import com.inmocontrol.negocio.fachada.FachadaConRetorno;
 import java.util.List;
 
 public interface ConsultarClausulaPorContratoPorFiltrosFachada
-    extends FachadaConRetorno<ClausulaPorContratoDTO, List<ClausulaPorContratoEntidad>> {}
+		extends FachadaConRetorno<ClausulaPorContratoDTO, List<ClausulaPorContratoEntidad>> {
+}

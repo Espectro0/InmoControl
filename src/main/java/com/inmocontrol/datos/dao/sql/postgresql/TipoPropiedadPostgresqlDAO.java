@@ -20,7 +20,7 @@ public class TipoPropiedadPostgresqlDAO extends SQLDAO implements TipoPropiedadD
 
   @Override
   public TipoPropiedadEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre FROM tipo_propiedad WHERE id = ?";
+    String sql = "SELECT id, nombre FROM tipopropiedad WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +38,7 @@ public class TipoPropiedadPostgresqlDAO extends SQLDAO implements TipoPropiedadD
 
   @Override
   public List<TipoPropiedadEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre FROM tipo_propiedad";
+    String sql = "SELECT id, nombre FROM tipopropiedad";
     List<TipoPropiedadEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,7 +56,7 @@ public class TipoPropiedadPostgresqlDAO extends SQLDAO implements TipoPropiedadD
 
   @Override
   public List<TipoPropiedadEntidad> consultarPorFiltro(TipoPropiedadEntidad filtro) {
-    String sql = "SELECT id, nombre FROM tipo_propiedad WHERE 1=1";
+    String sql = "SELECT id, nombre FROM tipopropiedad WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {

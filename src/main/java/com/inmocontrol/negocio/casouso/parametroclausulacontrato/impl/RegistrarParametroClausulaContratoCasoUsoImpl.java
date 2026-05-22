@@ -5,6 +5,7 @@ import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.parametroclausulacontrato.RegistrarParametroClausulaContratoCasoUso;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarParametroClausulaContratoCasoUsoImpl
@@ -39,8 +40,12 @@ public class RegistrarParametroClausulaContratoCasoUsoImpl
   }
 
   private void registrarParametroClausulaContrato(ParametroClausulaContratoDominio datos) {
+    var idUnico =
+        UtilUUID.generarUnico(
+            uuid -> daoFactory.obtenerParametroClausulaContratoDAO().consultarPorId(uuid) != null);
     ParametroClausulaContratoEntidad entidad =
         new ParametroClausulaContratoEntidad.Builder()
+            .id(idUnico)
             .parametro(
                 new com.inmocontrol.entidad.ParametroEntidad.Builder()
                     .id(datos.getParametro().getId())

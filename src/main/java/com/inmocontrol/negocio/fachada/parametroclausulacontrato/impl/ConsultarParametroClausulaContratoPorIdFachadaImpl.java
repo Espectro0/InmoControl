@@ -12,33 +12,32 @@ import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarParametroClausulaContratoPorIdFachadaImpl
-    implements ConsultarParametroClausulaContratoPorIdFachada {
+		implements ConsultarParametroClausulaContratoPorIdFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarParametroClausulaContratoPorIdCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarParametroClausulaContratoPorIdCasoUso casoUso;
 
-  public ConsultarParametroClausulaContratoPorIdFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarParametroClausulaContratoPorIdCasoUsoImpl(daoFactory);
-  }
+	public ConsultarParametroClausulaContratoPorIdFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarParametroClausulaContratoPorIdCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public ParametroClausulaContratoEntidad ejecutar(ParametroClausulaContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion(
-          "Los datos del parametro clausula contrato no pueden ser nulos");
-    }
+	@Override
+	public ParametroClausulaContratoEntidad ejecutar(ParametroClausulaContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del parametro clausula contrato no pueden ser nulos");
+		}
 
-    try {
-      ParametroClausulaContratoDominio dominio =
-          new ParametroClausulaContratoDominio.Builder().id(datos.getId()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder().id(datos.getId())
+					.build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

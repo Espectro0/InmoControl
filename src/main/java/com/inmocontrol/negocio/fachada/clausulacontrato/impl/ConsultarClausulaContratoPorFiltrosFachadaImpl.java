@@ -12,33 +12,31 @@ import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 import java.util.List;
 
-public class ConsultarClausulaContratoPorFiltrosFachadaImpl
-    implements ConsultarClausulaContratoPorFiltrosFachada {
+public class ConsultarClausulaContratoPorFiltrosFachadaImpl implements ConsultarClausulaContratoPorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarClausulaContratoPorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarClausulaContratoPorFiltrosCasoUso casoUso;
 
-  public ConsultarClausulaContratoPorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarClausulaContratoPorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarClausulaContratoPorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarClausulaContratoPorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<ClausulaContratoEntidad> ejecutar(ClausulaContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la clausula contrato no pueden ser nulos");
-    }
+	@Override
+	public List<ClausulaContratoEntidad> ejecutar(ClausulaContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos de la clausula contrato no pueden ser nulos");
+		}
 
-    try {
-      ClausulaContratoDominio dominio =
-          new ClausulaContratoDominio.Builder().titulo(datos.getTitulo()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			ClausulaContratoDominio dominio = new ClausulaContratoDominio.Builder().titulo(datos.getTitulo()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

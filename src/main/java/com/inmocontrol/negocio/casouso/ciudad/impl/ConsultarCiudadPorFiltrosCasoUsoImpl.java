@@ -2,6 +2,8 @@ package com.inmocontrol.negocio.casouso.ciudad.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.CiudadEntidad;
+import com.inmocontrol.entidad.DepartamentoEntidad;
+import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.negocio.casouso.ciudad.ConsultarCiudadPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.CiudadDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -23,6 +25,21 @@ public class ConsultarCiudadPorFiltrosCasoUsoImpl implements ConsultarCiudadPorF
     }
     return daoFactory
         .obtenerCiudadDAO()
-        .consultarPorFiltro(new CiudadEntidad.Builder().nombre(datos.getNombre()).build());
+        .consultarPorFiltro(
+            new CiudadEntidad.Builder()
+                .nombre(datos.getNombre())
+                .departamento(
+                    datos.getDepartamento() != null
+                        ? new DepartamentoEntidad.Builder()
+                            .id(datos.getDepartamento().getId())
+                            .pais(
+                                datos.getDepartamento().getPais() != null
+                                    ? new PaisEntidad.Builder()
+                                        .id(datos.getDepartamento().getPais().getId())
+                                        .build()
+                                    : null)
+                            .build()
+                        : null)
+                .build());
   }
 }

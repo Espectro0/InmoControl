@@ -24,8 +24,8 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
   @Override
   public ParametroClausulaContratoEntidad consultarPorId(UUID id) {
     String sql =
-        "SELECT id, parametro, clausula_por_contrato, valor "
-            + "FROM parametro_clausula_contrato WHERE id = ?";
+        "SELECT id, parametro, clausulaporcontrato, valor "
+            + "FROM parametroclausulacontrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -44,8 +44,7 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
 
   @Override
   public List<ParametroClausulaContratoEntidad> consultarTodos() {
-    String sql =
-        "SELECT id, parametro, clausula_por_contrato, valor FROM parametro_clausula_contrato";
+    String sql = "SELECT id, parametro, clausulaporcontrato, valor FROM parametroclausulacontrato";
     List<ParametroClausulaContratoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -66,8 +65,8 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
   public List<ParametroClausulaContratoEntidad> consultarPorFiltro(
       ParametroClausulaContratoEntidad filtro) {
     String sql =
-        "SELECT id, parametro, clausula_por_contrato, valor "
-            + "FROM parametro_clausula_contrato WHERE 1=1";
+        "SELECT id, parametro, clausulaporcontrato, valor "
+            + "FROM parametroclausulacontrato WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getParametro() != null && filtro.getParametro().getId() != null) {
@@ -77,7 +76,7 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
 
     if (filtro.getClausulaPorContrato() != null
         && filtro.getClausulaPorContrato().getId() != null) {
-      sql += " AND clausula_por_contrato = ?";
+      sql += " AND clausulaporcontrato = ?";
       parametros.add(filtro.getClausulaPorContrato().getId());
     }
 
@@ -104,7 +103,7 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
   @Override
   public void crear(ParametroClausulaContratoEntidad entidad) {
     String sql =
-        "INSERT INTO parametro_clausula_contrato (id, parametro, clausula_por_contrato, valor) "
+        "INSERT INTO parametroclausulacontrato (id, parametro, clausulaporcontrato, valor) "
             + "VALUES (?, ?, ?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -126,7 +125,7 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
   @Override
   public void actualizar(UUID id, ParametroClausulaContratoEntidad entidad) {
     String sql =
-        "UPDATE parametro_clausula_contrato SET parametro = ?, clausula_por_contrato = ?, "
+        "UPDATE parametroclausulacontrato SET parametro = ?, clausulaporcontrato = ?, "
             + "valor = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -147,7 +146,7 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
 
   @Override
   public void eliminar(UUID id) {
-    String sql = "DELETE FROM parametro_clausula_contrato WHERE id = ?";
+    String sql = "DELETE FROM parametroclausulacontrato WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -164,7 +163,7 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
         .parametro(new ParametroEntidad.Builder().id(rs.getObject("parametro", UUID.class)).build())
         .clausulaPorContrato(
             new ClausulaPorContratoEntidad.Builder()
-                .id(rs.getObject("clausula_por_contrato", UUID.class))
+                .id(rs.getObject("clausulaporcontrato", UUID.class))
                 .build())
         .valor(rs.getString("valor"))
         .build();

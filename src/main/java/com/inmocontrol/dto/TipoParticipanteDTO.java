@@ -7,6 +7,8 @@ public final class TipoParticipanteDTO {
   private UUID id;
   private String nombre;
 
+  public TipoParticipanteDTO() {}
+
   private TipoParticipanteDTO(final Builder builder) {
     setId(builder.id);
     setNombre(builder.nombre);
@@ -24,7 +26,7 @@ public final class TipoParticipanteDTO {
     this.id = id;
   }
 
-  private void setNombre(final String nombre) {
+  public void setNombre(final String nombre) {
     this.nombre = UtilTexto.aplicarTrim(nombre);
   }
 

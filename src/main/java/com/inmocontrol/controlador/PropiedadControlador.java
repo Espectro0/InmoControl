@@ -71,12 +71,11 @@ public class PropiedadControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<PropiedadEntidad>> registrar(@RequestBody PropiedadDTO dto) {
+  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody PropiedadDTO dto) {
     RegistrarPropiedadFachada fachada = new RegistrarPropiedadFachadaImpl();
-    PropiedadEntidad resultado = new PropiedadEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Propiedad registrada exitosamente", resultado));
+        .body(RespuestaExito.crear("Propiedad registrada exitosamente"));
   }
 
   @PutMapping
@@ -92,6 +91,6 @@ public class PropiedadControlador {
     PropiedadDTO dto = new PropiedadDTO.Builder().id(id).build();
     EliminarPropiedadFachada fachada = new EliminarPropiedadFachadaImpl();
     fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Propiedad eliminada exitosamente", null));
+    return ResponseEntity.ok(RespuestaExito.crear("Propiedad eliminada exitosamente"));
   }
 }

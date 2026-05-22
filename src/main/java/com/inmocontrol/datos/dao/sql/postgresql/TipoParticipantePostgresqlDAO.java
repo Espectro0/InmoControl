@@ -20,7 +20,7 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
 
   @Override
   public TipoParticipanteEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre FROM tipo_participante WHERE id = ?";
+    String sql = "SELECT id, nombre FROM tipoparticipante WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -39,7 +39,7 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
 
   @Override
   public List<TipoParticipanteEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre FROM tipo_participante";
+    String sql = "SELECT id, nombre FROM tipoparticipante";
     List<TipoParticipanteEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -57,7 +57,7 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
 
   @Override
   public List<TipoParticipanteEntidad> consultarPorFiltro(TipoParticipanteEntidad filtro) {
-    String sql = "SELECT id, nombre FROM tipo_participante WHERE 1=1";
+    String sql = "SELECT id, nombre FROM tipoparticipante WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
@@ -87,7 +87,7 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
 
   @Override
   public void crear(TipoParticipanteEntidad entidad) {
-    String sql = "INSERT INTO tipo_participante (id, nombre) VALUES (?, ?)";
+    String sql = "INSERT INTO tipoparticipante (id, nombre) VALUES (?, ?)";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, entidad.getId());
@@ -100,7 +100,7 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
 
   @Override
   public void actualizar(UUID id, TipoParticipanteEntidad entidad) {
-    String sql = "UPDATE tipo_participante SET nombre = ? WHERE id = ?";
+    String sql = "UPDATE tipoparticipante SET nombre = ? WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setString(1, entidad.getNombre());
@@ -113,7 +113,7 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
 
   @Override
   public void eliminar(UUID id) {
-    String sql = "DELETE FROM tipo_participante WHERE id = ?";
+    String sql = "DELETE FROM tipoparticipante WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);

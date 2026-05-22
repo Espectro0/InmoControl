@@ -20,7 +20,7 @@ public class TipoDocumentoPostgresqlDAO extends SQLDAO implements TipoDocumentoD
 
   @Override
   public TipoDocumentoEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre FROM tipo_documento WHERE id = ?";
+    String sql = "SELECT id, nombre FROM tipodocumento WHERE id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +38,7 @@ public class TipoDocumentoPostgresqlDAO extends SQLDAO implements TipoDocumentoD
 
   @Override
   public List<TipoDocumentoEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre FROM tipo_documento";
+    String sql = "SELECT id, nombre FROM tipodocumento";
     List<TipoDocumentoEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,7 +56,7 @@ public class TipoDocumentoPostgresqlDAO extends SQLDAO implements TipoDocumentoD
 
   @Override
   public List<TipoDocumentoEntidad> consultarPorFiltro(TipoDocumentoEntidad filtro) {
-    String sql = "SELECT id, nombre FROM tipo_documento WHERE 1=1";
+    String sql = "SELECT id, nombre FROM tipodocumento WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {

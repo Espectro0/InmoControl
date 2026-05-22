@@ -64,16 +64,13 @@ public class ParametroClausulaContratoControlador {
   }
 
   @PostMapping
-  public ResponseEntity<RespuestaExito<ParametroClausulaContratoEntidad>> registrar(
+  public ResponseEntity<RespuestaExito<Void>> registrar(
       @RequestBody ParametroClausulaContratoDTO dto) {
     RegistrarParametroClausulaContratoFachada fachada =
         new RegistrarParametroClausulaContratoFachadaImpl();
-    ParametroClausulaContratoEntidad resultado =
-        new ParametroClausulaContratoEntidad.Builder().build();
     fachada.ejecutar(dto);
     return ResponseEntity.status(201)
-        .body(
-            RespuestaExito.crear("Parametro Clausula Contrato registrado exitosamente", resultado));
+        .body(RespuestaExito.crear("Parametro Clausula Contrato registrado exitosamente"));
   }
 
   @PutMapping
@@ -95,6 +92,6 @@ public class ParametroClausulaContratoControlador {
         new EliminarParametroClausulaContratoFachadaImpl();
     fachada.ejecutar(dto);
     return ResponseEntity.ok(
-        RespuestaExito.crear("Parametro Clausula Contrato eliminado exitosamente", null));
+        RespuestaExito.crear("Parametro Clausula Contrato eliminado exitosamente"));
   }
 }

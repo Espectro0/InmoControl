@@ -13,33 +13,32 @@ import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 import java.util.List;
 
 public class ConsultarParametroClausulaContratoPorFiltrosFachadaImpl
-    implements ConsultarParametroClausulaContratoPorFiltrosFachada {
+		implements ConsultarParametroClausulaContratoPorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarParametroClausulaContratoPorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarParametroClausulaContratoPorFiltrosCasoUso casoUso;
 
-  public ConsultarParametroClausulaContratoPorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarParametroClausulaContratoPorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarParametroClausulaContratoPorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarParametroClausulaContratoPorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<ParametroClausulaContratoEntidad> ejecutar(ParametroClausulaContratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion(
-          "Los datos del parametro clausula contrato no pueden ser nulos");
-    }
+	@Override
+	public List<ParametroClausulaContratoEntidad> ejecutar(ParametroClausulaContratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new ValidacionExcepcion("Los datos del parametro clausula contrato no pueden ser nulos");
+		}
 
-    try {
-      ParametroClausulaContratoDominio dominio =
-          new ParametroClausulaContratoDominio.Builder().valor(datos.getValor()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder()
+					.valor(datos.getValor()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

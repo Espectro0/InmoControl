@@ -3,6 +3,7 @@ package com.inmocontrol.datos.dao.sql.postgresql;
 import com.inmocontrol.datos.dao.CiudadDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.CiudadEntidad;
+import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +21,12 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
   @Override
   public CiudadEntidad consultarPorId(UUID id) {
-    String sql = "SELECT id, nombre, departamento FROM ciudad WHERE id = ?";
+    String sql =
+        "SELECT c.id, c.nombre, c.departamento, d.nombre as departamento_nombre, d.pais, p.nombre as pais_nombre "
+            + "FROM ciudad c "
+            + "JOIN departamento d ON c.departamento = d.id "
+            + "JOIN pais p ON d.pais = p.id "
+            + "WHERE c.id = ?";
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
       stmt.setObject(1, id);
@@ -38,7 +44,11 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
   @Override
   public List<CiudadEntidad> consultarTodos() {
-    String sql = "SELECT id, nombre, departamento FROM ciudad";
+    String sql =
+        "SELECT c.id, c.nombre, c.departamento, d.nombre as departamento_nombre, d.pais, p.nombre as pais_nombre "
+            + "FROM ciudad c "
+            + "JOIN departamento d ON c.departamento = d.id "
+            + "JOIN pais p ON d.pais = p.id";
     List<CiudadEntidad> resultados = new ArrayList<>();
 
     try (PreparedStatement stmt = getConexion().prepareStatement(sql)) {
@@ -56,16 +66,21 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
 
   @Override
   public List<CiudadEntidad> consultarPorFiltro(CiudadEntidad filtro) {
-    String sql = "SELECT id, nombre, departamento FROM ciudad WHERE 1=1";
+    String sql =
+        "SELECT c.id, c.nombre, c.departamento, d.nombre as departamento_nombre, d.pais, p.nombre as pais_nombre "
+            + "FROM ciudad c "
+            + "JOIN departamento d ON c.departamento = d.id "
+            + "JOIN pais p ON d.pais = p.id "
+            + "WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
     if (filtro.getNombre() != null && !filtro.getNombre().isEmpty()) {
-      sql += " AND nombre = ?";
+      sql += " AND c.nombre = ?";
       parametros.add(filtro.getNombre());
     }
 
     if (filtro.getDepartamento() != null && filtro.getDepartamento().getId() != null) {
-      sql += " AND departamento = ?";
+      sql += " AND c.departamento = ?";
       parametros.add(filtro.getDepartamento().getId());
     }
 
@@ -95,6 +110,12 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
         .departamento(
             new com.inmocontrol.entidad.DepartamentoEntidad.Builder()
                 .id(rs.getObject("departamento", UUID.class))
+                .nombre(rs.getString("departamento_nombre"))
+                .pais(
+                    new PaisEntidad.Builder()
+                        .id(rs.getObject("pais", UUID.class))
+                        .nombre(rs.getString("pais_nombre"))
+                        .build())
                 .build())
         .build();
   }

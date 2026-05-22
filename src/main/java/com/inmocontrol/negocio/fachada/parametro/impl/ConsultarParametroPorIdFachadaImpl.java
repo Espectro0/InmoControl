@@ -34,8 +34,8 @@ public class ConsultarParametroPorIdFachadaImpl implements ConsultarParametroPor
     } catch (Exception excepcion) {
       throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
+	} finally {
+		daoFactory.cerrarConexion();
+	}
   }
 }

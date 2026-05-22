@@ -29,7 +29,11 @@ public class ConsultarEstratoPorFiltrosFachadaImpl implements ConsultarEstratoPo
     }
 
     try {
-      EstratoDominio dominio = new EstratoDominio.Builder().nombre(datos.getNombre()).build();
+      EstratoDominio dominio =
+          new EstratoDominio.Builder()
+              .nombre(datos.getNombre())
+              .descripcion(datos.getDescripcion())
+              .build();
       return casoUso.ejecutar(dominio);
 
     } catch (Exception excepcion) {
