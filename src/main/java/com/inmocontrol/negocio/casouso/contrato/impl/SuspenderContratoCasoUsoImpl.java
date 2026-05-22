@@ -48,8 +48,16 @@ public class SuspenderContratoCasoUsoImpl implements SuspenderContratoCasoUso {
   }
 
   private void suspenderContrato(ContratoDominio datos) {
+    ContratoEntidad existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
     ContratoEntidad entidad =
-        new ContratoEntidad.Builder().id(datos.getId()).esActivo(false).build();
+        new ContratoEntidad.Builder()
+            .id(existente.getId())
+            .codigoContrato(existente.getCodigoContrato())
+            .fechaInicio(existente.getFechaInicio())
+            .fechaFin(existente.getFechaFin())
+            .esActivo(false)
+            .propiedad(existente.getPropiedad())
+            .build();
     daoFactory.obtenerContratoDAO().actualizar(entidad.getId(), entidad);
   }
 }
