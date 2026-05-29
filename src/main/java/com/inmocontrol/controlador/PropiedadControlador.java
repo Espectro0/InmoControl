@@ -17,80 +17,62 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/propiedades")
 public class PropiedadControlador {
 
-  @GetMapping("/{id}")
-  public ResponseEntity<RespuestaExito<PropiedadEntidad>> consultarPorId(@PathVariable UUID id) {
-    PropiedadDTO dto = new PropiedadDTO.Builder().id(id).build();
-    ConsultarPropiedadPorIdFachada fachada = new ConsultarPropiedadPorIdFachadaImpl();
-    PropiedadEntidad resultado = fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Propiedad obtenida exitosamente", resultado));
-  }
+	@GetMapping("/{id}")
+	public ResponseEntity<RespuestaExito<PropiedadEntidad>> consultarPorId(@PathVariable UUID id) {
+		PropiedadDTO dto = new PropiedadDTO.Builder().id(id).build();
+		ConsultarPropiedadPorIdFachada fachada = new ConsultarPropiedadPorIdFachadaImpl();
+		PropiedadEntidad resultado = fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Propiedad obtenida exitosamente", resultado));
+	}
 
-  @GetMapping
-  public ResponseEntity<RespuestaExito<List<PropiedadEntidad>>> consultar(
-      @RequestParam(required = false) String nombreInmueble,
-      @RequestParam(required = false) String direccion,
-      @RequestParam(required = false) UUID tipoPropiedadId,
-      @RequestParam(required = false) UUID estratoId,
-      @RequestParam(required = false) UUID ciudadId,
-      @RequestParam(required = false) Integer areaMetros) {
+	@GetMapping
+	public ResponseEntity<RespuestaExito<List<PropiedadEntidad>>> consultar(
+			@RequestParam(required = false) String nombreInmueble, @RequestParam(required = false) String direccion,
+			@RequestParam(required = false) UUID tipoPropiedadId, @RequestParam(required = false) UUID estratoId,
+			@RequestParam(required = false) UUID ciudadId, @RequestParam(required = false) Integer areaMetros) {
 
-    PropiedadDTO dto =
-        new PropiedadDTO.Builder()
-            .nombreInmueble(nombreInmueble)
-            .direccion(direccion)
-            .tipoPropiedad(
-                tipoPropiedadId != null
-                    ? new TipoPropiedadDTO.Builder().id(tipoPropiedadId).build()
-                    : null)
-            .estrato(estratoId != null ? new EstratoDTO.Builder().id(estratoId).build() : null)
-            .ciudad(ciudadId != null ? new CiudadDTO.Builder().id(ciudadId).build() : null)
-            .areaMetros(areaMetros)
-            .build();
+		PropiedadDTO dto = new PropiedadDTO.Builder().nombreInmueble(nombreInmueble).direccion(direccion)
+				.tipoPropiedad(
+						tipoPropiedadId != null ? new TipoPropiedadDTO.Builder().id(tipoPropiedadId).build() : null)
+				.estrato(estratoId != null ? new EstratoDTO.Builder().id(estratoId).build() : null)
+				.ciudad(ciudadId != null ? new CiudadDTO.Builder().id(ciudadId).build() : null).areaMetros(areaMetros)
+				.build();
 
-    List<PropiedadEntidad> resultado;
-    boolean tieneFiltros =
-        nombreInmueble != null
-            || direccion != null
-            || tipoPropiedadId != null
-            || estratoId != null
-            || ciudadId != null
-            || areaMetros != null;
+		List<PropiedadEntidad> resultado;
+		boolean tieneFiltros = nombreInmueble != null || direccion != null || tipoPropiedadId != null
+				|| estratoId != null || ciudadId != null || areaMetros != null;
 
-    if (tieneFiltros) {
-      ConsultarPropiedadPorFiltrosFachada fachadaFiltros =
-          new ConsultarPropiedadPorFiltrosFachadaImpl();
-      resultado = fachadaFiltros.ejecutar(dto);
-      return ResponseEntity.ok(
-          RespuestaExito.crear("Propiedades filtradas obtenidas exitosamente", resultado));
-    } else {
-      ConsultarPropiedadTodosFachada fachadaTodos = new ConsultarPropiedadTodosFachadaImpl();
-      resultado = fachadaTodos.ejecutar();
-      return ResponseEntity.ok(
-          RespuestaExito.crear("Propiedades obtenidas exitosamente", resultado));
-    }
-  }
+		if (tieneFiltros) {
+			ConsultarPropiedadPorFiltrosFachada fachadaFiltros = new ConsultarPropiedadPorFiltrosFachadaImpl();
+			resultado = fachadaFiltros.ejecutar(dto);
+			return ResponseEntity.ok(RespuestaExito.crear("Propiedades filtradas obtenidas exitosamente", resultado));
+		} else {
+			ConsultarPropiedadTodosFachada fachadaTodos = new ConsultarPropiedadTodosFachadaImpl();
+			resultado = fachadaTodos.ejecutar();
+			return ResponseEntity.ok(RespuestaExito.crear("Propiedades obtenidas exitosamente", resultado));
+		}
+	}
 
-  @PostMapping
-  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody PropiedadDTO dto) {
-    RegistrarPropiedadFachada fachada = new RegistrarPropiedadFachadaImpl();
-    fachada.ejecutar(dto);
-    return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Propiedad registrada exitosamente"));
-  }
+	@PostMapping
+	public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody PropiedadDTO dto) {
+		RegistrarPropiedadFachada fachada = new RegistrarPropiedadFachadaImpl();
+		fachada.ejecutar(dto);
+		return ResponseEntity.status(201).body(RespuestaExito.crear("Propiedad registrada exitosamente"));
+	}
 
-  @PutMapping
-  public ResponseEntity<RespuestaExito<PropiedadEntidad>> modificar(@RequestBody PropiedadDTO dto) {
-    ModificarPropiedadFachada fachada = new ModificarPropiedadFachadaImpl();
-    PropiedadEntidad resultado = new PropiedadEntidad.Builder().build();
-    fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Propiedad modificada exitosamente", resultado));
-  }
+	@PutMapping
+	public ResponseEntity<RespuestaExito<PropiedadEntidad>> modificar(@RequestBody PropiedadDTO dto) {
+		ModificarPropiedadFachada fachada = new ModificarPropiedadFachadaImpl();
+		PropiedadEntidad resultado = new PropiedadEntidad.Builder().build();
+		fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Propiedad modificada exitosamente", resultado));
+	}
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
-    PropiedadDTO dto = new PropiedadDTO.Builder().id(id).build();
-    EliminarPropiedadFachada fachada = new EliminarPropiedadFachadaImpl();
-    fachada.ejecutar(dto);
-    return ResponseEntity.ok(RespuestaExito.crear("Propiedad eliminada exitosamente"));
-  }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
+		PropiedadDTO dto = new PropiedadDTO.Builder().id(id).build();
+		EliminarPropiedadFachada fachada = new EliminarPropiedadFachadaImpl();
+		fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Propiedad eliminada exitosamente"));
+	}
 }

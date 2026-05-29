@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.negocio.fachada.parametro.EliminarParametroFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarParametroFachadaImpl implements EliminarParametroFachada {
 
@@ -23,15 +22,17 @@ public class EliminarParametroFachadaImpl implements EliminarParametroFachada {
 	@Override
 	public void ejecutar(ParametroDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del parametro no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del parametro no pueden ser nulos",
+					"Validacion fallida en EliminarParametroFachadaImpl.ejecutar() - Los datos del parametro no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			var existente = daoFactory.obtenerParametroDAO().consultarPorId(datos.getId());
 			if (existente == null) {
-				throw new ValidacionExcepcion(
-				    "El parametro con id " + datos.getId() + " no existe.");
+				throw new InmocontrolExcepcion("El parametro con id " + datos.getId() + " no existe.",
+						"Validacion fallida en EliminarParametroFachadaImpl.ejecutar() - El parametro con id "
+								+ datos.getId() + " no existe.");
 			}
 			ParametroDominio dominio = new ParametroDominio.Builder().id(datos.getId()).build();
 			casoUso.ejecutar(dominio);
@@ -39,7 +40,8 @@ public class EliminarParametroFachadaImpl implements EliminarParametroFachada {
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error eliminando el parametro", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en EliminarParametroFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

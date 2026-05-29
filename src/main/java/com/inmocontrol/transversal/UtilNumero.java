@@ -2,8 +2,8 @@ package com.inmocontrol.transversal;
 
 public final class UtilNumero {
 
-  public static final Integer ENTERO_DEFECTO = null;
-  public static final Double DOBLE_DEFECTO = null;
+  public static final Integer ENTERO_DEFECTO = 0;
+  public static final Double DOBLE_DEFECTO = 0.00;
 
   private UtilNumero() {
     super();

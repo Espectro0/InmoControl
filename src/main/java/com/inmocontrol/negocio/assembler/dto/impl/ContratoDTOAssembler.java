@@ -4,6 +4,8 @@ import com.inmocontrol.dto.ContratoDTO;
 import com.inmocontrol.negocio.assembler.dto.DTOAssembler;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public final class ContratoDTOAssembler implements DTOAssembler<ContratoDominio, ContratoDTO> {
   private static DTOAssembler<ContratoDominio, ContratoDTO> INSTANCE;
@@ -22,7 +24,7 @@ public final class ContratoDTOAssembler implements DTOAssembler<ContratoDominio,
   @Override
   public ContratoDominio ensamblarDominio(final ContratoDTO dto) {
     var entidadAEnsamblar = UtilObjeto.obtenerValorDefecto(dto, new ContratoDTO.Builder().build());
-    return new ContratoDominio.Builder()
+    var contrato = new ContratoDominio.Builder()
         .id(entidadAEnsamblar.getId())
         .codigoContrato(entidadAEnsamblar.getCodigoContrato())
         .fechaInicio(entidadAEnsamblar.getFechaInicio())
@@ -31,6 +33,10 @@ public final class ContratoDTOAssembler implements DTOAssembler<ContratoDominio,
         .propiedad(
             PropiedadDTOAssembler.getInstance().ensamblarDominio(entidadAEnsamblar.getPropiedad()))
         .build();
+    if (contrato.getPropiedad().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La propiedad es obligatoria");
+    }
+    return contrato;
   }
 
   @Override

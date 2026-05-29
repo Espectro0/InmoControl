@@ -9,34 +9,35 @@ import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 import com.inmocontrol.negocio.fachada.areareferencia.ConsultarAreaReferenciaPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
-public class ConsultarAreaReferenciaPorIdFachadaImpl
-    implements ConsultarAreaReferenciaPorIdFachada {
+public class ConsultarAreaReferenciaPorIdFachadaImpl implements ConsultarAreaReferenciaPorIdFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarAreaReferenciaPorIdCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarAreaReferenciaPorIdCasoUso casoUso;
 
-  public ConsultarAreaReferenciaPorIdFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarAreaReferenciaPorIdCasoUsoImpl(daoFactory);
-  }
+	public ConsultarAreaReferenciaPorIdFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarAreaReferenciaPorIdCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public AreaReferenciaEntidad ejecutar(AreaReferenciaDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del area de referencia no pueden ser nulos");
-    }
+	@Override
+	public AreaReferenciaEntidad ejecutar(AreaReferenciaDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("Los datos del area de referencia no pueden ser nulos",
+					"Validacion fallida en ConsultarAreaReferenciaPorIdFachadaImpl.ejecutar() - Los datos del area de referencia no pueden ser nulos");
+		}
 
-    try {
-      AreaReferenciaDominio dominio = new AreaReferenciaDominio.Builder().id(datos.getId()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			AreaReferenciaDominio dominio = new AreaReferenciaDominio.Builder().id(datos.getId()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarAreaReferenciaPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

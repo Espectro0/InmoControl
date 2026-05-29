@@ -4,7 +4,8 @@ import com.inmocontrol.datos.dao.CiudadDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.CiudadEntidad;
 import com.inmocontrol.entidad.PaisEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,7 +37,10 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar la ciudad por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en CiudadPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -58,7 +62,10 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar las ciudades.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en CiudadPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -97,7 +104,10 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar ciudades por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en CiudadPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -120,3 +130,4 @@ public class CiudadPostgresqlDAO extends SQLDAO implements CiudadDAO {
         .build();
   }
 }
+

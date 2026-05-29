@@ -4,12 +4,14 @@ import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.negocio.casouso.contrato.RegistrarContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+
 
 public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
 
@@ -31,30 +33,46 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
 
   private void validarObligatoriedadCampos(ContratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El contrato a registrar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El contrato a registrar no es valido.",
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarObligatoriedadCampos() - El contrato a registrar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getCodigoContrato()) || datos.getCodigoContrato().isEmpty()) {
-      throw new ValidacionExcepcion("El codigo del contrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El codigo del contrato es obligatorio.",
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarObligatoriedadCampos() - El codigo del contrato es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getFechaInicio())) {
-      throw new ValidacionExcepcion("La fecha de inicio es obligatoria.");
+      throw new InmocontrolExcepcion(
+          "La fecha de inicio es obligatoria.",
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarObligatoriedadCampos() - La fecha de inicio es obligatoria."
+      );
     }
-    if (UtilObjeto.esNulo(datos.getPropiedad())
-        || UtilObjeto.esNulo(datos.getPropiedad().getId())) {
-      throw new ValidacionExcepcion("La propiedad es obligatoria.");
+    if (UtilObjeto.esNulo(datos.getPropiedad().getId())) {
+      throw new InmocontrolExcepcion(
+          "La propiedad es obligatoria.",
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarObligatoriedadCampos() - La propiedad es obligatoria."
+      );
     }
   }
 
   private void validarFormatos(ContratoDominio datos) {
     if (!UtilValidacion.validarLongitud(datos.getCodigoContrato(), 1, 15)) {
-      throw new ValidacionExcepcion("El codigo del contrato debe tener entre 1 y 15 caracteres.");
+      throw new InmocontrolExcepcion(
+          "El codigo del contrato debe tener entre 1 y 15 caracteres.",
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarFormatos() - El codigo del contrato debe tener entre 1 y 15 caracteres."
+      );
     }
   }
 
   private void validarFechas(ContratoDominio datos) {
     if (datos.getFechaFin() != null && datos.getFechaInicio().compareTo(datos.getFechaFin()) >= 0) {
-      throw new ValidacionExcepcion(
-          "La fecha de fin debe ser estrictamente mayor a la fecha de inicio.");
+      throw new InmocontrolExcepcion(
+          "La fecha de fin debe ser estrictamente mayor a la fecha de inicio.",
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarFechas() - La fecha de fin debe ser estrictamente mayor a la fecha de inicio."
+      );
     }
   }
 
@@ -63,12 +81,20 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
         new ContratoEntidad.Builder().codigoContrato(datos.getCodigoContrato()).build();
     var resultados = daoFactory.obtenerContratoDAO().consultarPorFiltro(filtro);
     if (!resultados.isEmpty()) {
-      throw new ValidacionExcepcion(
-          "Ya existe un contrato con el codigo: " + datos.getCodigoContrato());
+      throw new InmocontrolExcepcion(
+          "Ya existe un contrato con el codigo: " + datos.getCodigoContrato(),
+          "Validacion fallida en RegistrarContratoCasoUsoImpl.validarUnicoCodigoContrato() - Ya existe un contrato con el codigo: " + datos.getCodigoContrato()
+      );
     }
   }
 
-  private void registrarContrato(ContratoDominio datos) {
+  private void registrarContrato(ContratoDominio dominio) {
+    if (dominio.getPropiedad().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La propiedad es obligatoria");
+    }
+    if (dominio.getPropiedad().getDireccion() != null && dominio.getPropiedad().getDireccion().equals("N/A")) {
+      throw new ValidadorExcepcion("La propiedad es obligatoria");
+    }
     var idUnico =
         UtilUUID.generarUnico(
             uuid -> daoFactory.obtenerContratoDAO().consultarPorId(uuid) != null);
@@ -84,3 +110,5 @@ public class RegistrarContratoCasoUsoImpl implements RegistrarContratoCasoUso {
     daoFactory.obtenerContratoDAO().crear(entidad);
   }
 }
+
+

@@ -1,6 +1,8 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class EstratoDTO {
@@ -8,7 +10,11 @@ public final class EstratoDTO {
   private String nombre;
   private String descripcion;
 
-  public EstratoDTO() {}
+  public EstratoDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setNombre(UtilTexto.VACIO);
+	  setDescripcion(UtilTexto.VACIO);
+  }
 
   private EstratoDTO(final Builder builder) {
     setId(builder.id);

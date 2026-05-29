@@ -1,13 +1,18 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class AreaReferenciaDTO {
   private UUID id;
   private String nombre;
 
-  public AreaReferenciaDTO() {}
+  public AreaReferenciaDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setNombre(UtilTexto.VACIO);
+  }
 
   private AreaReferenciaDTO(final Builder builder) {
     setId(builder.id);

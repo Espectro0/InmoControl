@@ -1,10 +1,10 @@
 package com.inmocontrol.transversal.excepcion;
 
-public class ValidacionExcepcion extends InmocontrolExcepcion {
+public class ValidadorExcepcion extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public ValidacionExcepcion(String mensaje) {
+  public ValidadorExcepcion(String mensaje) {
     super(mensaje);
   }
 }

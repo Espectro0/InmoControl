@@ -9,7 +9,7 @@ import java.util.Date;
 public final class UtilDate {
 
   public static final String FORMATO_FECHA = "yyyy-MM-dd";
-  protected static final Date FECHA_DEFECTO = null;
+  public static final Date FECHA_DEFECTO = parsear("1000-01-01", FORMATO_FECHA);
 
   private UtilDate() {
     super();

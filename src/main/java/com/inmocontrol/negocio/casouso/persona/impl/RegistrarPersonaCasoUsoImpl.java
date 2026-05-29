@@ -5,7 +5,9 @@ import com.inmocontrol.entidad.CiudadEntidad;
 import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.RegistrarPersonaCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilDate;
 import com.inmocontrol.transversal.UtilEmail;
 import com.inmocontrol.transversal.UtilIdentificador;
@@ -14,7 +16,7 @@ import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilTelefono;
 import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
 
@@ -27,6 +29,18 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
 
   @Override
   public void ejecutar(PersonaDominio datos) {
+    if (datos.getTipoDocumento().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
+    }
+    if (datos.getTipoDocumento().getNombre() != null && datos.getTipoDocumento().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
+    }
+    if (datos.getCiudadResidencia().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
+    }
+    if (datos.getCiudadResidencia().getNombre() != null && datos.getCiudadResidencia().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
+    }
     validarObligatoriedadCampos(datos);
     validarFormatos(datos);
     validarUnicoNumeroIdentificacion(datos);
@@ -35,27 +49,44 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
 
   private void validarObligatoriedadCampos(PersonaDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("La persona a registrar no es valida.");
+      throw new InmocontrolExcepcion(
+          "La persona a registrar no es valida.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarObligatoriedadCampos() - La persona a registrar no es valida."
+      );
     }
-    if (UtilObjeto.esNulo(datos.getTipoDocumento())
-        || UtilObjeto.esNulo(datos.getTipoDocumento().getId())) {
-      throw new ValidacionExcepcion("El tipo de documento es obligatorio.");
+    if (UtilObjeto.esNulo(datos.getTipoDocumento().getId())) {
+      throw new InmocontrolExcepcion(
+          "El tipo de documento es obligatorio.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarObligatoriedadCampos() - El tipo de documento es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getNumeroIdentificacion())
         || datos.getNumeroIdentificacion().isEmpty()) {
-      throw new ValidacionExcepcion("El numero de identificacion es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El numero de identificacion es obligatorio.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarObligatoriedadCampos() - El numero de identificacion es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getPrimerNombre()) || datos.getPrimerNombre().isEmpty()) {
-      throw new ValidacionExcepcion("El primer nombre es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El primer nombre es obligatorio.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarObligatoriedadCampos() - El primer nombre es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getPrimerApellido()) || datos.getPrimerApellido().isEmpty()) {
-      throw new ValidacionExcepcion("El primer apellido es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El primer apellido es obligatorio.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarObligatoriedadCampos() - El primer apellido es obligatorio."
+      );
     }
   }
 
   private void validarFormatos(PersonaDominio datos) {
     if (!UtilIdentificador.esIdentificadorValido(datos.getNumeroIdentificacion())) {
-      throw new ValidacionExcepcion("El numero de identificacion tiene un formato invalido.");
+      throw new InmocontrolExcepcion(
+          "El numero de identificacion tiene un formato invalido.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarFormatos() - El numero de identificacion tiene un formato invalido."
+      );
     }
     validarLongitudOpcional(datos.getNumeroIdentificacion(), 1, 15, "numero de identificacion");
     validarLongitudOpcional(datos.getPrimerNombre(), 1, 20, "primer nombre");
@@ -69,18 +100,26 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
 
   private void validarLongitudOpcional(String valor, int min, int max, String nombreCampo) {
     if (valor != null && !valor.isEmpty() && !UtilValidacion.validarLongitud(valor, min, max)) {
-      throw new ValidacionExcepcion(
-          "El " + nombreCampo + " debe tener entre " + min + " y " + max + " caracteres.");
+      throw new InmocontrolExcepcion(
+          "El " + nombreCampo + " debe tener entre " + min + " y " + max + " caracteres.",
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarLongitudOpcional() - " + nombreCampo
+      );
     }
   }
 
   private void validarTelefonoOpcional(String telefono) {
     if (telefono != null && !telefono.isEmpty()) {
       if (!UtilTelefono.esTelefonoValido(telefono)) {
-        throw new ValidacionExcepcion("El numero telefonico tiene un formato invalido.");
+        throw new InmocontrolExcepcion(
+            "El numero telefonico tiene un formato invalido.",
+            "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarTelefonoOpcional() - El numero telefonico tiene un formato invalido."
+        );
       }
       if (!UtilValidacion.validarLongitud(telefono, 1, 15)) {
-        throw new ValidacionExcepcion("El numero telefonico debe tener maximo 15 caracteres.");
+        throw new InmocontrolExcepcion(
+            "El numero telefonico debe tener maximo 15 caracteres.",
+            "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarTelefonoOpcional() - El numero telefonico debe tener maximo 15 caracteres."
+        );
       }
     }
   }
@@ -88,10 +127,16 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
   private void validarEmailOpcional(String email) {
     if (email != null && !email.isEmpty()) {
       if (!UtilEmail.esEmailValido(email)) {
-        throw new ValidacionExcepcion("El correo electronico tiene un formato invalido.");
+        throw new InmocontrolExcepcion(
+            "El correo electronico tiene un formato invalido.",
+            "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarEmailOpcional() - El correo electronico tiene un formato invalido."
+        );
       }
       if (!UtilValidacion.validarLongitud(email, 1, 30)) {
-        throw new ValidacionExcepcion("El correo electronico debe tener maximo 30 caracteres.");
+        throw new InmocontrolExcepcion(
+            "El correo electronico debe tener maximo 30 caracteres.",
+            "Validacion fallida en RegistrarPersonaCasoUsoImpl.validarEmailOpcional() - El correo electronico debe tener maximo 30 caracteres."
+        );
       }
     }
   }
@@ -101,9 +146,11 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
         new PersonaEntidad.Builder().numeroIdentificacion(datos.getNumeroIdentificacion()).build();
     var resultados = daoFactory.obtenerPersonaDAO().consultarPorFiltro(existente);
     if (!resultados.isEmpty()) {
-      throw new ValidacionExcepcion(
+      throw new InmocontrolExcepcion(
           "Ya existe una persona con el numero de identificacion: "
-              + datos.getNumeroIdentificacion());
+              + datos.getNumeroIdentificacion(),
+          "Validacion fallida en RegistrarPersonaCasoUsoImpl - DUI ya existe: " + datos.getNumeroIdentificacion()
+      );
     }
   }
 
@@ -142,3 +189,5 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
     daoFactory.obtenerPersonaDAO().crear(entidad);
   }
 }
+
+

@@ -13,7 +13,8 @@ import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.transversal.UtilDate;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -73,8 +74,10 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar el participante contrato por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParticipanteContratoPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -94,7 +97,10 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
       stmt.setObject(4, entidad.getContrato() != null ? entidad.getContrato().getId() : null);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear el participante contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParticipanteContratoPostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -112,7 +118,10 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
       stmt.setObject(4, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar el participante contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParticipanteContratoPostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -124,7 +133,10 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar el participante contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParticipanteContratoPostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -171,8 +183,10 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar los participantes contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParticipanteContratoPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -243,8 +257,10 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar participantes contrato por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParticipanteContratoPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -337,3 +353,4 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
         .build();
   }
 }
+

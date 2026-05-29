@@ -4,6 +4,8 @@ import com.inmocontrol.dto.ClausulaPorContratoDTO;
 import com.inmocontrol.negocio.assembler.dto.DTOAssembler;
 import com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public final class ClausulaPorContratoDTOAssembler
     implements DTOAssembler<ClausulaPorContratoDominio, ClausulaPorContratoDTO> {
@@ -25,7 +27,7 @@ public final class ClausulaPorContratoDTOAssembler
   public ClausulaPorContratoDominio ensamblarDominio(final ClausulaPorContratoDTO dto) {
     var entidadAEnsamblar =
         UtilObjeto.obtenerValorDefecto(dto, new ClausulaPorContratoDTO.Builder().build());
-    return new ClausulaPorContratoDominio.Builder()
+    var clausulaPorContrato = new ClausulaPorContratoDominio.Builder()
         .id(entidadAEnsamblar.getId())
         .numeroClausula(entidadAEnsamblar.getNumeroClausula())
         .contrato(
@@ -34,6 +36,13 @@ public final class ClausulaPorContratoDTOAssembler
             ClausulaContratoDTOAssembler.getInstance()
                 .ensamblarDominio(entidadAEnsamblar.getClausula()))
         .build();
+    if (clausulaPorContrato.getContrato().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El contrato es obligatorio");
+    }
+    if (clausulaPorContrato.getClausula().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La cláusula es obligatoria");
+    }
+    return clausulaPorContrato;
   }
 
   @Override

@@ -6,6 +6,8 @@ import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.negocio.casouso.departamento.ConsultarDepartamentoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.DepartamentoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import java.util.List;
 
 public class ConsultarDepartamentoPorFiltrosCasoUsoImpl
@@ -22,6 +24,12 @@ public class ConsultarDepartamentoPorFiltrosCasoUsoImpl
   public List<DepartamentoEntidad> ejecutar(DepartamentoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
       return daoFactory.obtenerDepartamentoDAO().consultarTodos();
+    }
+    if (datos.getPais().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El país es obligatorio");
+    }
+    if (datos.getPais().getNombre() != null && datos.getPais().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("El país es obligatorio");
     }
     return daoFactory
         .obtenerDepartamentoDAO()

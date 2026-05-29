@@ -8,27 +8,28 @@ import com.inmocontrol.negocio.fachada.areareferencia.ConsultarAreaReferenciaTod
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import java.util.List;
 
-public class ConsultarAreaReferenciaTodosFachadaImpl
-    implements ConsultarAreaReferenciaTodosFachada {
+public class ConsultarAreaReferenciaTodosFachadaImpl implements ConsultarAreaReferenciaTodosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarAreaReferenciaTodosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarAreaReferenciaTodosCasoUso casoUso;
 
-  public ConsultarAreaReferenciaTodosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarAreaReferenciaTodosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarAreaReferenciaTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarAreaReferenciaTodosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<AreaReferenciaEntidad> ejecutar() {
-    try {
-      return casoUso.ejecutar();
+	@Override
+	public List<AreaReferenciaEntidad> ejecutar() {
+		try {
+			return casoUso.ejecutar();
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarAreaReferenciaTodosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

@@ -5,7 +5,8 @@ import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.AreaReferenciaEntidad;
 import com.inmocontrol.entidad.ClausulaContratoEntidad;
 import com.inmocontrol.entidad.TipoAplicacionEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,8 +39,10 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar la clausula contrato por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ClausulaContratoPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -62,7 +65,10 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar las clausulas contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ClausulaContratoPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -102,8 +108,10 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar clausulas contrato por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ClausulaContratoPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -125,7 +133,10 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
       stmt.setString(5, entidad.getContenidoLegal());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear la clausula contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ClausulaContratoPostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -145,7 +156,10 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
       stmt.setObject(5, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar la clausula contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ClausulaContratoPostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -157,7 +171,10 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar la clausula contrato.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ClausulaContratoPostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -179,3 +196,4 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
         .build();
   }
 }
+

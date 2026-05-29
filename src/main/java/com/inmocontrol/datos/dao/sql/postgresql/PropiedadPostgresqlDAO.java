@@ -8,7 +8,8 @@ import com.inmocontrol.entidad.EstratoEntidad;
 import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.entidad.TipoPropiedadEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,7 +50,10 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar la propiedad por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PropiedadPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -80,7 +84,10 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar las propiedades.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PropiedadPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -128,7 +135,10 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar propiedades por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PropiedadPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -152,7 +162,10 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
       stmt.setObject(8, entidad.getCiudad() != null ? entidad.getCiudad().getId() : null);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear la propiedad.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PropiedadPostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -174,7 +187,10 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
       stmt.setObject(8, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar la propiedad.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PropiedadPostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -186,7 +202,10 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar la propiedad.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PropiedadPostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -226,3 +245,4 @@ public class PropiedadPostgresqlDAO extends SQLDAO implements PropiedadDAO {
         .build();
   }
 }
+

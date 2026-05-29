@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.negocio.fachada.contrato.ActivarContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ActivarContratoFachadaImpl implements ActivarContratoFachada {
 
@@ -23,7 +22,8 @@ public class ActivarContratoFachadaImpl implements ActivarContratoFachada {
 	@Override
 	public void ejecutar(ContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del contrato no pueden ser nulos",
+					"Validacion fallida en ActivarContratoFachadaImpl.ejecutar() - Los datos del contrato no pueden ser nulos");
 		}
 
 		try {
@@ -34,7 +34,8 @@ public class ActivarContratoFachadaImpl implements ActivarContratoFachada {
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error activando el contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ActivarContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

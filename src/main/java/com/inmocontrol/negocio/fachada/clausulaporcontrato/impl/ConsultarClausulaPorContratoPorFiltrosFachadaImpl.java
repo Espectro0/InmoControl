@@ -9,7 +9,7 @@ import com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio;
 import com.inmocontrol.negocio.fachada.clausulaporcontrato.ConsultarClausulaPorContratoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
 public class ConsultarClausulaPorContratoPorFiltrosFachadaImpl
@@ -26,7 +26,8 @@ public class ConsultarClausulaPorContratoPorFiltrosFachadaImpl
 	@Override
 	public List<ClausulaPorContratoEntidad> ejecutar(ClausulaPorContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la clausula por contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la clausula por contrato no pueden ser nulos",
+					"Validacion fallida en ConsultarClausulaPorContratoPorFiltrosFachadaImpl.ejecutar() - Los datos de la clausula por contrato no pueden ser nulos");
 		}
 
 		try {
@@ -35,7 +36,9 @@ public class ConsultarClausulaPorContratoPorFiltrosFachadaImpl
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarClausulaPorContratoPorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

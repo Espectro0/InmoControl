@@ -3,9 +3,12 @@ package com.inmocontrol.negocio.casouso.parametroclausulacontrato.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.parametroclausulacontrato.ModificarParametroClausulaContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ModificarParametroClausulaContratoCasoUsoImpl
     implements ModificarParametroClausulaContratoCasoUso {
@@ -26,10 +29,22 @@ public class ModificarParametroClausulaContratoCasoUsoImpl
 
   private void validarObligatoriedadId(ParametroClausulaContratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El parametro clausula contrato a modificar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El parametro clausula contrato a modificar no es valido.",
+          "Validacion fallida en ModificarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadId() - El parametro clausula contrato a modificar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del parametro clausula contrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del parametro clausula contrato es obligatorio.",
+          "Validacion fallida en ModificarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadId() - El ID del parametro clausula contrato es obligatorio."
+      );
+    }
+    if (datos.getParametro() != null && datos.getParametro().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El parámetro es obligatorio");
+    }
+    if (datos.getClausulaPorContrato() != null && datos.getClausulaPorContrato().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La cláusula por contrato es obligatoria");
     }
   }
 
@@ -37,8 +52,10 @@ public class ModificarParametroClausulaContratoCasoUsoImpl
     ParametroClausulaContratoEntidad existente =
         daoFactory.obtenerParametroClausulaContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion(
-          "No existe un parametro clausula contrato con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un parametro clausula contrato con el ID: " + datos.getId(),
+          "Validacion fallida en ModificarParametroClausulaContratoCasoUsoImpl.validarExistencia() - No encontrado con ID: " + datos.getId()
+      );
     }
   }
 
@@ -62,3 +79,5 @@ public class ModificarParametroClausulaContratoCasoUsoImpl
     daoFactory.obtenerParametroClausulaContratoDAO().actualizar(entidad.getId(), entidad);
   }
 }
+
+

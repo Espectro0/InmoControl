@@ -3,12 +3,13 @@ package com.inmocontrol.negocio.casouso.tipoparticipante.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.tipoparticipante.RegistrarTipoParticipanteCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoParticipanteCasoUso {
 
@@ -29,17 +30,25 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
 
   private void validarObligatoriedadCampos(TipoParticipanteDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El tipo de participante a registrar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El tipo de participante a registrar no es valido.",
+          "Validacion fallida en RegistrarTipoParticipanteCasoUsoImpl.validarObligatoriedadCampos() - El tipo de participante a registrar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getNombre()) || datos.getNombre().isEmpty()) {
-      throw new ValidacionExcepcion("El nombre del tipo de participante es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El nombre del tipo de participante es obligatorio.",
+          "Validacion fallida en RegistrarTipoParticipanteCasoUsoImpl.validarObligatoriedadCampos() - El nombre del tipo de participante es obligatorio."
+      );
     }
   }
 
   private void validarFormatos(TipoParticipanteDominio datos) {
     if (!UtilValidacion.validarLongitud(datos.getNombre(), 1, 50)) {
-      throw new ValidacionExcepcion(
-          "El nombre del tipo de participante debe tener entre 1 y 50 caracteres.");
+      throw new InmocontrolExcepcion(
+          "El nombre del tipo de participante debe tener entre 1 y 50 caracteres.",
+          "Validacion fallida en RegistrarTipoParticipanteCasoUsoImpl - nombre muy largo"
+      );
     }
   }
 
@@ -48,8 +57,10 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
         new TipoParticipanteEntidad.Builder().nombre(datos.getNombre()).build();
     var resultados = daoFactory.obtenerTipoParticipanteDAO().consultarPorFiltro(existente);
     if (!resultados.isEmpty()) {
-      throw new ValidacionExcepcion(
-          "Ya existe un tipo de participante con el nombre: " + datos.getNombre());
+      throw new InmocontrolExcepcion(
+          "Ya existe un tipo de participante con el nombre: " + datos.getNombre(),
+          "Validacion fallida en RegistrarTipoParticipanteCasoUsoImpl - nombre duplicado"
+      );
     }
   }
 
@@ -65,3 +76,5 @@ public class RegistrarTipoParticipanteCasoUsoImpl implements RegistrarTipoPartic
     daoFactory.obtenerTipoParticipanteDAO().crear(entidad);
   }
 }
+
+

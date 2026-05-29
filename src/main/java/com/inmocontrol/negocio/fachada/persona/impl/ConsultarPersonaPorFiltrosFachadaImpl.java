@@ -11,7 +11,7 @@ import com.inmocontrol.negocio.dominio.TipoDocumentoDominio;
 import com.inmocontrol.negocio.fachada.persona.ConsultarPersonaPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
 public class ConsultarPersonaPorFiltrosFachadaImpl implements ConsultarPersonaPorFiltrosFachada {
@@ -27,14 +27,13 @@ public class ConsultarPersonaPorFiltrosFachadaImpl implements ConsultarPersonaPo
 	@Override
 	public List<PersonaEntidad> ejecutar(PersonaDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la persona no pueden ser nulos",
+					"Validacion fallida en ConsultarPersonaPorFiltrosFachadaImpl.ejecutar() - Los datos de la persona no pueden ser nulos");
 		}
 
 		try {
-			PersonaDominio dominio = new PersonaDominio.Builder()
-					.numeroIdentificacion(datos.getNumeroIdentificacion())
-					.primerNombre(datos.getPrimerNombre())
-					.primerApellido(datos.getPrimerApellido())
+			PersonaDominio dominio = new PersonaDominio.Builder().numeroIdentificacion(datos.getNumeroIdentificacion())
+					.primerNombre(datos.getPrimerNombre()).primerApellido(datos.getPrimerApellido())
 					.correoElectronico(datos.getCorreoElectronico())
 					.tipoDocumento(datos.getTipoDocumento() != null
 							? new TipoDocumentoDominio.Builder().id(datos.getTipoDocumento().getId()).build()
@@ -46,7 +45,8 @@ public class ConsultarPersonaPorFiltrosFachadaImpl implements ConsultarPersonaPo
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarPersonaPorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

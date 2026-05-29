@@ -12,47 +12,38 @@ import com.inmocontrol.negocio.fachada.tipodocumento.impl.ConsultarTipoDocumento
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/tipos-documento")
 public class TipoDocumentoControlador {
 
-  @GetMapping("/{id}")
-  public ResponseEntity<RespuestaExito<TipoDocumentoEntidad>> consultarPorId(
-      @PathVariable UUID id) {
-    TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().id(id).build();
-    ConsultarTipoDocumentoPorIdFachada fachada = new ConsultarTipoDocumentoPorIdFachadaImpl();
-    TipoDocumentoEntidad resultado = fachada.ejecutar(dto);
-    return ResponseEntity.ok(
-        RespuestaExito.crear("Tipo de documento obtenido exitosamente", resultado));
-  }
+	@GetMapping("/{id}")
+	public ResponseEntity<RespuestaExito<TipoDocumentoEntidad>> consultarPorId(@PathVariable UUID id) {
+		TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().id(id).build();
+		ConsultarTipoDocumentoPorIdFachada fachada = new ConsultarTipoDocumentoPorIdFachadaImpl();
+		TipoDocumentoEntidad resultado = fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Tipo de documento obtenido exitosamente", resultado));
+	}
 
-  @GetMapping
-  public ResponseEntity<RespuestaExito<List<TipoDocumentoEntidad>>> consultar(
-      @RequestParam(required = false) String nombre) {
+	@GetMapping
+	public ResponseEntity<RespuestaExito<List<TipoDocumentoEntidad>>> consultar(
+			@RequestParam(required = false) String nombre) {
 
-    TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().nombre(nombre).build();
+		TipoDocumentoDTO dto = new TipoDocumentoDTO.Builder().nombre(nombre).build();
 
-    List<TipoDocumentoEntidad> resultado;
-    boolean tieneFiltros = nombre != null;
+		List<TipoDocumentoEntidad> resultado;
+		boolean tieneFiltros = nombre != null;
 
-    if (tieneFiltros) {
-      ConsultarTipoDocumentoPorFiltrosFachada fachadaFiltros =
-          new ConsultarTipoDocumentoPorFiltrosFachadaImpl();
-      resultado = fachadaFiltros.ejecutar(dto);
-      return ResponseEntity.ok(
-          RespuestaExito.crear("Tipos de documento filtrados obtenidos exitosamente", resultado));
-    } else {
-      ConsultarTipoDocumentoTodosFachada fachadaTodos =
-          new ConsultarTipoDocumentoTodosFachadaImpl();
-      resultado = fachadaTodos.ejecutar();
-      return ResponseEntity.ok(
-          RespuestaExito.crear("Tipos de documento obtenidos exitosamente", resultado));
-    }
-  }
+		if (tieneFiltros) {
+			ConsultarTipoDocumentoPorFiltrosFachada fachadaFiltros = new ConsultarTipoDocumentoPorFiltrosFachadaImpl();
+			resultado = fachadaFiltros.ejecutar(dto);
+			return ResponseEntity
+					.ok(RespuestaExito.crear("Tipos de documento filtrados obtenidos exitosamente", resultado));
+		} else {
+			ConsultarTipoDocumentoTodosFachada fachadaTodos = new ConsultarTipoDocumentoTodosFachadaImpl();
+			resultado = fachadaTodos.ejecutar();
+			return ResponseEntity.ok(RespuestaExito.crear("Tipos de documento obtenidos exitosamente", resultado));
+		}
+	}
 }

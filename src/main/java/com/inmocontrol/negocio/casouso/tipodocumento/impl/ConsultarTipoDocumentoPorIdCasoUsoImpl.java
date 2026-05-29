@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.tipodocumento.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.tipodocumento.ConsultarTipoDocumentoPorIdCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.TipoDocumentoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarTipoDocumentoPorIdCasoUsoImpl implements ConsultarTipoDocumentoPorIdCasoUso {
 
@@ -24,10 +25,14 @@ public class ConsultarTipoDocumentoPorIdCasoUsoImpl implements ConsultarTipoDocu
 
   private void validarObligatoriedadIdTipoDocumento(TipoDocumentoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El tipo de documento a consultar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El tipo de documento a consultar no es valido.",
+          "Validacion fallida en ConsultarTipoDocumentoPorIdCasoUsoImpl.validarObligatoriedadIdTipoDocumento() - datos nulos");
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del tipo de documento es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del tipo de documento es obligatorio.",
+          "Validacion fallida en ConsultarTipoDocumentoPorIdCasoUsoImpl.validarObligatoriedadIdTipoDocumento() - ID nulo");
     }
   }
 
@@ -35,8 +40,12 @@ public class ConsultarTipoDocumentoPorIdCasoUsoImpl implements ConsultarTipoDocu
     TipoDocumentoEntidad tipoDocumentoEntidad =
         daoFactory.obtenerTipoDocumentoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(tipoDocumentoEntidad)) {
-      throw new ValidacionExcepcion("No existe un tipo de documento con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un tipo de documento con el ID: " + datos.getId(),
+          "Validacion fallida en ConsultarTipoDocumentoPorIdCasoUsoImpl.consultarTipoDocumento() - Tipo documento no encontrado");
     }
     return tipoDocumentoEntidad;
   }
 }
+
+

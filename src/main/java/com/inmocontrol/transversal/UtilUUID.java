@@ -5,47 +5,46 @@ import java.util.function.Function;
 
 public final class UtilUUID {
 
-  public static final UUID UUID_CERO = UUID.fromString("00000000-0000-0000-0000-000000000000");
-  private static final int LONGITUD_UUID = 36;
+	public static final UUID UUID_CERO = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	private static final int LONGITUD_UUID = 36;
 
-  private UtilUUID() {
-    super();
-  }
+	private UtilUUID() {
+		super();
+	}
 
-  public static boolean esUUIDValido(final String uuid) {
-    if (UtilTexto.esNula(uuid)) {
-      return false;
-    }
-    final String limpio = uuid.trim();
-    return limpio.length() == LONGITUD_UUID
-        && limpio.matches(
-            "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
-  }
+	public static boolean esUUIDValido(final String uuid) {
+		if (UtilTexto.esNula(uuid)) {
+			return false;
+		}
+		final String limpio = uuid.trim();
+		return limpio.length() == LONGITUD_UUID
+				&& limpio.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+	}
 
-  public static UUID obtenerUUIDValido(final String uuid) {
-    if (!esUUIDValido(uuid)) {
-      return UUID_CERO;
-    }
-    return UUID.fromString(uuid.trim());
-  }
+	public static UUID obtenerUUIDValido(final String uuid) {
+		if (!esUUIDValido(uuid)) {
+			return UUID_CERO;
+		}
+		return UUID.fromString(uuid.trim());
+	}
 
-  public static boolean esUUIDValido(final UUID uuid) {
-    return !UtilObjeto.esNulo(uuid);
-  }
+	public static boolean esUUIDValido(final UUID uuid) {
+		return !UtilObjeto.esNulo(uuid);
+	}
 
-  public static boolean esUUIDCero(final UUID uuid) {
-    return UUID_CERO.equals(uuid);
-  }
+	public static boolean esUUIDCero(final UUID uuid) {
+		return UUID_CERO.equals(uuid);
+	}
 
-  public static UUID generar() {
-    return UUID.randomUUID();
-  }
+	public static UUID generar() {
+		return UUID.randomUUID();
+	}
 
-  public static UUID generarUnico(Function<UUID, Boolean> existeChecker) {
-    UUID uuid;
-    do {
-      uuid = UUID.randomUUID();
-    } while (existeChecker.apply(uuid));
-    return uuid;
-  }
+	public static UUID generarUnico(Function<UUID, Boolean> existeChecker) {
+		UUID uuid;
+		do {
+			uuid = UUID.randomUUID();
+		} while (existeChecker.apply(uuid));
+		return uuid;
+	}
 }

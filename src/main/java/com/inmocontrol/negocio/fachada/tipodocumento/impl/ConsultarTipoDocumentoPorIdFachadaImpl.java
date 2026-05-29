@@ -9,7 +9,7 @@ import com.inmocontrol.negocio.dominio.TipoDocumentoDominio;
 import com.inmocontrol.negocio.fachada.tipodocumento.ConsultarTipoDocumentoPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarTipoDocumentoPorIdFachadaImpl implements ConsultarTipoDocumentoPorIdFachada {
 
@@ -24,7 +24,9 @@ public class ConsultarTipoDocumentoPorIdFachadaImpl implements ConsultarTipoDocu
   @Override
   public TipoDocumentoEntidad ejecutar(TipoDocumentoDTO datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del tipo de documento no pueden ser nulos");
+      throw new InmocontrolExcepcion(
+          "Los datos del tipo de documento no pueden ser nulos",
+          "Validacion fallida en ConsultarTipoDocumentoPorIdFachadaImpl.ejecutar() - datos nulos");
     }
 
     try {
@@ -32,10 +34,14 @@ public class ConsultarTipoDocumentoPorIdFachadaImpl implements ConsultarTipoDocu
       return casoUso.ejecutar(dominio);
 
     } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+      throw new InmocontrolExcepcion(
+          "Ocurrio un error obteniendo la informacion",
+          "Error en ConsultarTipoDocumentoPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+          excepcion);
 
     } finally {
       daoFactory.cerrarConexion();
     }
   }
 }
+

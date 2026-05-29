@@ -9,7 +9,6 @@ import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.negocio.fachada.parametroclausulacontrato.ConsultarParametroClausulaContratoPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarParametroClausulaContratoPorIdFachadaImpl
 		implements ConsultarParametroClausulaContratoPorIdFachada {
@@ -25,7 +24,8 @@ public class ConsultarParametroClausulaContratoPorIdFachadaImpl
 	@Override
 	public ParametroClausulaContratoEntidad ejecutar(ParametroClausulaContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del parametro clausula contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del parametro clausula contrato no pueden ser nulos",
+					"Validacion fallida en ConsultarParametroClausulaContratoPorIdFachadaImpl.ejecutar() - Los datos del parametro clausula contrato no pueden ser nulos");
 		}
 
 		try {
@@ -34,7 +34,10 @@ public class ConsultarParametroClausulaContratoPorIdFachadaImpl
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarParametroClausulaContratoPorIdFachadaImpl.ejecutar() - "
+							+ excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

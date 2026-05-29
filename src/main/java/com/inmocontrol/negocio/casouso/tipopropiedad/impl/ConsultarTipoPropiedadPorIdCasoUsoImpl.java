@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.tipopropiedad.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.negocio.casouso.tipopropiedad.ConsultarTipoPropiedadPorIdCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.TipoPropiedadDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarTipoPropiedadPorIdCasoUsoImpl implements ConsultarTipoPropiedadPorIdCasoUso {
 
@@ -24,10 +25,14 @@ public class ConsultarTipoPropiedadPorIdCasoUsoImpl implements ConsultarTipoProp
 
   private void validarObligatoriedadIdTipoPropiedad(TipoPropiedadDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El tipo de propiedad a consultar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El tipo de propiedad a consultar no es valido.",
+          "Validacion fallida en ConsultarTipoPropiedadPorIdCasoUsoImpl.validarObligatoriedadIdTipoPropiedad() - datos nulos");
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del tipo de propiedad es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del tipo de propiedad es obligatorio.",
+          "Validacion fallida en ConsultarTipoPropiedadPorIdCasoUsoImpl.validarObligatoriedadIdTipoPropiedad() - ID nulo");
     }
   }
 
@@ -35,8 +40,12 @@ public class ConsultarTipoPropiedadPorIdCasoUsoImpl implements ConsultarTipoProp
     TipoPropiedadEntidad tipoPropiedadEntidad =
         daoFactory.obtenerTipoPropiedadDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(tipoPropiedadEntidad)) {
-      throw new ValidacionExcepcion("No existe un tipo de propiedad con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un tipo de propiedad con el ID: " + datos.getId(),
+          "Validacion fallida en ConsultarTipoPropiedadPorIdCasoUsoImpl.consultarTipoPropiedad() - Tipo propiedad no encontrada");
     }
     return tipoPropiedadEntidad;
   }
 }
+
+

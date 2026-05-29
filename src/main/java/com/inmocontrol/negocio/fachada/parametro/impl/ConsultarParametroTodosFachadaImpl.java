@@ -10,24 +10,25 @@ import java.util.List;
 
 public class ConsultarParametroTodosFachadaImpl implements ConsultarParametroTodosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarParametroTodosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarParametroTodosCasoUso casoUso;
 
-  public ConsultarParametroTodosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarParametroTodosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarParametroTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarParametroTodosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<ParametroEntidad> ejecutar() {
-    try {
-      return casoUso.ejecutar();
+	@Override
+	public List<ParametroEntidad> ejecutar() {
+		try {
+			return casoUso.ejecutar();
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarParametroTodosFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

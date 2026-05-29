@@ -19,7 +19,10 @@ public final class UtilEnv {
     try (InputStream input = Files.newInputStream(rutaEnv)) {
       PROPERTIES.load(input);
     } catch (IOException e) {
-      throw new InmocontrolExcepcion("No se pudo cargar el archivo .env", e);
+      throw new InmocontrolExcepcion(
+        "No se pudo cargar la configuracion del sistema.",
+        "Error al leer archivo .env: " + e.getMessage(),
+        e);
     }
   }
 

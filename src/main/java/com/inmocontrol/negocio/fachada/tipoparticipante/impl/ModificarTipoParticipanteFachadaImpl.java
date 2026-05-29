@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.negocio.fachada.tipoparticipante.ModificarTipoParticipanteFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarTipoParticipanteFachadaImpl implements ModificarTipoParticipanteFachada {
 
@@ -23,7 +22,8 @@ public class ModificarTipoParticipanteFachadaImpl implements ModificarTipoPartic
 	@Override
 	public void ejecutar(TipoParticipanteDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del tipo de participante no pueden ser nulos",
+					"Validacion fallida en ModificarTipoParticipanteFachadaImpl.ejecutar() - Los datos del tipo de participante no pueden ser nulos");
 		}
 
 		try {
@@ -35,7 +35,8 @@ public class ModificarTipoParticipanteFachadaImpl implements ModificarTipoPartic
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error modificando el tipo de participante", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ModificarTipoParticipanteFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.negocio.fachada.contrato.SuspenderContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class SuspenderContratoFachadaImpl implements SuspenderContratoFachada {
 
@@ -23,7 +22,8 @@ public class SuspenderContratoFachadaImpl implements SuspenderContratoFachada {
 	@Override
 	public void ejecutar(ContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del contrato no pueden ser nulos",
+					"Validacion fallida en SuspenderContratoFachadaImpl.ejecutar() - Los datos del contrato no pueden ser nulos");
 		}
 
 		try {
@@ -34,7 +34,8 @@ public class SuspenderContratoFachadaImpl implements SuspenderContratoFachada {
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error suspendiendo el contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en SuspenderContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

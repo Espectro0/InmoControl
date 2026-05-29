@@ -3,7 +3,8 @@ package com.inmocontrol.datos.dao.sql.postgresql;
 import com.inmocontrol.datos.dao.PaisDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.PaisEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +34,10 @@ public class PaisPostgresqlDAO extends SQLDAO implements PaisDAO {
             .build();
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar el pais por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PaisPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -55,7 +59,10 @@ public class PaisPostgresqlDAO extends SQLDAO implements PaisDAO {
                 .build());
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar los paises.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PaisPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -88,9 +95,14 @@ public class PaisPostgresqlDAO extends SQLDAO implements PaisDAO {
                 .build());
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar paises por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PaisPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
   }
 }
+
+

@@ -10,24 +10,26 @@ import java.util.List;
 
 public class ConsultarTipoPropiedadTodosFachadaImpl implements ConsultarTipoPropiedadTodosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarTipoPropiedadTodosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarTipoPropiedadTodosCasoUso casoUso;
 
-  public ConsultarTipoPropiedadTodosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarTipoPropiedadTodosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarTipoPropiedadTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarTipoPropiedadTodosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<TipoPropiedadEntidad> ejecutar() {
-    try {
-      return casoUso.ejecutar();
+	@Override
+	public List<TipoPropiedadEntidad> ejecutar() {
+		try {
+			return casoUso.ejecutar();
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarTipoPropiedadTodosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

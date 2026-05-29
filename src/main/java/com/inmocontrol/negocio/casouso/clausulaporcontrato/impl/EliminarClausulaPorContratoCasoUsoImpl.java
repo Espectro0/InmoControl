@@ -4,9 +4,10 @@ import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ClausulaPorContratoEntidad;
 import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.clausulaporcontrato.EliminarClausulaPorContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class EliminarClausulaPorContratoCasoUsoImpl implements EliminarClausulaPorContratoCasoUso {
 
@@ -28,10 +29,16 @@ public class EliminarClausulaPorContratoCasoUsoImpl implements EliminarClausulaP
 
   private void validarObligatoriedadId(ClausulaPorContratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("La clausula por contrato a eliminar no es valida.");
+      throw new InmocontrolExcepcion(
+          "La clausula por contrato a eliminar no es valida.",
+          "Validacion fallida en EliminarClausulaPorContratoCasoUsoImpl.validarObligatoriedadId() - La clausula por contrato a eliminar no es valida."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID de la clausula por contrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID de la clausula por contrato es obligatorio.",
+          "Validacion fallida en EliminarClausulaPorContratoCasoUsoImpl.validarObligatoriedadId() - El ID de la clausula por contrato es obligatorio."
+      );
     }
   }
 
@@ -39,8 +46,10 @@ public class EliminarClausulaPorContratoCasoUsoImpl implements EliminarClausulaP
     ClausulaPorContratoEntidad existente =
         daoFactory.obtenerClausulaPorContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion(
-          "No existe una clausula por contrato con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe una clausula por contrato con el ID: " + datos.getId(),
+          "Error en EliminarClausulaPorContratoCasoUsoImpl.validarExistenciaClausulaPorContrato() - No existe una clausula por contrato con el ID: " + datos.getId()
+      );
     }
   }
 
@@ -51,8 +60,10 @@ public class EliminarClausulaPorContratoCasoUsoImpl implements EliminarClausulaP
       ContratoEntidad contrato =
           daoFactory.obtenerContratoDAO().consultarPorId(existente.getContrato().getId());
       if (contrato != null && Boolean.FALSE.equals(contrato.getEsActivo())) {
-        throw new ValidacionExcepcion(
-            "No es posible eliminar la clausula porque el contrato esta cerrado o firmado.");
+        throw new InmocontrolExcepcion(
+            "No es posible eliminar la clausula porque el contrato esta cerrado o firmado.",
+            "Validacion fallida en EliminarClausulaPorContratoCasoUsoImpl.validarContratoNoCerrado() - No es posible eliminar la clausula porque el contrato esta cerrado o firmado."
+        );
       }
     }
   }
@@ -67,8 +78,10 @@ public class EliminarClausulaPorContratoCasoUsoImpl implements EliminarClausulaP
               .build();
       var clausulas = daoFactory.obtenerClausulaPorContratoDAO().consultarPorFiltro(filtro);
       if (clausulas.size() <= 1) {
-        throw new ValidacionExcepcion(
-            "No es posible eliminar la clausula porque el contrato debe tener al menos una clausula.");
+        throw new InmocontrolExcepcion(
+            "No es posible eliminar la clausula porque el contrato debe tener al menos una clausula.",
+            "Validacion fallida en EliminarClausulaPorContratoCasoUsoImpl.validarIntegridadLegalMinima() - No es posible eliminar la clausula porque el contrato debe tener al menos una clausula."
+        );
       }
     }
   }
@@ -77,3 +90,5 @@ public class EliminarClausulaPorContratoCasoUsoImpl implements EliminarClausulaP
     daoFactory.obtenerClausulaPorContratoDAO().eliminar(datos.getId());
   }
 }
+
+

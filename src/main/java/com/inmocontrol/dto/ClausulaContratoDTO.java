@@ -1,6 +1,9 @@
 package com.inmocontrol.dto;
 
+import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class ClausulaContratoDTO {
@@ -10,7 +13,13 @@ public final class ClausulaContratoDTO {
   private String titulo;
   private String contenidoLegal;
 
-  public ClausulaContratoDTO() {}
+  public ClausulaContratoDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setAreaReferencia(new AreaReferenciaDTO());
+	  setTipoAplicacion(new TipoAplicacionDTO());
+	  setTitulo(UtilTexto.VACIO);
+	  setContenidoLegal(UtilTexto.VACIO);
+  }
 
   private ClausulaContratoDTO(final Builder builder) {
     setId(builder.id);
@@ -45,11 +54,11 @@ public final class ClausulaContratoDTO {
   }
 
   public void setAreaReferencia(final AreaReferenciaDTO areaReferencia) {
-    this.areaReferencia = areaReferencia;
+    this.areaReferencia = UtilObjeto.obtenerValorDefecto(areaReferencia, new AreaReferenciaDTO());
   }
 
   public void setTipoAplicacion(final TipoAplicacionDTO tipoAplicacion) {
-    this.tipoAplicacion = tipoAplicacion;
+    this.tipoAplicacion = UtilObjeto.obtenerValorDefecto(tipoAplicacion, new TipoAplicacionDTO());
   }
 
   public void setTitulo(final String titulo) {

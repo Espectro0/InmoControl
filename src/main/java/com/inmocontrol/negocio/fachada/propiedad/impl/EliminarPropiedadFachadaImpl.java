@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.PropiedadDominio;
 import com.inmocontrol.negocio.fachada.propiedad.EliminarPropiedadFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarPropiedadFachadaImpl implements EliminarPropiedadFachada {
 
@@ -23,15 +22,17 @@ public class EliminarPropiedadFachadaImpl implements EliminarPropiedadFachada {
 	@Override
 	public void ejecutar(PropiedadDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la propiedad no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la propiedad no pueden ser nulos",
+					"Validacion fallida en EliminarPropiedadFachadaImpl.ejecutar() - Los datos de la propiedad no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			var existente = daoFactory.obtenerPropiedadDAO().consultarPorId(datos.getId());
 			if (existente == null) {
-				throw new ValidacionExcepcion(
-				    "La propiedad con id " + datos.getId() + " no existe.");
+				throw new InmocontrolExcepcion("La propiedad con id " + datos.getId() + " no existe.",
+						"Validacion fallida en EliminarPropiedadFachadaImpl.ejecutar() - La propiedad con id "
+								+ datos.getId() + " no existe.");
 			}
 			PropiedadDominio dominio = new PropiedadDominio.Builder().id(datos.getId()).build();
 			casoUso.ejecutar(dominio);
@@ -39,7 +40,8 @@ public class EliminarPropiedadFachadaImpl implements EliminarPropiedadFachada {
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error eliminando la propiedad", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en EliminarPropiedadFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

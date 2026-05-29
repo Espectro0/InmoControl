@@ -10,24 +10,25 @@ import java.util.List;
 
 public class ConsultarContratoTodosFachadaImpl implements ConsultarContratoTodosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarContratoTodosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarContratoTodosCasoUso casoUso;
 
-  public ConsultarContratoTodosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarContratoTodosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarContratoTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarContratoTodosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<ContratoEntidad> ejecutar() {
-    try {
-      return casoUso.ejecutar();
+	@Override
+	public List<ContratoEntidad> ejecutar() {
+		try {
+			return casoUso.ejecutar();
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarContratoTodosFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

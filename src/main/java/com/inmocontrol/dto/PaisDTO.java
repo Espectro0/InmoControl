@@ -1,49 +1,56 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class PaisDTO {
-  private UUID id;
-  private String nombre;
+	private UUID id;
+	private String nombre;
 
-  private PaisDTO(final Builder builder) {
-    setId(builder.id);
-    setNombre(builder.nombre);
-  }
+	public PaisDTO() {
+		setId(UtilUUID.UUID_CERO);
+		setNombre(UtilTexto.VACIO);
+	}
 
-  public UUID getId() {
-    return id;
-  }
+	private PaisDTO(final Builder builder) {
+		setId(builder.id);
+		setNombre(builder.nombre);
+	}
 
-  public String getNombre() {
-    return nombre;
-  }
+	public UUID getId() {
+		return id;
+	}
 
-  private void setId(final UUID id) {
-    this.id = id;
-  }
+	public String getNombre() {
+		return nombre;
+	}
 
-  private void setNombre(final String nombre) {
-    this.nombre = UtilTexto.aplicarTrim(nombre);
-  }
+	private void setId(final UUID id) {
+		this.id = id;
+	}
 
-  public static class Builder {
-    private UUID id;
-    private String nombre;
+	private void setNombre(final String nombre) {
+		this.nombre = UtilTexto.aplicarTrim(nombre);
+	}
 
-    public Builder id(final UUID id) {
-      this.id = id;
-      return this;
-    }
+	public static class Builder {
+		private UUID id;
+		private String nombre;
 
-    public Builder nombre(final String nombre) {
-      this.nombre = nombre;
-      return this;
-    }
+		public Builder id(final UUID id) {
+			this.id = id;
+			return this;
+		}
 
-    public PaisDTO build() {
-      return new PaisDTO(this);
-    }
-  }
+		public Builder nombre(final String nombre) {
+			this.nombre = nombre;
+			return this;
+		}
+
+		public PaisDTO build() {
+			return new PaisDTO(this);
+		}
+	}
 }

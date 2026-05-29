@@ -1,7 +1,10 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilNumero;
+import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class PropiedadDTO {
@@ -14,7 +17,16 @@ public final class PropiedadDTO {
   private String direccion;
   private CiudadDTO ciudad;
 
-  public PropiedadDTO() {}
+  public PropiedadDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setTipoPropiedad(new TipoPropiedadDTO());
+	  setEstrato(new EstratoDTO());
+	  setNombreInmueble(UtilTexto.VACIO);
+	  setDescripcionInmueble(UtilTexto.VACIO);
+	  setAreaMetros(UtilNumero.ENTERO_DEFECTO);
+	  setDireccion(UtilTexto.VACIO);
+	  setCiudad(new CiudadDTO());
+  }
 
   private PropiedadDTO(final Builder builder) {
     setId(builder.id);
@@ -64,11 +76,11 @@ public final class PropiedadDTO {
   }
 
   public void setTipoPropiedad(final TipoPropiedadDTO tipoPropiedad) {
-    this.tipoPropiedad = tipoPropiedad;
+    this.tipoPropiedad = UtilObjeto.obtenerValorDefecto(tipoPropiedad, new TipoPropiedadDTO());
   }
 
   public void setEstrato(final EstratoDTO estrato) {
-    this.estrato = estrato;
+    this.estrato = UtilObjeto.obtenerValorDefecto(estrato, new EstratoDTO());
   }
 
   public void setNombreInmueble(final String nombreInmueble) {
@@ -88,7 +100,7 @@ public final class PropiedadDTO {
   }
 
   public void setCiudad(final CiudadDTO ciudad) {
-    this.ciudad = ciudad;
+    this.ciudad = UtilObjeto.obtenerValorDefecto(ciudad, new CiudadDTO());
   }
 
   public static class Builder {

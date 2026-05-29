@@ -9,33 +9,34 @@ import com.inmocontrol.negocio.dominio.CiudadDominio;
 import com.inmocontrol.negocio.fachada.ciudad.ConsultarCiudadPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarCiudadPorIdFachadaImpl implements ConsultarCiudadPorIdFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarCiudadPorIdCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarCiudadPorIdCasoUso casoUso;
 
-  public ConsultarCiudadPorIdFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarCiudadPorIdCasoUsoImpl(daoFactory);
-  }
+	public ConsultarCiudadPorIdFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarCiudadPorIdCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public CiudadEntidad ejecutar(CiudadDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos de la ciudad no pueden ser nulos");
-    }
+	@Override
+	public CiudadEntidad ejecutar(CiudadDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("Los datos de la ciudad no pueden ser nulos",
+					"Validacion fallida en ConsultarCiudadPorIdFachadaImpl.ejecutar() - Los datos de la ciudad no pueden ser nulos");
+		}
 
-    try {
-      CiudadDominio dominio = new CiudadDominio.Builder().id(datos.getId()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			CiudadDominio dominio = new CiudadDominio.Builder().id(datos.getId()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion",
+					"Error en ConsultarCiudadPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

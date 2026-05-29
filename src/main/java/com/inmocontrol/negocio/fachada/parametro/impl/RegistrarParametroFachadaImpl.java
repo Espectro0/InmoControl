@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.negocio.fachada.parametro.RegistrarParametroFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarParametroFachadaImpl implements RegistrarParametroFachada {
 
@@ -23,7 +22,8 @@ public class RegistrarParametroFachadaImpl implements RegistrarParametroFachada 
 	@Override
 	public void ejecutar(ParametroDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del parametro no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del parametro no pueden ser nulos",
+					"Validacion fallida en RegistrarParametroFachadaImpl.ejecutar() - Los datos del parametro no pueden ser nulos");
 		}
 
 		try {
@@ -35,7 +35,8 @@ public class RegistrarParametroFachadaImpl implements RegistrarParametroFachada 
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error registrando el parametro", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en RegistrarParametroFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

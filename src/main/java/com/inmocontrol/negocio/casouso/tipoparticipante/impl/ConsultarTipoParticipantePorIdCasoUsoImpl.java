@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.tipoparticipante.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.tipoparticipante.ConsultarTipoParticipantePorIdCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarTipoParticipantePorIdCasoUsoImpl
     implements ConsultarTipoParticipantePorIdCasoUso {
@@ -25,10 +26,16 @@ public class ConsultarTipoParticipantePorIdCasoUsoImpl
 
   private void validarObligatoriedadIdTipoParticipante(TipoParticipanteDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El tipo de participante a consultar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El tipo de participante a consultar no es valido.",
+          "Validacion fallida en ConsultarTipoParticipantePorIdCasoUsoImpl.validarObligatoriedadIdTipoParticipante() - El tipo de participante a consultar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del tipo de participante es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del tipo de participante es obligatorio.",
+          "Validacion fallida en ConsultarTipoParticipantePorIdCasoUsoImpl.validarObligatoriedadIdTipoParticipante() - El ID del tipo de participante es obligatorio."
+      );
     }
   }
 
@@ -36,9 +43,13 @@ public class ConsultarTipoParticipantePorIdCasoUsoImpl
     TipoParticipanteEntidad entidad =
         daoFactory.obtenerTipoParticipanteDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(entidad)) {
-      throw new ValidacionExcepcion(
-          "No existe un tipo de participante con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un tipo de participante con el ID: " + datos.getId(),
+          "Validacion fallida en ConsultarTipoParticipantePorIdCasoUsoImpl - No encontrado"
+      );
     }
     return entidad;
   }
 }
+
+

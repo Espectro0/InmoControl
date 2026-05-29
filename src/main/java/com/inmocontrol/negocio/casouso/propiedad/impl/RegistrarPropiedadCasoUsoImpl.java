@@ -6,12 +6,14 @@ import com.inmocontrol.entidad.EstratoEntidad;
 import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.negocio.casouso.propiedad.RegistrarPropiedadCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso {
 
@@ -24,6 +26,24 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
 
   @Override
   public void ejecutar(PropiedadDominio datos) {
+    if (datos.getTipoPropiedad().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El tipo de propiedad es obligatorio");
+    }
+    if (datos.getTipoPropiedad().getNombre() != null && datos.getTipoPropiedad().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("El tipo de propiedad es obligatorio");
+    }
+    if (datos.getEstrato().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El estrato es obligatorio");
+    }
+    if (datos.getEstrato().getNombre() != null && datos.getEstrato().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("El estrato es obligatorio");
+    }
+    if (datos.getCiudad().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La ciudad es obligatoria");
+    }
+    if (datos.getCiudad().getNombre() != null && datos.getCiudad().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("La ciudad es obligatoria");
+    }
     validarObligatoriedadCampos(datos);
     validarFormatos(datos);
     validarUnicoNombreDireccion(datos);
@@ -32,39 +52,64 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
 
   private void validarObligatoriedadCampos(PropiedadDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("La propiedad a registrar no es valida.");
+      throw new InmocontrolExcepcion(
+          "La propiedad a registrar no es valida.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarObligatoriedadCampos() - La propiedad a registrar no es valida."
+      );
     }
-    if (UtilObjeto.esNulo(datos.getTipoPropiedad())
-        || UtilObjeto.esNulo(datos.getTipoPropiedad().getId())) {
-      throw new ValidacionExcepcion("El tipo de propiedad es obligatorio.");
+    if (UtilObjeto.esNulo(datos.getTipoPropiedad().getId())) {
+      throw new InmocontrolExcepcion(
+          "El tipo de propiedad es obligatorio.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarObligatoriedadCampos() - El tipo de propiedad es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getNombreInmueble()) || datos.getNombreInmueble().isEmpty()) {
-      throw new ValidacionExcepcion("El nombre del inmueble es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El nombre del inmueble es obligatorio.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarObligatoriedadCampos() - El nombre del inmueble es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getDireccion()) || datos.getDireccion().isEmpty()) {
-      throw new ValidacionExcepcion("La direccion es obligatoria.");
+      throw new InmocontrolExcepcion(
+          "La direccion es obligatoria.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarObligatoriedadCampos() - La direccion es obligatoria."
+      );
     }
-    if (UtilObjeto.esNulo(datos.getCiudad()) || UtilObjeto.esNulo(datos.getCiudad().getId())) {
-      throw new ValidacionExcepcion("La ciudad es obligatoria.");
+    if (UtilObjeto.esNulo(datos.getCiudad().getId())) {
+      throw new InmocontrolExcepcion(
+          "La ciudad es obligatoria.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarObligatoriedadCampos() - La ciudad es obligatoria."
+      );
     }
   }
 
   private void validarFormatos(PropiedadDominio datos) {
     if (!UtilValidacion.validarLongitud(datos.getNombreInmueble(), 1, 10)) {
-      throw new ValidacionExcepcion("El nombre del inmueble debe tener entre 1 y 10 caracteres.");
+      throw new InmocontrolExcepcion(
+          "El nombre del inmueble debe tener entre 1 y 10 caracteres.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarFormatos() - El nombre del inmueble debe tener entre 1 y 10 caracteres."
+      );
     }
     if (datos.getDescripcionInmueble() != null
         && !datos.getDescripcionInmueble().isEmpty()
         && !UtilValidacion.validarLongitud(datos.getDescripcionInmueble(), 1, 100)) {
-      throw new ValidacionExcepcion(
-          "La descripcion del inmueble debe tener maximo 100 caracteres.");
+      throw new InmocontrolExcepcion(
+          "La descripcion del inmueble debe tener maximo 100 caracteres.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl - descripcion muy larga"
+      );
     }
     if (datos.getAreaMetros() != null
         && !UtilValidacion.validarRangoEntero(datos.getAreaMetros(), 1, 999)) {
-      throw new ValidacionExcepcion("El area en metros debe estar entre 1 y 999.");
+      throw new InmocontrolExcepcion(
+          "El area en metros debe estar entre 1 y 999.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarFormatos() - El area en metros debe estar entre 1 y 999."
+      );
     }
     if (!UtilValidacion.validarLongitud(datos.getDireccion(), 1, 50)) {
-      throw new ValidacionExcepcion("La direccion debe tener entre 1 y 50 caracteres.");
+      throw new InmocontrolExcepcion(
+          "La direccion debe tener entre 1 y 50 caracteres.",
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl.validarFormatos() - La direccion debe tener entre 1 y 50 caracteres."
+      );
     }
   }
 
@@ -76,11 +121,13 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
             .build();
     var resultados = daoFactory.obtenerPropiedadDAO().consultarPorFiltro(filtro);
     if (!resultados.isEmpty()) {
-      throw new ValidacionExcepcion(
+      throw new InmocontrolExcepcion(
           "Ya existe una propiedad con el nombre: "
               + datos.getNombreInmueble()
               + " y direccion: "
-              + datos.getDireccion());
+              + datos.getDireccion(),
+          "Validacion fallida en RegistrarPropiedadCasoUsoImpl - propiedad duplicada"
+      );
     }
   }
 
@@ -106,3 +153,5 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
     daoFactory.obtenerPropiedadDAO().crear(entidad);
   }
 }
+
+

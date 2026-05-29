@@ -9,8 +9,9 @@ import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.negocio.dominio.TipoAplicacionDominio;
 import com.inmocontrol.negocio.fachada.clausulacontrato.ModificarClausulaContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public class ModificarClausulaContratoFachadaImpl implements ModificarClausulaContratoFachada {
 
@@ -25,25 +26,23 @@ public class ModificarClausulaContratoFachadaImpl implements ModificarClausulaCo
 	@Override
 	public void ejecutar(ClausulaContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la clausula contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la clausula contrato no pueden ser nulos",
+					"Validacion fallida en ModificarClausulaContratoFachadaImpl.ejecutar() - Los datos de la clausula contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			ClausulaContratoDominio dominio = new ClausulaContratoDominio.Builder().id(datos.getId())
-					.areaReferencia(datos.getAreaReferencia() != null
-							? new AreaReferenciaDominio.Builder().id(datos.getAreaReferencia().getId()).build()
-							: null)
-					.tipoAplicacion(datos.getTipoAplicacion() != null
-							? new TipoAplicacionDominio.Builder().id(datos.getTipoAplicacion().getId()).build()
-							: null)
+					.areaReferencia(new AreaReferenciaDominio.Builder().id(datos.getAreaReferencia().getId()).build())
+					.tipoAplicacion(new TipoAplicacionDominio.Builder().id(datos.getTipoAplicacion().getId()).build())
 					.titulo(datos.getTitulo()).contenidoLegal(datos.getContenidoLegal()).build();
 			casoUso.ejecutar(dominio);
 			daoFactory.confirmarTransaccion();
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error modificando la clausula contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ModificarClausulaContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

@@ -9,7 +9,6 @@ import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.negocio.fachada.participantecontrato.ConsultarParticipanteContratoPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarParticipanteContratoPorIdFachadaImpl implements ConsultarParticipanteContratoPorIdFachada {
 
@@ -24,7 +23,8 @@ public class ConsultarParticipanteContratoPorIdFachadaImpl implements ConsultarP
 	@Override
 	public ParticipanteContratoEntidad ejecutar(ParticipanteContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del participante contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del participante contrato no pueden ser nulos",
+					"Validacion fallida en ConsultarParticipanteContratoPorIdFachadaImpl.ejecutar() - Los datos del participante contrato no pueden ser nulos");
 		}
 
 		try {
@@ -32,7 +32,9 @@ public class ConsultarParticipanteContratoPorIdFachadaImpl implements ConsultarP
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarParticipanteContratoPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

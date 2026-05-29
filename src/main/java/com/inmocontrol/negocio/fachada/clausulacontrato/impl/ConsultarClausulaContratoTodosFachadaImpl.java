@@ -8,27 +8,28 @@ import com.inmocontrol.negocio.fachada.clausulacontrato.ConsultarClausulaContrat
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import java.util.List;
 
-public class ConsultarClausulaContratoTodosFachadaImpl
-    implements ConsultarClausulaContratoTodosFachada {
+public class ConsultarClausulaContratoTodosFachadaImpl implements ConsultarClausulaContratoTodosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarClausulaContratoTodosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarClausulaContratoTodosCasoUso casoUso;
 
-  public ConsultarClausulaContratoTodosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarClausulaContratoTodosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarClausulaContratoTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarClausulaContratoTodosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<ClausulaContratoEntidad> ejecutar() {
-    try {
-      return casoUso.ejecutar();
+	@Override
+	public List<ClausulaContratoEntidad> ejecutar() {
+		try {
+			return casoUso.ejecutar();
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarClausulaContratoTodosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

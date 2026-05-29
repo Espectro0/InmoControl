@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.contrato.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.contrato.SuspenderContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class SuspenderContratoCasoUsoImpl implements SuspenderContratoCasoUso {
 
@@ -26,24 +27,36 @@ public class SuspenderContratoCasoUsoImpl implements SuspenderContratoCasoUso {
 
   private void validarObligatoriedadId(ContratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El contrato a suspender no es valido.");
+      throw new InmocontrolExcepcion(
+          "El contrato a suspender no es valido.",
+          "Validacion fallida en SuspenderContratoCasoUsoImpl.validarObligatoriedadId() - El contrato a suspender no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del contrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del contrato es obligatorio.",
+          "Validacion fallida en SuspenderContratoCasoUsoImpl.validarObligatoriedadId() - El ID del contrato es obligatorio."
+      );
     }
   }
 
   private void validarExistenciaContrato(ContratoDominio datos) {
     ContratoEntidad existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion("No existe un contrato con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un contrato con el ID: " + datos.getId(),
+          "Error en SuspenderContratoCasoUsoImpl.validarExistenciaContrato() - No existe un contrato con el ID: " + datos.getId()
+      );
     }
   }
 
   private void validarQueEstaActivo(ContratoDominio datos) {
     ContratoEntidad existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
     if (!Boolean.TRUE.equals(existente.getEsActivo())) {
-      throw new ValidacionExcepcion("El contrato ya se encuentra suspendido.");
+      throw new InmocontrolExcepcion(
+          "El contrato ya se encuentra suspendido.",
+          "Validacion fallida en SuspenderContratoCasoUsoImpl.validarQueEstaActivo() - El contrato ya se encuentra suspendido."
+      );
     }
   }
 
@@ -61,3 +74,5 @@ public class SuspenderContratoCasoUsoImpl implements SuspenderContratoCasoUso {
     daoFactory.obtenerContratoDAO().actualizar(entidad.getId(), entidad);
   }
 }
+
+

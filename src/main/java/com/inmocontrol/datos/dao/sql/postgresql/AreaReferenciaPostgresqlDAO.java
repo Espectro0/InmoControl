@@ -3,7 +3,8 @@ package com.inmocontrol.datos.dao.sql.postgresql;
 import com.inmocontrol.datos.dao.AreaReferenciaDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.AreaReferenciaEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +31,10 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar el area referencia por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en AreaReferenciaPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -48,7 +52,10 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar los areas referencia.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en AreaReferenciaPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -77,8 +84,10 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar areas referencia por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en AreaReferenciaPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -93,7 +102,10 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
       stmt.setString(2, entidad.getNombre());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear el area referencia.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en AreaReferenciaPostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -106,7 +118,10 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
       stmt.setObject(2, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar el area referencia.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en AreaReferenciaPostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -118,7 +133,10 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar el area referencia.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en AreaReferenciaPostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -129,3 +147,4 @@ public class AreaReferenciaPostgresqlDAO extends SQLDAO implements AreaReferenci
         .build();
   }
 }
+

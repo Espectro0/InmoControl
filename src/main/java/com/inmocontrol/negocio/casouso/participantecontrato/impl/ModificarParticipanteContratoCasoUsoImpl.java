@@ -6,9 +6,12 @@ import com.inmocontrol.entidad.ParticipanteContratoEntidad;
 import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.participantecontrato.ModificarParticipanteContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ModificarParticipanteContratoCasoUsoImpl
     implements ModificarParticipanteContratoCasoUso {
@@ -29,10 +32,25 @@ public class ModificarParticipanteContratoCasoUsoImpl
 
   private void validarObligatoriedadId(ParticipanteContratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El participante contrato a modificar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El participante contrato a modificar no es valido.",
+          "Validacion fallida en ModificarParticipanteContratoCasoUsoImpl.validarObligatoriedadId() - El participante contrato a modificar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del participante contrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del participante contrato es obligatorio.",
+          "Validacion fallida en ModificarParticipanteContratoCasoUsoImpl.validarObligatoriedadId() - El ID del participante contrato es obligatorio."
+      );
+    }
+    if (datos.getPersona() != null && datos.getPersona().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La persona es obligatoria");
+    }
+    if (datos.getTipoParticipante() != null && datos.getTipoParticipante().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El tipo de participante es obligatorio");
+    }
+    if (datos.getContrato() != null && datos.getContrato().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El contrato es obligatorio");
     }
   }
 
@@ -40,8 +58,10 @@ public class ModificarParticipanteContratoCasoUsoImpl
     ParticipanteContratoEntidad existente =
         daoFactory.obtenerParticipanteContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion(
-          "No existe un participante contrato con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un participante contrato con el ID: " + datos.getId(),
+          "Validacion fallida en ModificarParticipanteContratoCasoUsoImpl - No encontrado con ID: " + datos.getId()
+      );
     }
   }
 
@@ -67,3 +87,5 @@ public class ModificarParticipanteContratoCasoUsoImpl
     daoFactory.obtenerParticipanteContratoDAO().actualizar(entidad.getId(), entidad);
   }
 }
+
+

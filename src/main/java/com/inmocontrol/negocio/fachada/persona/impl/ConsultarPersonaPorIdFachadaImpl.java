@@ -9,7 +9,6 @@ import com.inmocontrol.negocio.dominio.PersonaDominio;
 import com.inmocontrol.negocio.fachada.persona.ConsultarPersonaPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarPersonaPorIdFachadaImpl implements ConsultarPersonaPorIdFachada {
 
@@ -24,7 +23,8 @@ public class ConsultarPersonaPorIdFachadaImpl implements ConsultarPersonaPorIdFa
 	@Override
 	public PersonaEntidad ejecutar(PersonaDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la persona no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la persona no pueden ser nulos",
+					"Validacion fallida en ConsultarPersonaPorIdFachadaImpl.ejecutar() - datos nulos");
 		}
 
 		try {
@@ -32,7 +32,8 @@ public class ConsultarPersonaPorIdFachadaImpl implements ConsultarPersonaPorIdFa
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion",
+					"Error en ConsultarPersonaPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

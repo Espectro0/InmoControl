@@ -1,13 +1,18 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class TipoPropiedadDTO {
   private UUID id;
   private String nombre;
 
-  public TipoPropiedadDTO() {}
+  public TipoPropiedadDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setNombre(UtilTexto.VACIO);
+  }
 
   private TipoPropiedadDTO(final Builder builder) {
     setId(builder.id);

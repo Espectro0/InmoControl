@@ -1,6 +1,9 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilNumero;
+import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class ClausulaPorContratoDTO {
@@ -9,7 +12,12 @@ public final class ClausulaPorContratoDTO {
   private ContratoDTO contrato;
   private ClausulaContratoDTO clausula;
 
-  public ClausulaPorContratoDTO() {}
+  public ClausulaPorContratoDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setNumeroClausula(UtilNumero.ENTERO_DEFECTO);
+	  setContrato(new ContratoDTO());
+	  setClausula(new ClausulaContratoDTO());
+  }
 
   private ClausulaPorContratoDTO(final Builder builder) {
     setId(builder.id);
@@ -43,11 +51,11 @@ public final class ClausulaPorContratoDTO {
   }
 
   public void setContrato(final ContratoDTO contrato) {
-    this.contrato = contrato;
+    this.contrato = UtilObjeto.obtenerValorDefecto(contrato, new ContratoDTO());
   }
 
   public void setClausula(final ClausulaContratoDTO clausula) {
-    this.clausula = clausula;
+    this.clausula = UtilObjeto.obtenerValorDefecto(clausula, new ClausulaContratoDTO());
   }
 
   public static class Builder {

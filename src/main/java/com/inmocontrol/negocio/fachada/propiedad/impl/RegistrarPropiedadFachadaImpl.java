@@ -11,7 +11,6 @@ import com.inmocontrol.negocio.dominio.TipoPropiedadDominio;
 import com.inmocontrol.negocio.fachada.propiedad.RegistrarPropiedadFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarPropiedadFachadaImpl implements RegistrarPropiedadFachada {
 
@@ -26,30 +25,26 @@ public class RegistrarPropiedadFachadaImpl implements RegistrarPropiedadFachada 
 	@Override
 	public void ejecutar(PropiedadDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la propiedad no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la propiedad no pueden ser nulos",
+					"Validacion fallida en RegistrarPropiedadFachadaImpl.ejecutar() - Los datos de la propiedad no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			PropiedadDominio dominio = new PropiedadDominio.Builder()
-					.tipoPropiedad(datos.getTipoPropiedad() != null
-							? new TipoPropiedadDominio.Builder().id(datos.getTipoPropiedad().getId()).build()
-							: null)
-					.estrato(datos.getEstrato() != null
-							? new EstratoDominio.Builder().id(datos.getEstrato().getId()).build()
-							: null)
+					.tipoPropiedad(new TipoPropiedadDominio.Builder().id(datos.getTipoPropiedad().getId()).build())
+					.estrato(new EstratoDominio.Builder().id(datos.getEstrato().getId()).build())
 					.nombreInmueble(datos.getNombreInmueble()).descripcionInmueble(datos.getDescripcionInmueble())
 					.areaMetros(datos.getAreaMetros()).direccion(datos.getDireccion())
-					.ciudad(datos.getCiudad() != null
-							? new CiudadDominio.Builder().id(datos.getCiudad().getId()).build()
-							: null)
+					.ciudad(new CiudadDominio.Builder().id(datos.getCiudad().getId()).build())
 					.build();
 			casoUso.ejecutar(dominio);
 			daoFactory.confirmarTransaccion();
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error registrando la propiedad", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en RegistrarPropiedadFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

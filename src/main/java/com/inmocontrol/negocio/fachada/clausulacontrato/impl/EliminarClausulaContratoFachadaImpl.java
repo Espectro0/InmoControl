@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.negocio.fachada.clausulacontrato.EliminarClausulaContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarClausulaContratoFachadaImpl implements EliminarClausulaContratoFachada {
 
@@ -23,15 +22,17 @@ public class EliminarClausulaContratoFachadaImpl implements EliminarClausulaCont
 	@Override
 	public void ejecutar(ClausulaContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la clausula contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la clausula contrato no pueden ser nulos",
+					"Validacion fallida en EliminarClausulaContratoFachadaImpl.ejecutar() - Los datos de la clausula contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			var existente = daoFactory.obtenerClausulaContratoDAO().consultarPorId(datos.getId());
 			if (existente == null) {
-				throw new ValidacionExcepcion(
-				    "La clausula contrato con id " + datos.getId() + " no existe.");
+				throw new InmocontrolExcepcion("La clausula contrato con id " + datos.getId() + " no existe.",
+						"Validacion fallida en EliminarClausulaContratoFachadaImpl.ejecutar() - La clausula contrato con id "
+								+ datos.getId() + " no existe.");
 			}
 			ClausulaContratoDominio dominio = new ClausulaContratoDominio.Builder().id(datos.getId()).build();
 			casoUso.ejecutar(dominio);
@@ -39,7 +40,8 @@ public class EliminarClausulaContratoFachadaImpl implements EliminarClausulaCont
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error eliminando la clausula contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en EliminarClausulaContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

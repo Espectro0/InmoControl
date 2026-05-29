@@ -31,7 +31,9 @@ public abstract class DAOFactory {
       case POSTGRESQL:
         return new PostgreSQLDAOFactory();
       default:
-        throw new InmocontrolExcepcion("Tipo de factoria actual no soportada: " + FACTORIA_ACTUAL);
+    	var mensajeUsuario = "Ha ocurrido un error. Por favor, contacte al administrador del sistema.";
+    	var mensajeTecnico = "Tipo de factoria actual no soportada: " + FACTORIA_ACTUAL;
+        throw new InmocontrolExcepcion(mensajeUsuario, mensajeTecnico);
     }
   }
 

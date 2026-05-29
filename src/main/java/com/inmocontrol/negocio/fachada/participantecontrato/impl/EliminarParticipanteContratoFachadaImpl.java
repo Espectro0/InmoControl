@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.negocio.fachada.participantecontrato.EliminarParticipanteContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarParticipanteContratoFachadaImpl implements EliminarParticipanteContratoFachada {
 
@@ -23,15 +22,17 @@ public class EliminarParticipanteContratoFachadaImpl implements EliminarParticip
 	@Override
 	public void ejecutar(ParticipanteContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del participante contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del participante contrato no pueden ser nulos",
+					"Validacion fallida en EliminarParticipanteContratoFachadaImpl.ejecutar() - Los datos del participante contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			var existente = daoFactory.obtenerParticipanteContratoDAO().consultarPorId(datos.getId());
 			if (existente == null) {
-				throw new ValidacionExcepcion(
-				    "El participante contrato con id " + datos.getId() + " no existe.");
+				throw new InmocontrolExcepcion("El participante contrato con id " + datos.getId() + " no existe.",
+						"Validacion fallida en EliminarParticipanteContratoFachadaImpl.ejecutar() - El participante contrato con id "
+								+ datos.getId() + " no existe.");
 			}
 			ParticipanteContratoDominio dominio = new ParticipanteContratoDominio.Builder().id(datos.getId()).build();
 			casoUso.ejecutar(dominio);
@@ -39,7 +40,9 @@ public class EliminarParticipanteContratoFachadaImpl implements EliminarParticip
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error eliminando el participante contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en EliminarParticipanteContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

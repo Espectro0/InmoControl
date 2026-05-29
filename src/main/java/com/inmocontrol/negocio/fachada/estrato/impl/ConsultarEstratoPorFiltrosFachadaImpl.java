@@ -9,38 +9,37 @@ import com.inmocontrol.negocio.dominio.EstratoDominio;
 import com.inmocontrol.negocio.fachada.estrato.ConsultarEstratoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
 public class ConsultarEstratoPorFiltrosFachadaImpl implements ConsultarEstratoPorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarEstratoPorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarEstratoPorFiltrosCasoUso casoUso;
 
-  public ConsultarEstratoPorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarEstratoPorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarEstratoPorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarEstratoPorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<EstratoEntidad> ejecutar(EstratoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del estrato no pueden ser nulos");
-    }
+	@Override
+	public List<EstratoEntidad> ejecutar(EstratoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("Los datos del estrato no pueden ser nulos",
+					"Validacion fallida en ConsultarEstratoPorFiltrosFachadaImpl.ejecutar() - Los datos del estrato no pueden ser nulos");
+		}
 
-    try {
-      EstratoDominio dominio =
-          new EstratoDominio.Builder()
-              .nombre(datos.getNombre())
-              .descripcion(datos.getDescripcion())
-              .build();
-      return casoUso.ejecutar(dominio);
+		try {
+			EstratoDominio dominio = new EstratoDominio.Builder().nombre(datos.getNombre())
+					.descripcion(datos.getDescripcion()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarEstratoPorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

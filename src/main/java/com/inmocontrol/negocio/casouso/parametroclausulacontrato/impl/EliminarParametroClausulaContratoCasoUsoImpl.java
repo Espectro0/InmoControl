@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.parametroclausulacontrato.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.parametroclausulacontrato.EliminarParametroClausulaContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class EliminarParametroClausulaContratoCasoUsoImpl
     implements EliminarParametroClausulaContratoCasoUso {
@@ -26,10 +27,16 @@ public class EliminarParametroClausulaContratoCasoUsoImpl
 
   private void validarObligatoriedadId(ParametroClausulaContratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El parametro clausula contrato a eliminar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El parametro clausula contrato a eliminar no es valido.",
+          "Validacion fallida en EliminarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadId() - El parametro clausula contrato a eliminar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del parametro clausula contrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del parametro clausula contrato es obligatorio.",
+          "Validacion fallida en EliminarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadId() - El ID del parametro clausula contrato es obligatorio."
+      );
     }
   }
 
@@ -37,8 +44,10 @@ public class EliminarParametroClausulaContratoCasoUsoImpl
     ParametroClausulaContratoEntidad existente =
         daoFactory.obtenerParametroClausulaContratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion(
-          "No existe un parametro clausula contrato con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un parametro clausula contrato con el ID: " + datos.getId(),
+          "Validacion fallida en EliminarParametroClausulaContratoCasoUsoImpl - No encontrado"
+      );
     }
   }
 
@@ -46,3 +55,5 @@ public class EliminarParametroClausulaContratoCasoUsoImpl
     daoFactory.obtenerParametroClausulaContratoDAO().eliminar(datos.getId());
   }
 }
+
+

@@ -11,7 +11,6 @@ import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.negocio.fachada.participantecontrato.ModificarParticipanteContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ModificarParticipanteContratoFachadaImpl implements ModificarParticipanteContratoFachada {
 
@@ -26,28 +25,25 @@ public class ModificarParticipanteContratoFachadaImpl implements ModificarPartic
 	@Override
 	public void ejecutar(ParticipanteContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del participante contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del participante contrato no pueden ser nulos",
+					"Validacion fallida en ModificarParticipanteContratoFachadaImpl.ejecutar() - Los datos del participante contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			ParticipanteContratoDominio dominio = new ParticipanteContratoDominio.Builder().id(datos.getId())
-					.persona(datos.getPersona() != null
-							? new PersonaDominio.Builder().id(datos.getPersona().getId()).build()
-							: null)
-					.tipoParticipante(datos.getTipoParticipante() != null
-							? new TipoParticipanteDominio.Builder().id(datos.getTipoParticipante().getId()).build()
-							: null)
-					.contrato(datos.getContrato() != null
-							? new ContratoDominio.Builder().id(datos.getContrato().getId()).build()
-							: null)
-					.build();
+					.persona(new PersonaDominio.Builder().id(datos.getPersona().getId()).build())
+					.tipoParticipante(new TipoParticipanteDominio.Builder().id(datos.getTipoParticipante().getId()).build())
+					.contrato(new ContratoDominio.Builder().id(datos.getContrato().getId()).build())
+					.			 build();
 			casoUso.ejecutar(dominio);
 			daoFactory.confirmarTransaccion();
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error modificando el participante contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ModificarParticipanteContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

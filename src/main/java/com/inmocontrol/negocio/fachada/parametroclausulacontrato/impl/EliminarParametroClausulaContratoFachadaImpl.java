@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.negocio.fachada.parametroclausulacontrato.EliminarParametroClausulaContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarParametroClausulaContratoFachadaImpl implements EliminarParametroClausulaContratoFachada {
 
@@ -23,15 +22,17 @@ public class EliminarParametroClausulaContratoFachadaImpl implements EliminarPar
 	@Override
 	public void ejecutar(ParametroClausulaContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del parametro clausula contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del parametro clausula contrato no pueden ser nulos",
+					"Validacion fallida en EliminarParametroClausulaContratoFachadaImpl.ejecutar() - Los datos del parametro clausula contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			var existente = daoFactory.obtenerParametroClausulaContratoDAO().consultarPorId(datos.getId());
 			if (existente == null) {
-				throw new ValidacionExcepcion(
-				    "El parametro clausula contrato con id " + datos.getId() + " no existe.");
+				throw new InmocontrolExcepcion("El parametro clausula contrato con id " + datos.getId() + " no existe.",
+						"Validacion fallida en EliminarParametroClausulaContratoFachadaImpl.ejecutar() - El parametro clausula contrato con id "
+								+ datos.getId() + " no existe.");
 			}
 			ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder().id(datos.getId())
 					.build();
@@ -40,7 +41,9 @@ public class EliminarParametroClausulaContratoFachadaImpl implements EliminarPar
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error eliminando el parametro clausula contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en EliminarParametroClausulaContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

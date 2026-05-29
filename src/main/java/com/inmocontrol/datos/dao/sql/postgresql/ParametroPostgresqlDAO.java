@@ -3,7 +3,8 @@ package com.inmocontrol.datos.dao.sql.postgresql;
 import com.inmocontrol.datos.dao.ParametroDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.ParametroEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +31,10 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar el parametro por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParametroPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -48,7 +52,10 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar los parametros.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParametroPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -82,7 +89,10 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar parametros por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParametroPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -98,7 +108,10 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
       stmt.setString(3, entidad.getDescripcion());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear el parametro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParametroPostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -112,7 +125,10 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
       stmt.setObject(3, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar el parametro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParametroPostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -124,7 +140,10 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar el parametro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en ParametroPostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -136,3 +155,4 @@ public class ParametroPostgresqlDAO extends SQLDAO implements ParametroDAO {
         .build();
   }
 }
+

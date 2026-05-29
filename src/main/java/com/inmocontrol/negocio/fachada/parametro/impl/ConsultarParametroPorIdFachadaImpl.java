@@ -9,33 +9,34 @@ import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.negocio.fachada.parametro.ConsultarParametroPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class ConsultarParametroPorIdFachadaImpl implements ConsultarParametroPorIdFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarParametroPorIdCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarParametroPorIdCasoUso casoUso;
 
-  public ConsultarParametroPorIdFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarParametroPorIdCasoUsoImpl(daoFactory);
-  }
-
-  @Override
-  public ParametroEntidad ejecutar(ParametroDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del parametro no pueden ser nulos");
-    }
-
-    try {
-      ParametroDominio dominio = new ParametroDominio.Builder().id(datos.getId()).build();
-      return casoUso.ejecutar(dominio);
-
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
-
-	} finally {
-		daoFactory.cerrarConexion();
+	public ConsultarParametroPorIdFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarParametroPorIdCasoUsoImpl(daoFactory);
 	}
-  }
+
+	@Override
+	public ParametroEntidad ejecutar(ParametroDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("Los datos del parametro no pueden ser nulos",
+					"Validacion fallida en ConsultarParametroPorIdFachadaImpl.ejecutar() - Los datos del parametro no pueden ser nulos");
+		}
+
+		try {
+			ParametroDominio dominio = new ParametroDominio.Builder().id(datos.getId()).build();
+			return casoUso.ejecutar(dominio);
+
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarParametroPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
+
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

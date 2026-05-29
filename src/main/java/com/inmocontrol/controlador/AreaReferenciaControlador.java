@@ -14,64 +14,55 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/areas-referencia")
 public class AreaReferenciaControlador {
 
-  @GetMapping("/{id}")
-  public ResponseEntity<RespuestaExito<AreaReferenciaEntidad>> consultarPorId(
-      @PathVariable UUID id) {
-    AreaReferenciaDTO dto = new AreaReferenciaDTO.Builder().id(id).build();
-    ConsultarAreaReferenciaPorIdFachada fachada = new ConsultarAreaReferenciaPorIdFachadaImpl();
-    AreaReferenciaEntidad resultado = fachada.ejecutar(dto);
-    return ResponseEntity.ok(
-        RespuestaExito.crear("Area de referencia obtenida exitosamente", resultado));
-  }
+	@GetMapping("/{id}")
+	public ResponseEntity<RespuestaExito<AreaReferenciaEntidad>> consultarPorId(@PathVariable UUID id) {
+		AreaReferenciaDTO dto = new AreaReferenciaDTO.Builder().id(id).build();
+		ConsultarAreaReferenciaPorIdFachada fachada = new ConsultarAreaReferenciaPorIdFachadaImpl();
+		AreaReferenciaEntidad resultado = fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Area de referencia obtenida exitosamente", resultado));
+	}
 
-  @GetMapping
-  public ResponseEntity<RespuestaExito<List<AreaReferenciaEntidad>>> consultar(
-      @RequestParam(required = false) String nombre) {
+	@GetMapping
+	public ResponseEntity<RespuestaExito<List<AreaReferenciaEntidad>>> consultar(
+			@RequestParam(required = false) String nombre) {
 
-    AreaReferenciaDTO dto = new AreaReferenciaDTO.Builder().nombre(nombre).build();
+		AreaReferenciaDTO dto = new AreaReferenciaDTO.Builder().nombre(nombre).build();
 
-    List<AreaReferenciaEntidad> resultado;
-    boolean tieneFiltros = nombre != null;
+		List<AreaReferenciaEntidad> resultado;
+		boolean tieneFiltros = nombre != null;
 
-    if (tieneFiltros) {
-      ConsultarAreaReferenciaPorFiltrosFachada fachadaFiltros =
-          new ConsultarAreaReferenciaPorFiltrosFachadaImpl();
-      resultado = fachadaFiltros.ejecutar(dto);
-      return ResponseEntity.ok(
-          RespuestaExito.crear("Areas de referencia filtradas obtenidas exitosamente", resultado));
-    } else {
-      ConsultarAreaReferenciaTodosFachada fachadaTodos =
-          new ConsultarAreaReferenciaTodosFachadaImpl();
-      resultado = fachadaTodos.ejecutar();
-      return ResponseEntity.ok(
-          RespuestaExito.crear("Areas de referencia obtenidas exitosamente", resultado));
-    }
-  }
+		if (tieneFiltros) {
+			ConsultarAreaReferenciaPorFiltrosFachada fachadaFiltros = new ConsultarAreaReferenciaPorFiltrosFachadaImpl();
+			resultado = fachadaFiltros.ejecutar(dto);
+			return ResponseEntity
+					.ok(RespuestaExito.crear("Areas de referencia filtradas obtenidas exitosamente", resultado));
+		} else {
+			ConsultarAreaReferenciaTodosFachada fachadaTodos = new ConsultarAreaReferenciaTodosFachadaImpl();
+			resultado = fachadaTodos.ejecutar();
+			return ResponseEntity.ok(RespuestaExito.crear("Areas de referencia obtenidas exitosamente", resultado));
+		}
+	}
 
-  @PostMapping
-  public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody AreaReferenciaDTO dto) {
-    RegistrarAreaReferenciaFachada fachada = new RegistrarAreaReferenciaFachadaImpl();
-    fachada.ejecutar(dto);
-    return ResponseEntity.status(201)
-        .body(RespuestaExito.crear("Area de referencia registrada exitosamente"));
-  }
+	@PostMapping
+	public ResponseEntity<RespuestaExito<Void>> registrar(@RequestBody AreaReferenciaDTO dto) {
+		RegistrarAreaReferenciaFachada fachada = new RegistrarAreaReferenciaFachadaImpl();
+		fachada.ejecutar(dto);
+		return ResponseEntity.status(201).body(RespuestaExito.crear("Area de referencia registrada exitosamente"));
+	}
 
-  @PutMapping
-  public ResponseEntity<RespuestaExito<AreaReferenciaEntidad>> modificar(
-      @RequestBody AreaReferenciaDTO dto) {
-    ModificarAreaReferenciaFachada fachada = new ModificarAreaReferenciaFachadaImpl();
-    AreaReferenciaEntidad resultado = new AreaReferenciaEntidad.Builder().build();
-    fachada.ejecutar(dto);
-    return ResponseEntity.ok(
-        RespuestaExito.crear("Area de referencia modificada exitosamente", resultado));
-  }
+	@PutMapping
+	public ResponseEntity<RespuestaExito<AreaReferenciaEntidad>> modificar(@RequestBody AreaReferenciaDTO dto) {
+		ModificarAreaReferenciaFachada fachada = new ModificarAreaReferenciaFachadaImpl();
+		AreaReferenciaEntidad resultado = new AreaReferenciaEntidad.Builder().build();
+		fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Area de referencia modificada exitosamente", resultado));
+	}
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
-    AreaReferenciaDTO dto = new AreaReferenciaDTO.Builder().id(id).build();
-    EliminarAreaReferenciaFachada fachada = new EliminarAreaReferenciaFachadaImpl();
-    fachada.ejecutar(dto);
-    return ResponseEntity.ok(
-        RespuestaExito.crear("Area de referencia eliminada exitosamente"));
-  }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<RespuestaExito<Void>> eliminar(@PathVariable UUID id) {
+		AreaReferenciaDTO dto = new AreaReferenciaDTO.Builder().id(id).build();
+		EliminarAreaReferenciaFachada fachada = new EliminarAreaReferenciaFachadaImpl();
+		fachada.ejecutar(dto);
+		return ResponseEntity.ok(RespuestaExito.crear("Area de referencia eliminada exitosamente"));
+	}
 }

@@ -2,6 +2,9 @@ package com.inmocontrol.dto;
 
 import java.util.UUID;
 
+import com.inmocontrol.transversal.UtilObjeto;
+import com.inmocontrol.transversal.UtilUUID;
+
 public final class ParticipanteContratoDTO {
   private UUID id;
   private PersonaDTO persona;
@@ -11,7 +14,15 @@ public final class ParticipanteContratoDTO {
   private UUID tipoParticipanteId;
   private UUID contratoId;
 
-  public ParticipanteContratoDTO() {}
+  public ParticipanteContratoDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setPersona(new PersonaDTO());
+	  setTipoParticipante(new TipoParticipanteDTO());
+	  setContrato(new ContratoDTO());
+	  setPersonaId(UtilUUID.UUID_CERO);
+	  setTipoParticipanteId(UtilUUID.UUID_CERO);
+	  setContratoId(UtilUUID.UUID_CERO);
+  }
 
   private ParticipanteContratoDTO(final Builder builder) {
     setId(builder.id);
@@ -56,15 +67,15 @@ public final class ParticipanteContratoDTO {
   }
 
   public void setPersona(final PersonaDTO persona) {
-    this.persona = persona;
+    this.persona = UtilObjeto.obtenerValorDefecto(persona, new PersonaDTO());
   }
 
   public void setTipoParticipante(final TipoParticipanteDTO tipoParticipante) {
-    this.tipoParticipante = tipoParticipante;
+    this.tipoParticipante = UtilObjeto.obtenerValorDefecto(tipoParticipante, new TipoParticipanteDTO());
   }
 
   public void setContrato(final ContratoDTO contrato) {
-    this.contrato = contrato;
+    this.contrato = UtilObjeto.obtenerValorDefecto(contrato, new ContratoDTO());
   }
 
   public void setPersonaId(final UUID personaId) {

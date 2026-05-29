@@ -3,11 +3,12 @@ package com.inmocontrol.negocio.casouso.parametro.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroEntidad;
 import com.inmocontrol.negocio.casouso.parametro.ModificarParametroCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso {
 
@@ -29,26 +30,41 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
 
   private void validarObligatoriedadId(ParametroDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El parametro a modificar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El parametro a modificar no es valido.",
+          "Validacion fallida en ModificarParametroCasoUsoImpl.validarObligatoriedadId() - El parametro a modificar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del parametro es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del parametro es obligatorio.",
+          "Validacion fallida en ModificarParametroCasoUsoImpl.validarObligatoriedadId() - El ID del parametro es obligatorio."
+      );
     }
   }
 
   private void validarExistenciaParametro(ParametroDominio datos) {
     ParametroEntidad existente = daoFactory.obtenerParametroDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion("No existe un parametro con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un parametro con el ID: " + datos.getId(),
+          "Error en ModificarParametroCasoUsoImpl.validarExistenciaParametro() - No existe un parametro con el ID: " + datos.getId()
+      );
     }
   }
 
   private void validarFormatos(ParametroDominio datos) {
     if (!UtilValidacion.validarLongitud(datos.getPlaceholder(), 1, 30)) {
-      throw new ValidacionExcepcion("El placeholder debe tener entre 1 y 30 caracteres.");
+      throw new InmocontrolExcepcion(
+          "El placeholder debe tener entre 1 y 30 caracteres.",
+          "Validacion fallida en ModificarParametroCasoUsoImpl.validarFormatos() - El placeholder debe tener entre 1 y 30 caracteres."
+      );
     }
     if (!UtilValidacion.validarLongitud(datos.getDescripcion(), 1, 100)) {
-      throw new ValidacionExcepcion("La descripcion debe tener entre 1 y 100 caracteres.");
+      throw new InmocontrolExcepcion(
+          "La descripcion debe tener entre 1 y 100 caracteres.",
+          "Validacion fallida en ModificarParametroCasoUsoImpl.validarFormatos() - La descripcion debe tener entre 1 y 100 caracteres."
+      );
     }
   }
 
@@ -58,8 +74,10 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
     var resultados = daoFactory.obtenerParametroDAO().consultarPorFiltro(filtro);
     for (ParametroEntidad item : resultados) {
       if (!item.getId().equals(datos.getId())) {
-        throw new ValidacionExcepcion(
-            "Ya existe un parametro con el placeholder: " + datos.getPlaceholder());
+        throw new InmocontrolExcepcion(
+            "Ya existe un parametro con el placeholder: " + datos.getPlaceholder(),
+            "Validacion fallida en ModificarParametroCasoUsoImpl.validarUnicoPlaceholder() - Ya existe un parametro con el placeholder: " + datos.getPlaceholder()
+        );
       }
     }
   }
@@ -74,3 +92,5 @@ public class ModificarParametroCasoUsoImpl implements ModificarParametroCasoUso 
     daoFactory.obtenerParametroDAO().actualizar(entidad.getId(), entidad);
   }
 }
+
+

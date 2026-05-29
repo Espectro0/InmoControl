@@ -3,7 +3,8 @@ package com.inmocontrol.datos.dao.sql.postgresql;
 import com.inmocontrol.datos.dao.TipoParticipanteDAO;
 import com.inmocontrol.datos.dao.sql.SQLDAO;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,8 +31,10 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar el tipo participante por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en TipoParticipantePostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -49,7 +52,10 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar los tipos participante.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en TipoParticipantePostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -78,8 +84,10 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion(
-          "Ocurrio un error al consultar tipos participante por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en TipoParticipantePostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -94,7 +102,10 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
       stmt.setString(2, entidad.getNombre());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear el tipo participante.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en TipoParticipantePostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -107,7 +118,10 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
       stmt.setObject(2, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar el tipo participante.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en TipoParticipantePostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -119,7 +133,10 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar el tipo participante.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en TipoParticipantePostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -130,3 +147,4 @@ public class TipoParticipantePostgresqlDAO extends SQLDAO implements TipoPartici
         .build();
   }
 }
+

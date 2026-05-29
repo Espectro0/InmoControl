@@ -1,6 +1,9 @@
 package com.inmocontrol.dto;
 
+import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class CiudadDTO {
@@ -9,7 +12,12 @@ public final class CiudadDTO {
   private DepartamentoDTO departamento;
   private UUID departamentoId;
 
-  public CiudadDTO() {}
+  public CiudadDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setNombre(UtilTexto.VACIO);
+	  setDepartamento(new DepartamentoDTO());
+	  setDepartamentoId(UtilUUID.UUID_CERO);
+  }
 
   private CiudadDTO(final Builder builder) {
     setId(builder.id);
@@ -43,7 +51,7 @@ public final class CiudadDTO {
   }
 
   public void setDepartamento(final DepartamentoDTO departamento) {
-    this.departamento = departamento;
+    this.departamento = UtilObjeto.obtenerValorDefecto(departamento, new DepartamentoDTO());
   }
 
   public void setDepartamentoId(final UUID departamentoId) {

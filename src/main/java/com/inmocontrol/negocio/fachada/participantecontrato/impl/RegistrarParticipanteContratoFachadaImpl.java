@@ -14,7 +14,6 @@ import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.negocio.fachada.participantecontrato.RegistrarParticipanteContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class RegistrarParticipanteContratoFachadaImpl implements RegistrarParticipanteContratoFachada {
 
@@ -29,40 +28,43 @@ public class RegistrarParticipanteContratoFachadaImpl implements RegistrarPartic
 	@Override
 	public void ejecutar(ParticipanteContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del participante contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del participante contrato no pueden ser nulos",
+					"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - Los datos del participante contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
-			PersonaEntidad personaEntidad = daoFactory.obtenerPersonaDAO()
-					.consultarPorId(datos.getPersonaId());
+			PersonaEntidad personaEntidad = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getPersonaId());
 			if (personaEntidad == null) {
-				throw new ValidacionExcepcion("La persona no existe");
+				throw new InmocontrolExcepcion("La persona no existe",
+						"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - La persona no existe");
 			}
 
 			TipoParticipanteEntidad tipoParticipanteEntidad = daoFactory.obtenerTipoParticipanteDAO()
 					.consultarPorId(datos.getTipoParticipanteId());
 			if (tipoParticipanteEntidad == null) {
-				throw new ValidacionExcepcion("El tipo de participante no existe");
+				throw new InmocontrolExcepcion("El tipo de participante no existe",
+						"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - El tipo de participante no existe");
 			}
 
-			ContratoEntidad contratoEntidad = daoFactory.obtenerContratoDAO()
-					.consultarPorId(datos.getContratoId());
+			ContratoEntidad contratoEntidad = daoFactory.obtenerContratoDAO().consultarPorId(datos.getContratoId());
 			if (contratoEntidad == null) {
-				throw new ValidacionExcepcion("El contrato no existe");
+				throw new InmocontrolExcepcion("El contrato no existe",
+						"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - El contrato no existe");
 			}
 
-			ParticipanteContratoDominio dominio = new ParticipanteContratoDominio.Builder()
+			 ParticipanteContratoDominio dominio = new ParticipanteContratoDominio.Builder()
 					.persona(new PersonaDominio.Builder().id(personaEntidad.getId()).build())
 					.tipoParticipante(new TipoParticipanteDominio.Builder().id(tipoParticipanteEntidad.getId()).build())
-					.contrato(new ContratoDominio.Builder().id(contratoEntidad.getId()).build())
-					.build();
+					.contrato(new ContratoDominio.Builder().id(contratoEntidad.getId()).build()).build();
 			casoUso.ejecutar(dominio);
 			daoFactory.confirmarTransaccion();
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error registrando el participante contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en RegistrarParticipanteContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

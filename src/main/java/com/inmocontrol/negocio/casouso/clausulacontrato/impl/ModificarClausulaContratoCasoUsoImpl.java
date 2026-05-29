@@ -5,101 +5,104 @@ import com.inmocontrol.entidad.AreaReferenciaEntidad;
 import com.inmocontrol.entidad.ClausulaContratoEntidad;
 import com.inmocontrol.entidad.TipoAplicacionEntidad;
 import com.inmocontrol.negocio.casouso.clausulacontrato.ModificarClausulaContratoCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public class ModificarClausulaContratoCasoUsoImpl implements ModificarClausulaContratoCasoUso {
 
-  private DAOFactory daoFactory;
+	private DAOFactory daoFactory;
 
-  public ModificarClausulaContratoCasoUsoImpl(DAOFactory daoFactory) {
-    super();
-    this.daoFactory = daoFactory;
-  }
+	public ModificarClausulaContratoCasoUsoImpl(DAOFactory daoFactory) {
+		super();
+		this.daoFactory = daoFactory;
+	}
 
-  @Override
-  public void ejecutar(ClausulaContratoDominio datos) {
-    validarObligatoriedadId(datos);
-    validarExistenciaClausulaContrato(datos);
-    validarFormatos(datos);
-    validarUnicoAreaTipoTitulo(datos);
-    modificarClausulaContrato(datos);
-  }
+	@Override
+	public void ejecutar(ClausulaContratoDominio datos) {
+		validarObligatoriedadId(datos);
+		validarExistenciaClausulaContrato(datos);
+		validarFormatos(datos);
+		validarUnicoAreaTipoTitulo(datos);
+		modificarClausulaContrato(datos);
+	}
 
-  private void validarObligatoriedadId(ClausulaContratoDominio datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("La clausula contrato a modificar no es valida.");
-    }
-    if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID de la clausula contrato es obligatorio.");
-    }
-  }
+	private void validarObligatoriedadId(ClausulaContratoDominio datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("La clausula contrato a modificar no es valida.",
+					"Validacion fallida en ModificarClausulaContratoCasoUsoImpl.validarObligatoriedadId() - La clausula contrato a modificar no es valida.");
+		}
+		if (UtilObjeto.esNulo(datos.getId())) {
+			throw new InmocontrolExcepcion("El ID de la clausula contrato es obligatorio.",
+					"Validacion fallida en ModificarClausulaContratoCasoUsoImpl.validarObligatoriedadId() - El ID de la clausula contrato es obligatorio.");
+		}
+	}
 
-  private void validarExistenciaClausulaContrato(ClausulaContratoDominio datos) {
-    ClausulaContratoEntidad existente =
-        daoFactory.obtenerClausulaContratoDAO().consultarPorId(datos.getId());
-    if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion("No existe una clausula contrato con el ID: " + datos.getId());
-    }
-  }
+	private void validarExistenciaClausulaContrato(ClausulaContratoDominio datos) {
+		ClausulaContratoEntidad existente = daoFactory.obtenerClausulaContratoDAO().consultarPorId(datos.getId());
+		if (UtilObjeto.esNulo(existente)) {
+			throw new InmocontrolExcepcion("No existe una clausula contrato con el ID: " + datos.getId(),
+					"Error en ModificarClausulaContratoCasoUsoImpl.validarExistenciaClausulaContrato() - No existe una clausula contrato con el ID: "
+							+ datos.getId());
+		}
+	}
 
-  private void validarFormatos(ClausulaContratoDominio datos) {
-    if (!UtilValidacion.validarLongitud(datos.getTitulo(), 1, 50)) {
-      throw new ValidacionExcepcion("El titulo debe tener entre 1 y 50 caracteres.");
-    }
-    if (!UtilValidacion.validarLongitud(datos.getContenidoLegal(), 1, 200)) {
-      throw new ValidacionExcepcion("El contenido legal debe tener entre 1 y 200 caracteres.");
-    }
-  }
+	private void validarFormatos(ClausulaContratoDominio datos) {
+		if (!UtilValidacion.validarLongitud(datos.getTitulo(), 1, 50)) {
+			throw new InmocontrolExcepcion("El titulo debe tener entre 1 y 50 caracteres.",
+					"Validacion fallida en ModificarClausulaContratoCasoUsoImpl.validarFormatos() - El titulo debe tener entre 1 y 50 caracteres.");
+		}
+		if (!UtilValidacion.validarLongitud(datos.getContenidoLegal(), 1, 200)) {
+			throw new InmocontrolExcepcion("El contenido legal debe tener entre 1 y 200 caracteres.",
+					"Validacion fallida en ModificarClausulaContratoCasoUsoImpl.validarFormatos() - El contenido legal debe tener entre 1 y 200 caracteres.");
+		}
+	}
 
-  private void validarUnicoAreaTipoTitulo(ClausulaContratoDominio datos) {
-    ClausulaContratoEntidad filtro =
-        new ClausulaContratoEntidad.Builder()
-            .areaReferencia(
-                datos.getAreaReferencia() != null
-                    ? new AreaReferenciaEntidad.Builder()
-                        .id(datos.getAreaReferencia().getId())
-                        .build()
-                    : null)
-            .tipoAplicacion(
-                datos.getTipoAplicacion() != null
-                    ? new TipoAplicacionEntidad.Builder()
-                        .id(datos.getTipoAplicacion().getId())
-                        .build()
-                    : null)
-            .titulo(datos.getTitulo())
-            .build();
-    var resultados = daoFactory.obtenerClausulaContratoDAO().consultarPorFiltro(filtro);
-    for (ClausulaContratoEntidad item : resultados) {
-      if (!item.getId().equals(datos.getId())) {
-        throw new ValidacionExcepcion(
-            "Ya existe una clausula con el area, tipo de aplicacion y titulo especificados");
-      }
-    }
-  }
+	private void validarUnicoAreaTipoTitulo(ClausulaContratoDominio datos) {
+		ClausulaContratoEntidad filtro = new ClausulaContratoEntidad.Builder()
+				.areaReferencia(datos.getAreaReferencia() != null
+						? new AreaReferenciaEntidad.Builder().id(datos.getAreaReferencia().getId()).build()
+						: null)
+				.tipoAplicacion(datos.getTipoAplicacion() != null
+						? new TipoAplicacionEntidad.Builder().id(datos.getTipoAplicacion().getId()).build()
+						: null)
+				.titulo(datos.getTitulo()).build();
+		var resultados = daoFactory.obtenerClausulaContratoDAO().consultarPorFiltro(filtro);
+		for (ClausulaContratoEntidad item : resultados) {
+			if (!item.getId().equals(datos.getId())) {
+				throw new InmocontrolExcepcion(
+						"Ya existe una clausula con el area, tipo de aplicacion y titulo especificados",
+						"Validacion fallida en ModificarClausulaContratoCasoUsoImpl.validarUnicoAreaTipoTitulo() - Ya existe una clausula con el area, tipo de aplicacion y titulo especificados");
+			}
+		}
+	}
 
-  private void modificarClausulaContrato(ClausulaContratoDominio datos) {
-    ClausulaContratoEntidad entidad =
-        new ClausulaContratoEntidad.Builder()
-            .id(datos.getId())
-            .areaReferencia(
-                datos.getAreaReferencia() != null
-                    ? new AreaReferenciaEntidad.Builder()
-                        .id(datos.getAreaReferencia().getId())
-                        .build()
-                    : null)
-            .tipoAplicacion(
-                datos.getTipoAplicacion() != null
-                    ? new TipoAplicacionEntidad.Builder()
-                        .id(datos.getTipoAplicacion().getId())
-                        .build()
-                    : null)
-            .titulo(UtilSanitizacion.sanitizar(datos.getTitulo()))
-            .contenidoLegal(UtilSanitizacion.sanitizar(datos.getContenidoLegal()))
-            .build();
-    daoFactory.obtenerClausulaContratoDAO().actualizar(entidad.getId(), entidad);
-  }
+	private void modificarClausulaContrato(ClausulaContratoDominio dominio) {
+		if (dominio.getAreaReferencia().getId().equals(UtilUUID.UUID_CERO)) {
+			throw new ValidadorExcepcion("El área de referencia es obligatoria");
+		}
+		if (dominio.getAreaReferencia().getNombre() != null && dominio.getAreaReferencia().getNombre().equals("N/A")) {
+			throw new ValidadorExcepcion("El área de referencia es obligatoria");
+		}
+		if (dominio.getTipoAplicacion().getId().equals(UtilUUID.UUID_CERO)) {
+			throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
+		}
+		if (dominio.getTipoAplicacion().getNombre() != null && dominio.getTipoAplicacion().getNombre().equals("N/A")) {
+			throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
+		}
+		ClausulaContratoEntidad entidad = new ClausulaContratoEntidad.Builder().id(dominio.getId())
+				.areaReferencia(datos.getAreaReferencia() != null
+						? new AreaReferenciaEntidad.Builder().id(datos.getAreaReferencia().getId()).build()
+						: null)
+				.tipoAplicacion(datos.getTipoAplicacion() != null
+						? new TipoAplicacionEntidad.Builder().id(datos.getTipoAplicacion().getId()).build()
+						: null)
+				.titulo(UtilSanitizacion.sanitizar(datos.getTitulo()))
+				.contenidoLegal(UtilSanitizacion.sanitizar(datos.getContenidoLegal())).build();
+		daoFactory.obtenerClausulaContratoDAO().actualizar(entidad.getId(), entidad);
+	}
 }

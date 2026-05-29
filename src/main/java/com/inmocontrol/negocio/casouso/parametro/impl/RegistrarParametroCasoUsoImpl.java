@@ -3,12 +3,13 @@ package com.inmocontrol.negocio.casouso.parametro.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroEntidad;
 import com.inmocontrol.negocio.casouso.parametro.RegistrarParametroCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso {
 
@@ -29,22 +30,37 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
 
   private void validarObligatoriedadCampos(ParametroDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El parametro a registrar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El parametro a registrar no es valido.",
+          "Validacion fallida en RegistrarParametroCasoUsoImpl.validarObligatoriedadCampos() - El parametro a registrar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getPlaceholder()) || datos.getPlaceholder().isEmpty()) {
-      throw new ValidacionExcepcion("El placeholder del parametro es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El placeholder del parametro es obligatorio.",
+          "Validacion fallida en RegistrarParametroCasoUsoImpl.validarObligatoriedadCampos() - El placeholder del parametro es obligatorio."
+      );
     }
     if (UtilObjeto.esNulo(datos.getDescripcion()) || datos.getDescripcion().isEmpty()) {
-      throw new ValidacionExcepcion("La descripcion del parametro es obligatoria.");
+      throw new InmocontrolExcepcion(
+          "La descripcion del parametro es obligatoria.",
+          "Validacion fallida en RegistrarParametroCasoUsoImpl.validarObligatoriedadCampos() - La descripcion del parametro es obligatoria."
+      );
     }
   }
 
   private void validarFormatos(ParametroDominio datos) {
     if (!UtilValidacion.validarLongitud(datos.getPlaceholder(), 1, 30)) {
-      throw new ValidacionExcepcion("El placeholder debe tener entre 1 y 30 caracteres.");
+      throw new InmocontrolExcepcion(
+          "El placeholder debe tener entre 1 y 30 caracteres.",
+          "Validacion fallida en RegistrarParametroCasoUsoImpl.validarFormatos() - El placeholder debe tener entre 1 y 30 caracteres."
+      );
     }
     if (!UtilValidacion.validarLongitud(datos.getDescripcion(), 1, 100)) {
-      throw new ValidacionExcepcion("La descripcion debe tener entre 1 y 100 caracteres.");
+      throw new InmocontrolExcepcion(
+          "La descripcion debe tener entre 1 y 100 caracteres.",
+          "Validacion fallida en RegistrarParametroCasoUsoImpl.validarFormatos() - La descripcion debe tener entre 1 y 100 caracteres."
+      );
     }
   }
 
@@ -53,8 +69,10 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
         new ParametroEntidad.Builder().placeholder(datos.getPlaceholder()).build();
     var resultados = daoFactory.obtenerParametroDAO().consultarPorFiltro(filtro);
     if (!resultados.isEmpty()) {
-      throw new ValidacionExcepcion(
-          "Ya existe un parametro con el placeholder: " + datos.getPlaceholder());
+      throw new InmocontrolExcepcion(
+          "Ya existe un parametro con el placeholder: " + datos.getPlaceholder(),
+          "Validacion fallida en RegistrarParametroCasoUsoImpl - placeholder duplicado"
+      );
     }
   }
 
@@ -71,3 +89,5 @@ public class RegistrarParametroCasoUsoImpl implements RegistrarParametroCasoUso 
     daoFactory.obtenerParametroDAO().crear(entidad);
   }
 }
+
+

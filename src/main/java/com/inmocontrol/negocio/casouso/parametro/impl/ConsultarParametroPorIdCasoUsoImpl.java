@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.parametro.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroEntidad;
 import com.inmocontrol.negocio.casouso.parametro.ConsultarParametroPorIdCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ParametroDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarParametroPorIdCasoUsoImpl implements ConsultarParametroPorIdCasoUso {
 
@@ -24,10 +25,16 @@ public class ConsultarParametroPorIdCasoUsoImpl implements ConsultarParametroPor
 
   private void validarObligatoriedadIdParametro(ParametroDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El parametro a consultar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El parametro a consultar no es valido.",
+          "Validacion fallida en ConsultarParametroPorIdCasoUsoImpl.validarObligatoriedadIdParametro() - El parametro a consultar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del parametro es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del parametro es obligatorio.",
+          "Validacion fallida en ConsultarParametroPorIdCasoUsoImpl.validarObligatoriedadIdParametro() - El ID del parametro es obligatorio."
+      );
     }
   }
 
@@ -35,8 +42,13 @@ public class ConsultarParametroPorIdCasoUsoImpl implements ConsultarParametroPor
     ParametroEntidad parametroEntidad =
         daoFactory.obtenerParametroDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(parametroEntidad)) {
-      throw new ValidacionExcepcion("No existe un parametro con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un parametro con el ID: " + datos.getId(),
+          "Error en ConsultarParametroPorIdCasoUsoImpl.consultarParametro() - No existe un parametro con el ID: " + datos.getId()
+      );
     }
     return parametroEntidad;
   }
 }
+
+

@@ -10,42 +10,38 @@ import com.inmocontrol.negocio.dominio.PaisDominio;
 import com.inmocontrol.negocio.fachada.departamento.ConsultarDepartamentoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
-public class ConsultarDepartamentoPorFiltrosFachadaImpl
-    implements ConsultarDepartamentoPorFiltrosFachada {
+public class ConsultarDepartamentoPorFiltrosFachadaImpl implements ConsultarDepartamentoPorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarDepartamentoPorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarDepartamentoPorFiltrosCasoUso casoUso;
 
-  public ConsultarDepartamentoPorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarDepartamentoPorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarDepartamentoPorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarDepartamentoPorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<DepartamentoEntidad> ejecutar(DepartamentoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del departamento no pueden ser nulos");
-    }
+	@Override
+	public List<DepartamentoEntidad> ejecutar(DepartamentoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("Los datos del departamento no pueden ser nulos",
+					"Validacion fallida en ConsultarDepartamentoPorFiltrosFachadaImpl.ejecutar() - Los datos del departamento no pueden ser nulos");
+		}
 
-    try {
-      DepartamentoDominio dominio =
-          new DepartamentoDominio.Builder()
-              .nombre(datos.getNombre())
-              .pais(
-                  datos.getPais() != null
-                      ? new PaisDominio.Builder().id(datos.getPais().getId()).build()
-                      : null)
-              .build();
-      return casoUso.ejecutar(dominio);
+		try {
+			DepartamentoDominio dominio = new DepartamentoDominio.Builder().nombre(datos.getNombre())
+					.pais(new PaisDominio.Builder().id(datos.getPais().getId()).build()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarDepartamentoPorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

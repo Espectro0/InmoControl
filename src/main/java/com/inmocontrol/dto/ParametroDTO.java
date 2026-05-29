@@ -1,6 +1,8 @@
 package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.UUID;
 
 public final class ParametroDTO {
@@ -8,7 +10,11 @@ public final class ParametroDTO {
   private String placeholder;
   private String descripcion;
 
-  public ParametroDTO() {}
+  public ParametroDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setPlaceholder(UtilTexto.VACIO);
+	  setDescripcion(UtilTexto.VACIO);
+  } 
 
   private ParametroDTO(final Builder builder) {
     setId(builder.id);

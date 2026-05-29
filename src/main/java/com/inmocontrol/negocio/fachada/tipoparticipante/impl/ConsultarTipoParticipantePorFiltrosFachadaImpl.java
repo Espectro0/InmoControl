@@ -9,7 +9,7 @@ import com.inmocontrol.negocio.dominio.TipoParticipanteDominio;
 import com.inmocontrol.negocio.fachada.tipoparticipante.ConsultarTipoParticipantePorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
 public class ConsultarTipoParticipantePorFiltrosFachadaImpl implements ConsultarTipoParticipantePorFiltrosFachada {
@@ -25,7 +25,10 @@ public class ConsultarTipoParticipantePorFiltrosFachadaImpl implements Consultar
 	@Override
 	public List<TipoParticipanteEntidad> ejecutar(TipoParticipanteDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del tipo de participante no pueden ser nulos");
+			throw new InmocontrolExcepcion(
+          "Los datos del tipo de participante no pueden ser nulos",
+          "Validacion fallida en ConsultarTipoParticipantePorFiltrosFachadaImpl.ejecutar() - Los datos del tipo de participante no pueden ser nulos"
+      );
 		}
 
 		try {
@@ -33,7 +36,11 @@ public class ConsultarTipoParticipantePorFiltrosFachadaImpl implements Consultar
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion(
+			    "No se pudo completar la operacion. Intente mas tarde.",
+			    "Error en ConsultarTipoParticipantePorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+			    excepcion
+			);
 
 		} finally {
 			daoFactory.cerrarConexion();

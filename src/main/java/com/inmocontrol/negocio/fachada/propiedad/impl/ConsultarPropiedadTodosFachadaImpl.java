@@ -10,24 +10,25 @@ import java.util.List;
 
 public class ConsultarPropiedadTodosFachadaImpl implements ConsultarPropiedadTodosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarPropiedadTodosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarPropiedadTodosCasoUso casoUso;
 
-  public ConsultarPropiedadTodosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarPropiedadTodosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarPropiedadTodosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarPropiedadTodosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<PropiedadEntidad> ejecutar() {
-    try {
-      return casoUso.ejecutar();
+	@Override
+	public List<PropiedadEntidad> ejecutar() {
+		try {
+			return casoUso.ejecutar();
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarPropiedadTodosFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }

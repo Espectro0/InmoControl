@@ -9,7 +9,7 @@ import com.inmocontrol.negocio.dominio.TipoPropiedadDominio;
 import com.inmocontrol.negocio.fachada.tipopropiedad.ConsultarTipoPropiedadPorIdFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarTipoPropiedadPorIdFachadaImpl implements ConsultarTipoPropiedadPorIdFachada {
 
@@ -24,7 +24,9 @@ public class ConsultarTipoPropiedadPorIdFachadaImpl implements ConsultarTipoProp
   @Override
   public TipoPropiedadEntidad ejecutar(TipoPropiedadDTO datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del tipo de propiedad no pueden ser nulos");
+      throw new InmocontrolExcepcion(
+          "Los datos del tipo de propiedad no pueden ser nulos",
+          "Validacion fallida en ConsultarTipoPropiedadPorIdFachadaImpl.ejecutar() - datos nulos");
     }
 
     try {
@@ -32,10 +34,14 @@ public class ConsultarTipoPropiedadPorIdFachadaImpl implements ConsultarTipoProp
       return casoUso.ejecutar(dominio);
 
     } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+      throw new InmocontrolExcepcion(
+          "Ocurrio un error obteniendo la informacion",
+          "Error en ConsultarTipoPropiedadPorIdFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+          excepcion);
 
     } finally {
       daoFactory.cerrarConexion();
     }
   }
 }
+

@@ -2,7 +2,10 @@ package com.inmocontrol.dto;
 
 import com.inmocontrol.transversal.UtilDate;
 import com.inmocontrol.transversal.UtilNumero;
+import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilTexto;
+import com.inmocontrol.transversal.UtilUUID;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,7 +24,20 @@ public final class PersonaDTO {
   private Date fechaNacimiento;
   private Integer edad;
 
-  public PersonaDTO() {}
+  public PersonaDTO() {
+	  setId(UtilUUID.UUID_CERO);
+	  setTipoDocumento(new TipoDocumentoDTO());
+	  setNumeroIdentificacion(UtilTexto.VACIO);
+	  setPrimerNombre(UtilTexto.VACIO);
+	  setSegundoNombre(UtilTexto.VACIO);
+	  setPrimerApellido(UtilTexto.VACIO);
+	  setSegundoApellido(UtilTexto.VACIO);
+	  setNumeroTelefonico(UtilTexto.VACIO);
+	  setCorreoElectronico(UtilTexto.VACIO);
+	  setDireccionResidencia(UtilTexto.VACIO);
+	  setFechaNacimiento(UtilDate.FECHA_DEFECTO);
+	  setEdad(UtilNumero.ENTERO_DEFECTO);
+  }
 
   private PersonaDTO(final Builder builder) {
     setId(builder.id);
@@ -96,7 +112,7 @@ public final class PersonaDTO {
   }
 
   public void setTipoDocumento(final TipoDocumentoDTO tipoDocumento) {
-    this.tipoDocumento = tipoDocumento;
+    this.tipoDocumento = UtilObjeto.obtenerValorDefecto(tipoDocumento, new TipoDocumentoDTO());
   }
 
   public void setNumeroIdentificacion(final String numeroIdentificacion) {
@@ -132,7 +148,7 @@ public final class PersonaDTO {
   }
 
   public void setCiudadResidencia(final CiudadDTO ciudadResidencia) {
-    this.ciudadResidencia = ciudadResidencia;
+    this.ciudadResidencia = UtilObjeto.obtenerValorDefecto(ciudadResidencia, new CiudadDTO());
   }
 
   public void setFechaNacimiento(final Date fechaNacimiento) {

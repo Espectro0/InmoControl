@@ -8,24 +8,18 @@ public class InmocontrolExcepcion extends RuntimeException {
   private String mensajeTecnico;
   private Exception excepcionRaiz;
 
-  public InmocontrolExcepcion(String mensaje) {
-    super(mensaje);
-    this.mensajeUsuario = mensaje;
-    this.mensajeTecnico = mensaje;
-  }
-
-  public InmocontrolExcepcion(String mensaje, Throwable causa) {
-    super(mensaje, causa);
-    this.mensajeUsuario = mensaje;
-    this.mensajeTecnico = mensaje;
-    this.excepcionRaiz = (Exception) causa;
-  }
-
-  public InmocontrolExcepcion(String mensajeUsuario, String mensajeTecnico, Throwable causa) {
-    super(mensajeUsuario, causa);
+  public InmocontrolExcepcion(String mensajeUsuario, String mensajeTecnico, Exception excepcion) {
+    super();
     this.mensajeUsuario = mensajeUsuario;
     this.mensajeTecnico = mensajeTecnico;
-    this.excepcionRaiz = (Exception) causa;
+    this.excepcionRaiz = excepcion;
+  }
+
+  public InmocontrolExcepcion(String mensajeUsuario, String mensajeTecnico) {
+    super();
+    this.mensajeUsuario = mensajeUsuario;
+    this.mensajeTecnico = mensajeTecnico;
+    this.excepcionRaiz = null;
   }
 
   public String getMensajeUsuario() {

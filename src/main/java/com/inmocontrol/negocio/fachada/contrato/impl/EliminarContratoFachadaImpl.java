@@ -8,7 +8,6 @@ import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.negocio.fachada.contrato.EliminarContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
 
 public class EliminarContratoFachadaImpl implements EliminarContratoFachada {
 
@@ -23,15 +22,17 @@ public class EliminarContratoFachadaImpl implements EliminarContratoFachada {
 	@Override
 	public void ejecutar(ContratoDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos del contrato no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos del contrato no pueden ser nulos",
+					"Validacion fallida en EliminarContratoFachadaImpl.ejecutar() - Los datos del contrato no pueden ser nulos");
 		}
 
 		try {
 			daoFactory.iniciarTransaccion();
 			var existente = daoFactory.obtenerContratoDAO().consultarPorId(datos.getId());
 			if (existente == null) {
-				throw new ValidacionExcepcion(
-				    "El contrato con id " + datos.getId() + " no existe.");
+				throw new InmocontrolExcepcion("El contrato con id " + datos.getId() + " no existe.",
+						"Validacion fallida en EliminarContratoFachadaImpl.ejecutar() - El contrato con id "
+								+ datos.getId() + " no existe.");
 			}
 			ContratoDominio dominio = new ContratoDominio.Builder().id(datos.getId()).build();
 			casoUso.ejecutar(dominio);
@@ -39,7 +40,8 @@ public class EliminarContratoFachadaImpl implements EliminarContratoFachada {
 
 		} catch (Exception excepcion) {
 			daoFactory.cancelarTransaccion();
-			throw new InmocontrolExcepcion("Ocurrio un error eliminando el contrato", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en EliminarContratoFachadaImpl.ejecutar() - " + excepcion.getMessage(), excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

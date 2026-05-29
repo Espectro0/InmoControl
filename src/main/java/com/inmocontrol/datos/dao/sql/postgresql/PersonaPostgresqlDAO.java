@@ -8,7 +8,8 @@ import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.transversal.UtilDate;
-import com.inmocontrol.transversal.excepcion.TransaccionExcepcion;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
+
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -51,7 +52,10 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
         return mapearResultado(rs);
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar la persona por id.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PersonaPostgresqlDAO.consultarPorId() - " + e.getMessage(),
+          e);
     }
 
     return null;
@@ -82,7 +86,10 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar las personas.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PersonaPostgresqlDAO.consultarTodos() - " + e.getMessage(),
+          e);
     }
 
     return resultados;
@@ -150,7 +157,10 @@ public class PersonaPostgresqlDAO extends SQLDAO implements PersonaDAO {
         resultados.add(mapearResultado(rs));
       }
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al consultar personas por filtro.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PersonaPostgresqlDAO.consultarPorFiltro() - " + e.getMessage(),
+          e);
     }
 
 return resultados;
@@ -186,7 +196,10 @@ return resultados;
       stmt.setObject(13, entidad.getEdad());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al crear la persona.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PersonaPostgresqlDAO.crear() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -220,7 +233,10 @@ return resultados;
       stmt.setObject(13, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al actualizar la persona.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PersonaPostgresqlDAO.actualizar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -232,7 +248,10 @@ return resultados;
       stmt.setObject(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new TransaccionExcepcion("Ocurrio un error al eliminar la persona.", e);
+      throw new InmocontrolExcepcion(
+          "No se pudo completar la operacion. Intente mas tarde.",
+          "Error en PersonaPostgresqlDAO.eliminar() - " + e.getMessage(),
+          e);
     }
   }
 
@@ -272,3 +291,4 @@ return resultados;
         .build();
   }
 }
+

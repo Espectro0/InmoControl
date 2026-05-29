@@ -9,7 +9,7 @@ import com.inmocontrol.negocio.dominio.PropiedadDominio;
 import com.inmocontrol.negocio.fachada.propiedad.ConsultarPropiedadPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
 public class ConsultarPropiedadPorFiltrosFachadaImpl implements ConsultarPropiedadPorFiltrosFachada {
@@ -25,7 +25,8 @@ public class ConsultarPropiedadPorFiltrosFachadaImpl implements ConsultarPropied
 	@Override
 	public List<PropiedadEntidad> ejecutar(PropiedadDTO datos) {
 		if (UtilObjeto.esNulo(datos)) {
-			throw new ValidacionExcepcion("Los datos de la propiedad no pueden ser nulos");
+			throw new InmocontrolExcepcion("Los datos de la propiedad no pueden ser nulos",
+					"Validacion fallida en ConsultarPropiedadPorFiltrosFachadaImpl.ejecutar() - Los datos de la propiedad no pueden ser nulos");
 		}
 
 		try {
@@ -34,7 +35,9 @@ public class ConsultarPropiedadPorFiltrosFachadaImpl implements ConsultarPropied
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {
-			throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarPropiedadPorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
 		} finally {
 			daoFactory.cerrarConexion();

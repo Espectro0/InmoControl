@@ -5,14 +5,17 @@ import com.inmocontrol.entidad.CiudadEntidad;
 import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.ModificarPersonaCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
+import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilEmail;
 import com.inmocontrol.transversal.UtilIdentificador;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilTelefono;
+import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
 
@@ -25,6 +28,18 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
 
   @Override
   public void ejecutar(PersonaDominio datos) {
+    if (datos.getTipoDocumento().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
+    }
+    if (datos.getTipoDocumento().getNombre() != null && datos.getTipoDocumento().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
+    }
+    if (datos.getCiudadResidencia().getId().equals(UtilUUID.UUID_CERO)) {
+      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
+    }
+    if (datos.getCiudadResidencia().getNombre() != null && datos.getCiudadResidencia().getNombre().equals("N/A")) {
+      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
+    }
     validarObligatoriedadId(datos);
     validarExistenciaPersona(datos);
     validarFormatos(datos);
@@ -34,23 +49,35 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
 
   private void validarObligatoriedadId(PersonaDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("La persona a modificar no es valida.");
+      throw new InmocontrolExcepcion(
+          "La persona a modificar no es valida.",
+          "Validacion fallida en ModificarPersonaCasoUsoImpl.validarObligatoriedadId() - La persona a modificar no es valida."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID de la persona es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID de la persona es obligatorio.",
+          "Validacion fallida en ModificarPersonaCasoUsoImpl.validarObligatoriedadId() - El ID de la persona es obligatorio."
+      );
     }
   }
 
   private void validarExistenciaPersona(PersonaDominio datos) {
     PersonaEntidad existente = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(existente)) {
-      throw new ValidacionExcepcion("No existe una persona con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe una persona con el ID: " + datos.getId(),
+          "Validacion fallida en ModificarPersonaCasoUsoImpl.validarExistenciaPersona() - Persona no encontrada con ID: " + datos.getId()
+      );
     }
   }
 
   private void validarFormatos(PersonaDominio datos) {
     if (!UtilIdentificador.esIdentificadorValido(datos.getNumeroIdentificacion())) {
-      throw new ValidacionExcepcion("El numero de identificacion tiene un formato invalido.");
+      throw new InmocontrolExcepcion(
+          "El numero de identificacion tiene un formato invalido.",
+          "Validacion fallida en ModificarPersonaCasoUsoImpl.validarFormatos() - El numero de identificacion tiene un formato invalido."
+      );
     }
     validarLongitudOpcional(datos.getNumeroIdentificacion(), 1, 15, "numero de identificacion");
     validarLongitudOpcional(datos.getPrimerNombre(), 1, 20, "primer nombre");
@@ -64,18 +91,26 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
 
   private void validarLongitudOpcional(String valor, int min, int max, String nombreCampo) {
     if (valor != null && !valor.isEmpty() && !UtilValidacion.validarLongitud(valor, min, max)) {
-      throw new ValidacionExcepcion(
-          "El " + nombreCampo + " debe tener entre " + min + " y " + max + " caracteres.");
+      throw new InmocontrolExcepcion(
+          "El " + nombreCampo + " debe tener entre " + min + " y " + max + " caracteres.",
+          "Validacion fallida en ModificarPersonaCasoUsoImpl.validarLongitudOpcional() - " + nombreCampo
+      );
     }
   }
 
   private void validarTelefonoOpcional(String telefono) {
     if (telefono != null && !telefono.isEmpty()) {
       if (!UtilTelefono.esTelefonoValido(telefono)) {
-        throw new ValidacionExcepcion("El numero telefonico tiene un formato invalido.");
+        throw new InmocontrolExcepcion(
+            "El numero telefonico tiene un formato invalido.",
+            "Validacion fallida en ModificarPersonaCasoUsoImpl.validarTelefonoOpcional() - El numero telefonico tiene un formato invalido."
+        );
       }
       if (!UtilValidacion.validarLongitud(telefono, 1, 15)) {
-        throw new ValidacionExcepcion("El numero telefonico debe tener maximo 15 caracteres.");
+        throw new InmocontrolExcepcion(
+            "El numero telefonico debe tener maximo 15 caracteres.",
+            "Validacion fallida en ModificarPersonaCasoUsoImpl.validarTelefonoOpcional() - El numero telefonico debe tener maximo 15 caracteres."
+        );
       }
     }
   }
@@ -83,10 +118,16 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
   private void validarEmailOpcional(String email) {
     if (email != null && !email.isEmpty()) {
       if (!UtilEmail.esEmailValido(email)) {
-        throw new ValidacionExcepcion("El correo electronico tiene un formato invalido.");
+        throw new InmocontrolExcepcion(
+            "El correo electronico tiene un formato invalido.",
+            "Validacion fallida en ModificarPersonaCasoUsoImpl.validarEmailOpcional() - El correo electronico tiene un formato invalido."
+        );
       }
       if (!UtilValidacion.validarLongitud(email, 1, 30)) {
-        throw new ValidacionExcepcion("El correo electronico debe tener maximo 30 caracteres.");
+        throw new InmocontrolExcepcion(
+            "El correo electronico debe tener maximo 30 caracteres.",
+            "Validacion fallida en ModificarPersonaCasoUsoImpl.validarEmailOpcional() - El correo electronico debe tener maximo 30 caracteres."
+        );
       }
     }
   }
@@ -97,9 +138,11 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
     var resultados = daoFactory.obtenerPersonaDAO().consultarPorFiltro(filtro);
     for (PersonaEntidad item : resultados) {
       if (!item.getId().equals(datos.getId())) {
-        throw new ValidacionExcepcion(
+        throw new InmocontrolExcepcion(
             "Ya existe una persona con el numero de identificacion: "
-                + datos.getNumeroIdentificacion());
+                + datos.getNumeroIdentificacion(),
+            "Validacion fallida en ModificarPersonaCasoUsoImpl - DUI ya existe: " + datos.getNumeroIdentificacion()
+        );
       }
     }
   }
@@ -140,3 +183,5 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
     daoFactory.obtenerPersonaDAO().actualizar(entidad.getId(), entidad);
   }
 }
+
+

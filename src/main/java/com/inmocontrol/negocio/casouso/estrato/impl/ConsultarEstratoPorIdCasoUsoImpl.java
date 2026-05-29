@@ -3,9 +3,10 @@ package com.inmocontrol.negocio.casouso.estrato.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.EstratoEntidad;
 import com.inmocontrol.negocio.casouso.estrato.ConsultarEstratoPorIdCasoUso;
+import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.EstratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 
 public class ConsultarEstratoPorIdCasoUsoImpl implements ConsultarEstratoPorIdCasoUso {
 
@@ -24,18 +25,29 @@ public class ConsultarEstratoPorIdCasoUsoImpl implements ConsultarEstratoPorIdCa
 
   private void validarObligatoriedadIdEstrato(EstratoDominio datos) {
     if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("El estrato a consultar no es valido.");
+      throw new InmocontrolExcepcion(
+          "El estrato a consultar no es valido.",
+          "Validacion fallida en ConsultarEstratoPorIdCasoUsoImpl.validarObligatoriedadIdEstrato() - El estrato a consultar no es valido."
+      );
     }
     if (UtilObjeto.esNulo(datos.getId())) {
-      throw new ValidacionExcepcion("El ID del estrato es obligatorio.");
+      throw new InmocontrolExcepcion(
+          "El ID del estrato es obligatorio.",
+          "Validacion fallida en ConsultarEstratoPorIdCasoUsoImpl.validarObligatoriedadIdEstrato() - El ID del estrato es obligatorio."
+      );
     }
   }
 
   private EstratoEntidad consultarEstrato(EstratoDominio datos) {
     EstratoEntidad estratoEntidad = daoFactory.obtenerEstratoDAO().consultarPorId(datos.getId());
     if (UtilObjeto.esNulo(estratoEntidad)) {
-      throw new ValidacionExcepcion("No existe un estrato con el ID: " + datos.getId());
+      throw new InmocontrolExcepcion(
+          "No existe un estrato con el ID: " + datos.getId(),
+          "Error en ConsultarEstratoPorIdCasoUsoImpl.consultarEstrato() - No existe un estrato con el ID: " + datos.getId()
+      );
     }
     return estratoEntidad;
   }
 }
+
+

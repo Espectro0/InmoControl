@@ -9,36 +9,37 @@ import com.inmocontrol.negocio.dominio.TipoDocumentoDominio;
 import com.inmocontrol.negocio.fachada.tipodocumento.ConsultarTipoDocumentoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidacionExcepcion;
+
 import java.util.List;
 
-public class ConsultarTipoDocumentoPorFiltrosFachadaImpl
-    implements ConsultarTipoDocumentoPorFiltrosFachada {
+public class ConsultarTipoDocumentoPorFiltrosFachadaImpl implements ConsultarTipoDocumentoPorFiltrosFachada {
 
-  private DAOFactory daoFactory;
-  private ConsultarTipoDocumentoPorFiltrosCasoUso casoUso;
+	private DAOFactory daoFactory;
+	private ConsultarTipoDocumentoPorFiltrosCasoUso casoUso;
 
-  public ConsultarTipoDocumentoPorFiltrosFachadaImpl() {
-    daoFactory = DAOFactory.getFactory();
-    casoUso = new ConsultarTipoDocumentoPorFiltrosCasoUsoImpl(daoFactory);
-  }
+	public ConsultarTipoDocumentoPorFiltrosFachadaImpl() {
+		daoFactory = DAOFactory.getFactory();
+		casoUso = new ConsultarTipoDocumentoPorFiltrosCasoUsoImpl(daoFactory);
+	}
 
-  @Override
-  public List<TipoDocumentoEntidad> ejecutar(TipoDocumentoDTO datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      throw new ValidacionExcepcion("Los datos del tipo de documento no pueden ser nulos");
-    }
+	@Override
+	public List<TipoDocumentoEntidad> ejecutar(TipoDocumentoDTO datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			throw new InmocontrolExcepcion("Los datos del tipo de documento no pueden ser nulos",
+					"Validacion fallida en ConsultarTipoDocumentoPorFiltrosFachadaImpl.ejecutar() - Los datos del tipo de documento no pueden ser nulos");
+		}
 
-    try {
-      TipoDocumentoDominio dominio =
-          new TipoDocumentoDominio.Builder().nombre(datos.getNombre()).build();
-      return casoUso.ejecutar(dominio);
+		try {
+			TipoDocumentoDominio dominio = new TipoDocumentoDominio.Builder().nombre(datos.getNombre()).build();
+			return casoUso.ejecutar(dominio);
 
-    } catch (Exception excepcion) {
-      throw new InmocontrolExcepcion("Ocurrio un error obteniendo la informacion", excepcion);
+		} catch (Exception excepcion) {
+			throw new InmocontrolExcepcion("No se pudo completar la operacion. Intente mas tarde.",
+					"Error en ConsultarTipoDocumentoPorFiltrosFachadaImpl.ejecutar() - " + excepcion.getMessage(),
+					excepcion);
 
-    } finally {
-      daoFactory.cerrarConexion();
-    }
-  }
+		} finally {
+			daoFactory.cerrarConexion();
+		}
+	}
 }
