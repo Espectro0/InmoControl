@@ -6,6 +6,7 @@ import com.inmocontrol.entidad.ContratoEntidad;
 import com.inmocontrol.negocio.casouso.contrato.ConsultarContratoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.casouso.contrato.impl.ConsultarContratoPorFiltrosCasoUsoImpl;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
+import com.inmocontrol.negocio.dominio.PropiedadDominio;
 import com.inmocontrol.negocio.fachada.contrato.ConsultarContratoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
@@ -31,7 +32,11 @@ public class ConsultarContratoPorFiltrosFachadaImpl implements ConsultarContrato
 
 		try {
 			ContratoDominio dominio = new ContratoDominio.Builder().codigoContrato(datos.getCodigoContrato())
-					.esActivo(datos.getEsActivo()).build();
+					.esActivo(datos.getEsActivo())
+					.propiedad(datos.getPropiedad() != null
+							? new PropiedadDominio.Builder().id(datos.getPropiedad().getId()).build()
+							: null)
+					.fechaInicio(datos.getFechaInicio()).fechaFin(datos.getFechaFin()).build();
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {

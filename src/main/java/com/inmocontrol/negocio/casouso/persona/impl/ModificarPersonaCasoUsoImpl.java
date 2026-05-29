@@ -7,13 +7,11 @@ import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.ModificarPersonaCasoUso;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilEmail;
 import com.inmocontrol.transversal.UtilIdentificador;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilTelefono;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 
 
@@ -28,18 +26,6 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
 
   @Override
   public void ejecutar(PersonaDominio datos) {
-    if (datos.getTipoDocumento().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
-    }
-    if (datos.getTipoDocumento().getNombre() != null && datos.getTipoDocumento().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
-    }
-    if (datos.getCiudadResidencia().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
-    }
-    if (datos.getCiudadResidencia().getNombre() != null && datos.getCiudadResidencia().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
-    }
     validarObligatoriedadId(datos);
     validarExistenciaPersona(datos);
     validarFormatos(datos);
@@ -151,12 +137,7 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
     PersonaEntidad entidad =
         new PersonaEntidad.Builder()
             .id(datos.getId())
-            .tipoDocumento(
-                datos.getTipoDocumento() != null
-                    ? new TipoDocumentoEntidad.Builder()
-                        .id(datos.getTipoDocumento().getId())
-                        .build()
-                    : null)
+            .tipoDocumento(new TipoDocumentoEntidad.Builder().id(datos.getTipoDocumento().getId()).build())
             .numeroIdentificacion(UtilSanitizacion.sanitizar(datos.getNumeroIdentificacion()))
             .primerNombre(UtilSanitizacion.sanitizar(datos.getPrimerNombre()))
             .segundoNombre(UtilSanitizacion.sanitizar(datos.getSegundoNombre()))
@@ -173,10 +154,7 @@ public class ModificarPersonaCasoUsoImpl implements ModificarPersonaCasoUso {
                         ? datos.getCorreoElectronico()
                         : null))
             .direccionResidencia(UtilSanitizacion.sanitizar(datos.getDireccionResidencia()))
-            .ciudadResidencia(
-                datos.getCiudadResidencia() != null
-                    ? new CiudadEntidad.Builder().id(datos.getCiudadResidencia().getId()).build()
-                    : null)
+            .ciudadResidencia(new CiudadEntidad.Builder().id(datos.getCiudadResidencia().getId()).build())
             .fechaNacimiento(datos.getFechaNacimiento())
             .edad(datos.getEdad())
             .build();

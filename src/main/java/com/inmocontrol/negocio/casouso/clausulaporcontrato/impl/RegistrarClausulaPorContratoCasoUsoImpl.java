@@ -9,7 +9,8 @@ import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilUUID;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+import com.inmocontrol.transversal.UtilValidacion;
+
 
 public class RegistrarClausulaPorContratoCasoUsoImpl implements RegistrarClausulaPorContratoCasoUso {
 
@@ -55,18 +56,12 @@ public class RegistrarClausulaPorContratoCasoUsoImpl implements RegistrarClausul
 	}
 
 	private void registrarClausulaPorContrato(ClausulaPorContratoDominio dominio) {
-		if (dominio.getContrato().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El contrato es obligatorio");
-		}
-		if (dominio.getClausula().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("La cláusula es obligatoria");
-		}
 		var idUnico = UtilUUID
 				.generarUnico(uuid -> daoFactory.obtenerClausulaPorContratoDAO().consultarPorId(uuid) != null);
 		ClausulaPorContratoEntidad entidad = new ClausulaPorContratoEntidad.Builder().id(idUnico)
-				.numeroClausula(datos.getNumeroClausula())
-				.contrato(new ContratoEntidad.Builder().id(datos.getContrato().getId()).build())
-				.clausula(new ClausulaContratoEntidad.Builder().id(datos.getClausula().getId()).build()).build();
+				.numeroClausula(dominio.getNumeroClausula())
+				.contrato(new ContratoEntidad.Builder().id(dominio.getContrato().getId()).build())
+				.clausula(new ClausulaContratoEntidad.Builder().id(dominio.getClausula().getId()).build()).build();
 		daoFactory.obtenerClausulaPorContratoDAO().crear(entidad);
 	}
 

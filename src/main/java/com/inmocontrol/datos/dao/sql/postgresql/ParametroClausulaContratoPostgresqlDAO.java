@@ -162,13 +162,15 @@ public class ParametroClausulaContratoPostgresqlDAO extends SQLDAO
             + "WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
-    if (filtro.getParametro() != null && filtro.getParametro().getId() != null) {
+    if (filtro.getParametro() != null && filtro.getParametro().getId() != null
+        && !UUID.fromString("00000000-0000-0000-0000-000000000000").equals(filtro.getParametro().getId())) {
       sql += " AND pcc.parametro = ?";
       parametros.add(filtro.getParametro().getId());
     }
 
     if (filtro.getClausulaPorContrato() != null
-        && filtro.getClausulaPorContrato().getId() != null) {
+        && filtro.getClausulaPorContrato().getId() != null
+        && !UUID.fromString("00000000-0000-0000-0000-000000000000").equals(filtro.getClausulaPorContrato().getId())) {
       sql += " AND pcc.clausulaporcontrato = ?";
       parametros.add(filtro.getClausulaPorContrato().getId());
     }

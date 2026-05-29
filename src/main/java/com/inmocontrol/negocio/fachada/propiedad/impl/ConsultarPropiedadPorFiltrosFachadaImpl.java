@@ -5,7 +5,10 @@ import com.inmocontrol.dto.PropiedadDTO;
 import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.negocio.casouso.propiedad.ConsultarPropiedadPorFiltrosCasoUso;
 import com.inmocontrol.negocio.casouso.propiedad.impl.ConsultarPropiedadPorFiltrosCasoUsoImpl;
+import com.inmocontrol.negocio.dominio.CiudadDominio;
+import com.inmocontrol.negocio.dominio.EstratoDominio;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
+import com.inmocontrol.negocio.dominio.TipoPropiedadDominio;
 import com.inmocontrol.negocio.fachada.propiedad.ConsultarPropiedadPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
@@ -31,7 +34,17 @@ public class ConsultarPropiedadPorFiltrosFachadaImpl implements ConsultarPropied
 
 		try {
 			PropiedadDominio dominio = new PropiedadDominio.Builder().nombreInmueble(datos.getNombreInmueble())
-					.direccion(datos.getDireccion()).build();
+					.direccion(datos.getDireccion())
+					.tipoPropiedad(datos.getTipoPropiedad() != null
+							? new TipoPropiedadDominio.Builder().id(datos.getTipoPropiedad().getId()).build()
+							: null)
+					.estrato(datos.getEstrato() != null
+							? new EstratoDominio.Builder().id(datos.getEstrato().getId()).build()
+							: null)
+					.ciudad(datos.getCiudad() != null
+							? new CiudadDominio.Builder().id(datos.getCiudad().getId()).build()
+							: null)
+					.areaMetros(datos.getAreaMetros()).build();
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {

@@ -7,7 +7,7 @@ import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.participantecontrato.RegistrarParticipanteContratoCasoUso;
 import com.inmocontrol.transversal.UtilUUID;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -32,15 +32,7 @@ public class RegistrarParticipanteContratoCasoUsoImpl implements RegistrarPartic
 			throw new InmocontrolExcepcion("El participante contrato a registrar no es valido.",
 					"Validacion fallida en RegistrarParticipanteContratoCasoUsoImpl.validarObligatoriedadCampos() - El participante contrato a registrar no es valido.");
 		}
-		if (datos.getPersona().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("La persona es obligatoria");
-		}
-		if (datos.getTipoParticipante().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El tipo de participante es obligatorio");
-		}
-		if (datos.getContrato().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El contrato es obligatorio");
-		}
+
 	}
 
 	private void registrarParticipanteContrato(ParticipanteContratoDominio datos) {

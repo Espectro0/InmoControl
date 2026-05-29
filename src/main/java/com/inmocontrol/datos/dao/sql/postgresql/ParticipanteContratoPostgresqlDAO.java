@@ -229,17 +229,20 @@ public class ParticipanteContratoPostgresqlDAO extends SQLDAO implements Partici
             + "WHERE 1=1";
     List<Object> parametros = new ArrayList<>();
 
-    if (filtro.getPersona() != null && filtro.getPersona().getId() != null) {
+    if (filtro.getPersona() != null && filtro.getPersona().getId() != null
+        && !UUID.fromString("00000000-0000-0000-0000-000000000000").equals(filtro.getPersona().getId())) {
       sql += " AND pc.persona = ?";
       parametros.add(filtro.getPersona().getId());
     }
 
-    if (filtro.getTipoParticipante() != null && filtro.getTipoParticipante().getId() != null) {
+    if (filtro.getTipoParticipante() != null && filtro.getTipoParticipante().getId() != null
+        && !UUID.fromString("00000000-0000-0000-0000-000000000000").equals(filtro.getTipoParticipante().getId())) {
       sql += " AND pc.tipoparticipante = ?";
       parametros.add(filtro.getTipoParticipante().getId());
     }
 
-    if (filtro.getContrato() != null && filtro.getContrato().getId() != null) {
+    if (filtro.getContrato() != null && filtro.getContrato().getId() != null
+        && !UUID.fromString("00000000-0000-0000-0000-000000000000").equals(filtro.getContrato().getId())) {
       sql += " AND pc.contrato = ?";
       parametros.add(filtro.getContrato().getId());
     }

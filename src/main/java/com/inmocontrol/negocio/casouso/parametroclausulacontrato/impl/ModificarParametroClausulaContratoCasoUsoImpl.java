@@ -4,8 +4,6 @@ import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.parametroclausulacontrato.ModificarParametroClausulaContratoCasoUso;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 
@@ -39,12 +37,6 @@ public class ModificarParametroClausulaContratoCasoUsoImpl
           "El ID del parametro clausula contrato es obligatorio.",
           "Validacion fallida en ModificarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadId() - El ID del parametro clausula contrato es obligatorio."
       );
-    }
-    if (datos.getParametro() != null && datos.getParametro().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El parámetro es obligatorio");
-    }
-    if (datos.getClausulaPorContrato() != null && datos.getClausulaPorContrato().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La cláusula por contrato es obligatoria");
     }
   }
 

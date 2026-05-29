@@ -7,8 +7,6 @@ import com.inmocontrol.entidad.PersonaEntidad;
 import com.inmocontrol.entidad.TipoParticipanteEntidad;
 import com.inmocontrol.negocio.casouso.participantecontrato.ModificarParticipanteContratoCasoUso;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 
@@ -42,15 +40,6 @@ public class ModificarParticipanteContratoCasoUsoImpl
           "El ID del participante contrato es obligatorio.",
           "Validacion fallida en ModificarParticipanteContratoCasoUsoImpl.validarObligatoriedadId() - El ID del participante contrato es obligatorio."
       );
-    }
-    if (datos.getPersona() != null && datos.getPersona().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La persona es obligatoria");
-    }
-    if (datos.getTipoParticipante() != null && datos.getTipoParticipante().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de participante es obligatorio");
-    }
-    if (datos.getContrato() != null && datos.getContrato().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El contrato es obligatorio");
     }
   }
 

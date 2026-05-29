@@ -8,10 +8,8 @@ import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.negocio.casouso.propiedad.ModificarPropiedadCasoUso;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
 
 
@@ -26,24 +24,6 @@ public class ModificarPropiedadCasoUsoImpl implements ModificarPropiedadCasoUso 
 
   @Override
   public void ejecutar(PropiedadDominio datos) {
-    if (datos.getTipoPropiedad().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de propiedad es obligatorio");
-    }
-    if (datos.getTipoPropiedad().getNombre() != null && datos.getTipoPropiedad().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El tipo de propiedad es obligatorio");
-    }
-    if (datos.getEstrato().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El estrato es obligatorio");
-    }
-    if (datos.getEstrato().getNombre() != null && datos.getEstrato().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El estrato es obligatorio");
-    }
-    if (datos.getCiudad().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La ciudad es obligatoria");
-    }
-    if (datos.getCiudad().getNombre() != null && datos.getCiudad().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("La ciudad es obligatoria");
-    }
     validarObligatoriedadId(datos);
     validarExistenciaPropiedad(datos);
     validarFormatos(datos);
@@ -130,24 +110,13 @@ public class ModificarPropiedadCasoUsoImpl implements ModificarPropiedadCasoUso 
     PropiedadEntidad entidad =
         new PropiedadEntidad.Builder()
             .id(datos.getId())
-            .tipoPropiedad(
-                datos.getTipoPropiedad() != null
-                    ? new TipoPropiedadEntidad.Builder()
-                        .id(datos.getTipoPropiedad().getId())
-                        .build()
-                    : null)
-            .estrato(
-                datos.getEstrato() != null
-                    ? new EstratoEntidad.Builder().id(datos.getEstrato().getId()).build()
-                    : null)
+            .tipoPropiedad(new TipoPropiedadEntidad.Builder().id(datos.getTipoPropiedad().getId()).build())
+            .estrato(new EstratoEntidad.Builder().id(datos.getEstrato().getId()).build())
             .nombreInmueble(UtilSanitizacion.sanitizar(datos.getNombreInmueble()))
             .descripcionInmueble(UtilSanitizacion.sanitizar(datos.getDescripcionInmueble()))
             .areaMetros(datos.getAreaMetros())
             .direccion(UtilSanitizacion.sanitizar(datos.getDireccion()))
-            .ciudad(
-                datos.getCiudad() != null
-                    ? new CiudadEntidad.Builder().id(datos.getCiudad().getId()).build()
-                    : null)
+            .ciudad(new CiudadEntidad.Builder().id(datos.getCiudad().getId()).build())
             .build();
     daoFactory.obtenerPropiedadDAO().actualizar(entidad.getId(), entidad);
   }

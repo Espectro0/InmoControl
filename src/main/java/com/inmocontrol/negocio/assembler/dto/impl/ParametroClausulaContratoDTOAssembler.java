@@ -4,8 +4,6 @@ import com.inmocontrol.dto.ParametroClausulaContratoDTO;
 import com.inmocontrol.negocio.assembler.dto.DTOAssembler;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.UtilUUID;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public final class ParametroClausulaContratoDTOAssembler
     implements DTOAssembler<ParametroClausulaContratoDominio, ParametroClausulaContratoDTO> {
@@ -29,12 +27,6 @@ public final class ParametroClausulaContratoDTOAssembler
   public ParametroClausulaContratoDominio ensamblarDominio(final ParametroClausulaContratoDTO dto) {
     var entidadAEnsamblar =
         UtilObjeto.obtenerValorDefecto(dto, new ParametroClausulaContratoDTO.Builder().build());
-    if (entidadAEnsamblar.getParametro().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El parametro es obligatorio");
-    }
-    if (entidadAEnsamblar.getClausulaPorContrato().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La clausula por contrato es obligatoria");
-    }
     return new ParametroClausulaContratoDominio.Builder()
         .id(entidadAEnsamblar.getId())
         .parametro(

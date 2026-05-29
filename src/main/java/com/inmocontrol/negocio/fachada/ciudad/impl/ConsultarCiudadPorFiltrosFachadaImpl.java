@@ -31,11 +31,17 @@ public class ConsultarCiudadPorFiltrosFachadaImpl implements ConsultarCiudadPorF
 		}
 
 		try {
-			CiudadDominio dominio = new CiudadDominio.Builder().nombre(datos.getNombre())
-					.departamento(new DepartamentoDominio.Builder().id(datos.getDepartamento().getId())
-							.pais(new PaisDominio.Builder().id(datos.getDepartamento().getPais().getId()).build())
-							.build())
-					.build();
+			CiudadDominio.Builder builder = new CiudadDominio.Builder().nombre(datos.getNombre());
+
+			DepartamentoDominio.Builder deptBuilder = new DepartamentoDominio.Builder()
+					.id(datos.getDepartamento().getId());
+
+			deptBuilder.pais(new PaisDominio.Builder()
+					.id(datos.getDepartamento().getPais().getId())
+					.build());
+			builder.departamento(deptBuilder.build());
+
+			CiudadDominio dominio = builder.build();
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {

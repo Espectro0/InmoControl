@@ -11,7 +11,7 @@ import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+
 
 public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaContratoCasoUso {
 
@@ -78,25 +78,13 @@ public class RegistrarClausulaContratoCasoUsoImpl implements RegistrarClausulaCo
 	}
 
 	private void registrarClausulaContrato(ClausulaContratoDominio dominio) {
-		if (dominio.getAreaReferencia().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El área de referencia es obligatoria");
-		}
-		if (dominio.getAreaReferencia().getNombre() != null && dominio.getAreaReferencia().getNombre().equals("N/A")) {
-			throw new ValidadorExcepcion("El área de referencia es obligatoria");
-		}
-		if (dominio.getTipoAplicacion().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
-		}
-		if (dominio.getTipoAplicacion().getNombre() != null && dominio.getTipoAplicacion().getNombre().equals("N/A")) {
-			throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
-		}
 		var idUnico = UtilUUID
 				.generarUnico(uuid -> daoFactory.obtenerClausulaContratoDAO().consultarPorId(uuid) != null);
 		ClausulaContratoEntidad entidad = new ClausulaContratoEntidad.Builder().id(idUnico)
-				.areaReferencia(new AreaReferenciaEntidad.Builder().id(datos.getAreaReferencia().getId()).build())
-				.tipoAplicacion(new TipoAplicacionEntidad.Builder().id(datos.getTipoAplicacion().getId()).build())
-				.titulo(UtilSanitizacion.sanitizar(datos.getTitulo()))
-				.contenidoLegal(UtilSanitizacion.sanitizar(datos.getContenidoLegal())).build();
+				.areaReferencia(new AreaReferenciaEntidad.Builder().id(dominio.getAreaReferencia().getId()).build())
+				.tipoAplicacion(new TipoAplicacionEntidad.Builder().id(dominio.getTipoAplicacion().getId()).build())
+				.titulo(UtilSanitizacion.sanitizar(dominio.getTitulo()))
+				.contenidoLegal(UtilSanitizacion.sanitizar(dominio.getContenidoLegal())).build();
 		daoFactory.obtenerClausulaContratoDAO().crear(entidad);
 	}
 }

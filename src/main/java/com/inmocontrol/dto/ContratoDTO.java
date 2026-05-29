@@ -22,7 +22,7 @@ public final class ContratoDTO {
 		setCodigoContrato(UtilTexto.VACIO);
 		setFechaInicio(UtilDate.FECHA_DEFECTO);
 		setFechaFin(UtilDate.FECHA_DEFECTO);
-		setEsActivo(null);
+		setEsActivo(false);
 		setPropiedad(new PropiedadDTO());
 	}
 

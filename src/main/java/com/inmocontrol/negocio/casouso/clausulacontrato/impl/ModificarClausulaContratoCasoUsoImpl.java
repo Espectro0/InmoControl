@@ -9,9 +9,7 @@ import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.UtilValidacion;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public class ModificarClausulaContratoCasoUsoImpl implements ModificarClausulaContratoCasoUso {
 
@@ -82,27 +80,15 @@ public class ModificarClausulaContratoCasoUsoImpl implements ModificarClausulaCo
 	}
 
 	private void modificarClausulaContrato(ClausulaContratoDominio dominio) {
-		if (dominio.getAreaReferencia().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El área de referencia es obligatoria");
-		}
-		if (dominio.getAreaReferencia().getNombre() != null && dominio.getAreaReferencia().getNombre().equals("N/A")) {
-			throw new ValidadorExcepcion("El área de referencia es obligatoria");
-		}
-		if (dominio.getTipoAplicacion().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
-		}
-		if (dominio.getTipoAplicacion().getNombre() != null && dominio.getTipoAplicacion().getNombre().equals("N/A")) {
-			throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
-		}
 		ClausulaContratoEntidad entidad = new ClausulaContratoEntidad.Builder().id(dominio.getId())
-				.areaReferencia(datos.getAreaReferencia() != null
-						? new AreaReferenciaEntidad.Builder().id(datos.getAreaReferencia().getId()).build()
+				.areaReferencia(dominio.getAreaReferencia() != null
+						? new AreaReferenciaEntidad.Builder().id(dominio.getAreaReferencia().getId()).build()
 						: null)
-				.tipoAplicacion(datos.getTipoAplicacion() != null
-						? new TipoAplicacionEntidad.Builder().id(datos.getTipoAplicacion().getId()).build()
+				.tipoAplicacion(dominio.getTipoAplicacion() != null
+						? new TipoAplicacionEntidad.Builder().id(dominio.getTipoAplicacion().getId()).build()
 						: null)
-				.titulo(UtilSanitizacion.sanitizar(datos.getTitulo()))
-				.contenidoLegal(UtilSanitizacion.sanitizar(datos.getContenidoLegal())).build();
+				.titulo(UtilSanitizacion.sanitizar(dominio.getTitulo()))
+				.contenidoLegal(UtilSanitizacion.sanitizar(dominio.getContenidoLegal())).build();
 		daoFactory.obtenerClausulaContratoDAO().actualizar(entidad.getId(), entidad);
 	}
 }

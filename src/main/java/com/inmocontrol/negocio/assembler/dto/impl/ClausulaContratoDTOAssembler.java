@@ -4,8 +4,6 @@ import com.inmocontrol.dto.ClausulaContratoDTO;
 import com.inmocontrol.negocio.assembler.dto.DTOAssembler;
 import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.UtilUUID;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public final class ClausulaContratoDTOAssembler
     implements DTOAssembler<ClausulaContratoDominio, ClausulaContratoDTO> {
@@ -27,7 +25,7 @@ public final class ClausulaContratoDTOAssembler
   public ClausulaContratoDominio ensamblarDominio(final ClausulaContratoDTO dto) {
     var entidadAEnsamblar =
         UtilObjeto.obtenerValorDefecto(dto, new ClausulaContratoDTO.Builder().build());
-    var clausula = new ClausulaContratoDominio.Builder()
+    return new ClausulaContratoDominio.Builder()
         .id(entidadAEnsamblar.getId())
         .areaReferencia(
             AreaReferenciaDTOAssembler.getInstance()
@@ -38,13 +36,6 @@ public final class ClausulaContratoDTOAssembler
         .titulo(entidadAEnsamblar.getTitulo())
         .contenidoLegal(entidadAEnsamblar.getContenidoLegal())
         .build();
-    if (clausula.getAreaReferencia().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El área de referencia es obligatoria");
-    }
-    if (clausula.getTipoAplicacion().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de aplicación es obligatorio");
-    }
-    return clausula;
   }
 
   @Override

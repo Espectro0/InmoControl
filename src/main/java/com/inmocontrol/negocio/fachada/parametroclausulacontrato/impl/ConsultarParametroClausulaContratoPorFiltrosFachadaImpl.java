@@ -31,8 +31,16 @@ public class ConsultarParametroClausulaContratoPorFiltrosFachadaImpl
 		}
 
 		try {
-			ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder()
-					.valor(datos.getValor()).build();
+ParametroClausulaContratoDominio dominio = new ParametroClausulaContratoDominio.Builder()
+				.parametro(datos.getParametro() != null
+					? new com.inmocontrol.negocio.dominio.ParametroDominio.Builder()
+						.id(datos.getParametro().getId()).build()
+					: null)
+				.clausulaPorContrato(datos.getClausulaPorContrato() != null
+					? new com.inmocontrol.negocio.dominio.ClausulaPorContratoDominio.Builder()
+						.id(datos.getClausulaPorContrato().getId()).build()
+					: null)
+				.valor(datos.getValor()).build();
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {

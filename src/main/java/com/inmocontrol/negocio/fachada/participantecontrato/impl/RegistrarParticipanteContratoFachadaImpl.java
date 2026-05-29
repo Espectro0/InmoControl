@@ -35,23 +35,9 @@ public class RegistrarParticipanteContratoFachadaImpl implements RegistrarPartic
 		try {
 			daoFactory.iniciarTransaccion();
 			PersonaEntidad personaEntidad = daoFactory.obtenerPersonaDAO().consultarPorId(datos.getPersonaId());
-			if (personaEntidad == null) {
-				throw new InmocontrolExcepcion("La persona no existe",
-						"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - La persona no existe");
-			}
-
 			TipoParticipanteEntidad tipoParticipanteEntidad = daoFactory.obtenerTipoParticipanteDAO()
 					.consultarPorId(datos.getTipoParticipanteId());
-			if (tipoParticipanteEntidad == null) {
-				throw new InmocontrolExcepcion("El tipo de participante no existe",
-						"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - El tipo de participante no existe");
-			}
-
 			ContratoEntidad contratoEntidad = daoFactory.obtenerContratoDAO().consultarPorId(datos.getContratoId());
-			if (contratoEntidad == null) {
-				throw new InmocontrolExcepcion("El contrato no existe",
-						"Validacion fallida en RegistrarParticipanteContratoFachadaImpl.ejecutar() - El contrato no existe");
-			}
 
 			 ParticipanteContratoDominio dominio = new ParticipanteContratoDominio.Builder()
 					.persona(new PersonaDominio.Builder().id(personaEntidad.getId()).build())

@@ -4,8 +4,6 @@ import com.inmocontrol.dto.ParticipanteContratoDTO;
 import com.inmocontrol.negocio.assembler.dto.DTOAssembler;
 import com.inmocontrol.negocio.dominio.ParticipanteContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.UtilUUID;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public final class ParticipanteContratoDTOAssembler
     implements DTOAssembler<ParticipanteContratoDominio, ParticipanteContratoDTO> {
@@ -28,15 +26,6 @@ public final class ParticipanteContratoDTOAssembler
   public ParticipanteContratoDominio ensamblarDominio(final ParticipanteContratoDTO dto) {
     var entidadAEnsamblar =
         UtilObjeto.obtenerValorDefecto(dto, new ParticipanteContratoDTO.Builder().build());
-    if (entidadAEnsamblar.getPersona().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La persona es obligatoria");
-    }
-    if (entidadAEnsamblar.getTipoParticipante().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de participante es obligatorio");
-    }
-    if (entidadAEnsamblar.getContrato().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El contrato es obligatorio");
-    }
     return new ParticipanteContratoDominio.Builder()
         .id(entidadAEnsamblar.getId())
         .persona(PersonaDTOAssembler.getInstance().ensamblarDominio(entidadAEnsamblar.getPersona()))

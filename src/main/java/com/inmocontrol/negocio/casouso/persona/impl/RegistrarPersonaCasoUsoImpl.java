@@ -7,7 +7,6 @@ import com.inmocontrol.entidad.TipoDocumentoEntidad;
 import com.inmocontrol.negocio.casouso.persona.RegistrarPersonaCasoUso;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PersonaDominio;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilDate;
 import com.inmocontrol.transversal.UtilEmail;
 import com.inmocontrol.transversal.UtilIdentificador;
@@ -29,18 +28,6 @@ public class RegistrarPersonaCasoUsoImpl implements RegistrarPersonaCasoUso {
 
   @Override
   public void ejecutar(PersonaDominio datos) {
-    if (datos.getTipoDocumento().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
-    }
-    if (datos.getTipoDocumento().getNombre() != null && datos.getTipoDocumento().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El tipo de documento es obligatorio");
-    }
-    if (datos.getCiudadResidencia().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
-    }
-    if (datos.getCiudadResidencia().getNombre() != null && datos.getCiudadResidencia().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("La ciudad de residencia es obligatoria");
-    }
     validarObligatoriedadCampos(datos);
     validarFormatos(datos);
     validarUnicoNumeroIdentificacion(datos);

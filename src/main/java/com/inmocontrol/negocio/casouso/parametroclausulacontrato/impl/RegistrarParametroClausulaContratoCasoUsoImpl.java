@@ -3,7 +3,7 @@ package com.inmocontrol.negocio.casouso.parametroclausulacontrato.impl;
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.parametroclausulacontrato.RegistrarParametroClausulaContratoCasoUso;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
+
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -29,12 +29,7 @@ public class RegistrarParametroClausulaContratoCasoUsoImpl implements RegistrarP
 			throw new InmocontrolExcepcion("El parametro clausula contrato a registrar no es valido.",
 					"Validacion fallida en RegistrarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadCampos() - El parametro clausula contrato a registrar no es valido.");
 		}
-		if (datos.getParametro().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("El parámetro es obligatorio");
-		}
-		if (datos.getClausulaPorContrato().getId().equals(UtilUUID.UUID_CERO)) {
-			throw new ValidadorExcepcion("La cláusula por contrato es obligatoria");
-		}
+
 		if (UtilObjeto.esNulo(datos.getValor()) || datos.getValor().isEmpty()) {
 			throw new InmocontrolExcepcion("El valor del parametro clausula contrato es obligatorio.",
 					"Validacion fallida en RegistrarParametroClausulaContratoCasoUsoImpl.validarObligatoriedadCampos() - El valor del parametro clausula contrato es obligatorio.");

@@ -90,7 +90,8 @@ public class ClausulaContratoPostgresqlDAO extends SQLDAO implements ClausulaCon
       parametros.add(filtro.getTitulo());
     }
 
-    if (filtro.getAreaReferencia() != null && filtro.getAreaReferencia().getId() != null) {
+    if (filtro.getAreaReferencia() != null && filtro.getAreaReferencia().getId() != null
+        && !UUID.fromString("00000000-0000-0000-0000-000000000000").equals(filtro.getAreaReferencia().getId())) {
       sql += " AND c.areareferencia = ?";
       parametros.add(filtro.getAreaReferencia().getId());
     }

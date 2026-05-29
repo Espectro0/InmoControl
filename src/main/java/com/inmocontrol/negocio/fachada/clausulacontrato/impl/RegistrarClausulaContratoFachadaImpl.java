@@ -9,9 +9,7 @@ import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
 import com.inmocontrol.negocio.dominio.TipoAplicacionDominio;
 import com.inmocontrol.negocio.fachada.clausulacontrato.RegistrarClausulaContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public class RegistrarClausulaContratoFachadaImpl implements RegistrarClausulaContratoFachada {
 

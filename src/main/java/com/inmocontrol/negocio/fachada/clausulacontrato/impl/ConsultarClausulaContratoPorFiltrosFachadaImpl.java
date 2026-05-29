@@ -5,7 +5,9 @@ import com.inmocontrol.dto.ClausulaContratoDTO;
 import com.inmocontrol.entidad.ClausulaContratoEntidad;
 import com.inmocontrol.negocio.casouso.clausulacontrato.ConsultarClausulaContratoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.casouso.clausulacontrato.impl.ConsultarClausulaContratoPorFiltrosCasoUsoImpl;
+import com.inmocontrol.negocio.dominio.AreaReferenciaDominio;
 import com.inmocontrol.negocio.dominio.ClausulaContratoDominio;
+import com.inmocontrol.negocio.dominio.TipoAplicacionDominio;
 import com.inmocontrol.negocio.fachada.clausulacontrato.ConsultarClausulaContratoPorFiltrosFachada;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
@@ -29,7 +31,14 @@ public class ConsultarClausulaContratoPorFiltrosFachadaImpl implements Consultar
 		}
 
 		try {
-			ClausulaContratoDominio dominio = new ClausulaContratoDominio.Builder().titulo(datos.getTitulo()).build();
+			ClausulaContratoDominio dominio = new ClausulaContratoDominio.Builder().titulo(datos.getTitulo())
+					.areaReferencia(datos.getAreaReferencia() != null
+							? new AreaReferenciaDominio.Builder().id(datos.getAreaReferencia().getId()).build()
+							: null)
+					.tipoAplicacion(datos.getTipoAplicacion() != null
+							? new TipoAplicacionDominio.Builder().id(datos.getTipoAplicacion().getId()).build()
+							: null)
+					.build();
 			return casoUso.ejecutar(dominio);
 
 		} catch (Exception excepcion) {

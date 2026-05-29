@@ -1,7 +1,9 @@
 package com.inmocontrol.negocio.casouso.parametroclausulacontrato.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
+import com.inmocontrol.entidad.ClausulaPorContratoEntidad;
 import com.inmocontrol.entidad.ParametroClausulaContratoEntidad;
+import com.inmocontrol.entidad.ParametroEntidad;
 import com.inmocontrol.negocio.casouso.parametroclausulacontrato.ConsultarParametroClausulaContratoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.ParametroClausulaContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -25,6 +27,10 @@ public class ConsultarParametroClausulaContratoPorFiltrosCasoUsoImpl
     return daoFactory
         .obtenerParametroClausulaContratoDAO()
         .consultarPorFiltro(
-            new ParametroClausulaContratoEntidad.Builder().valor(datos.getValor()).build());
+            new ParametroClausulaContratoEntidad.Builder()
+                .parametro(new ParametroEntidad.Builder().id(datos.getParametro().getId()).build())
+                .clausulaPorContrato(new ClausulaPorContratoEntidad.Builder().id(datos.getClausulaPorContrato().getId()).build())
+                .valor(datos.getValor())
+                .build());
   }
 }

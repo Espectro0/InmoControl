@@ -2,6 +2,7 @@ package com.inmocontrol.negocio.casouso.contrato.impl;
 
 import com.inmocontrol.datos.dao.sql.factoria.DAOFactory;
 import com.inmocontrol.entidad.ContratoEntidad;
+import com.inmocontrol.entidad.PropiedadEntidad;
 import com.inmocontrol.negocio.casouso.contrato.ConsultarContratoPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.transversal.UtilObjeto;
@@ -27,6 +28,9 @@ public class ConsultarContratoPorFiltrosCasoUsoImpl implements ConsultarContrato
             new ContratoEntidad.Builder()
                 .codigoContrato(datos.getCodigoContrato())
                 .esActivo(datos.getEsActivo())
+                .propiedad(new PropiedadEntidad.Builder().id(datos.getPropiedad().getId()).build())
+                .fechaInicio(datos.getFechaInicio())
+                .fechaFin(datos.getFechaFin())
                 .build());
   }
 }

@@ -8,9 +8,7 @@ import com.inmocontrol.negocio.dominio.ContratoDominio;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
 import com.inmocontrol.negocio.fachada.contrato.RegistrarContratoFachada;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.UtilUUID;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 
 public class RegistrarContratoFachadaImpl implements RegistrarContratoFachada {
 
@@ -34,8 +32,7 @@ public class RegistrarContratoFachadaImpl implements RegistrarContratoFachada {
 			ContratoDominio dominio = new ContratoDominio.Builder().codigoContrato(datos.getCodigoContrato())
 					.fechaInicio(datos.getFechaInicio()).fechaFin(datos.getFechaFin())
 					.esActivo(datos.getEsActivo() != null ? datos.getEsActivo() : false)
-					.propiedad(new PropiedadDominio.Builder().id(datos.getPropiedad().getId()).build())
-					.build();
+					.propiedad(new PropiedadDominio.Builder().id(datos.getPropiedad().getId()).build()).build();
 			casoUso.ejecutar(dominio);
 			daoFactory.confirmarTransaccion();
 

@@ -8,7 +8,6 @@ import com.inmocontrol.entidad.TipoPropiedadEntidad;
 import com.inmocontrol.negocio.casouso.propiedad.RegistrarPropiedadCasoUso;
 import com.inmocontrol.transversal.excepcion.InmocontrolExcepcion;
 import com.inmocontrol.negocio.dominio.PropiedadDominio;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import com.inmocontrol.transversal.UtilObjeto;
 import com.inmocontrol.transversal.UtilSanitizacion;
 import com.inmocontrol.transversal.UtilUUID;
@@ -26,24 +25,6 @@ public class RegistrarPropiedadCasoUsoImpl implements RegistrarPropiedadCasoUso 
 
   @Override
   public void ejecutar(PropiedadDominio datos) {
-    if (datos.getTipoPropiedad().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El tipo de propiedad es obligatorio");
-    }
-    if (datos.getTipoPropiedad().getNombre() != null && datos.getTipoPropiedad().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El tipo de propiedad es obligatorio");
-    }
-    if (datos.getEstrato().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El estrato es obligatorio");
-    }
-    if (datos.getEstrato().getNombre() != null && datos.getEstrato().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El estrato es obligatorio");
-    }
-    if (datos.getCiudad().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("La ciudad es obligatoria");
-    }
-    if (datos.getCiudad().getNombre() != null && datos.getCiudad().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("La ciudad es obligatoria");
-    }
     validarObligatoriedadCampos(datos);
     validarFormatos(datos);
     validarUnicoNombreDireccion(datos);

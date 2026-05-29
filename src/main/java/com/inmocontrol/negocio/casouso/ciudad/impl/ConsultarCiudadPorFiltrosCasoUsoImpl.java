@@ -7,53 +7,37 @@ import com.inmocontrol.entidad.PaisEntidad;
 import com.inmocontrol.negocio.casouso.ciudad.ConsultarCiudadPorFiltrosCasoUso;
 import com.inmocontrol.negocio.dominio.CiudadDominio;
 import com.inmocontrol.transversal.UtilObjeto;
-import com.inmocontrol.transversal.UtilUUID;
-import com.inmocontrol.transversal.excepcion.ValidadorExcepcion;
 import java.util.List;
 
 public class ConsultarCiudadPorFiltrosCasoUsoImpl implements ConsultarCiudadPorFiltrosCasoUso {
 
-  private DAOFactory daoFactory;
+	private DAOFactory daoFactory;
 
-  public ConsultarCiudadPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
-    super();
-    this.daoFactory = daoFactory;
-  }
+	public ConsultarCiudadPorFiltrosCasoUsoImpl(DAOFactory daoFactory) {
+		super();
+		this.daoFactory = daoFactory;
+	}
 
-  @Override
-  public List<CiudadEntidad> ejecutar(CiudadDominio datos) {
-    if (UtilObjeto.esNulo(datos)) {
-      return daoFactory.obtenerCiudadDAO().consultarTodos();
-    }
-    if (datos.getDepartamento().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El departamento es obligatorio");
-    }
-    if (datos.getDepartamento().getNombre() != null && datos.getDepartamento().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El departamento es obligatorio");
-    }
-    if (datos.getDepartamento().getPais().getId().equals(UtilUUID.UUID_CERO)) {
-      throw new ValidadorExcepcion("El país es obligatorio");
-    }
-    if (datos.getDepartamento().getPais().getNombre() != null && datos.getDepartamento().getPais().getNombre().equals("N/A")) {
-      throw new ValidadorExcepcion("El país es obligatorio");
-    }
-    return daoFactory
-        .obtenerCiudadDAO()
-        .consultarPorFiltro(
-            new CiudadEntidad.Builder()
-                .nombre(datos.getNombre())
-                .departamento(
-                    datos.getDepartamento() != null
-                        ? new DepartamentoEntidad.Builder()
-                            .id(datos.getDepartamento().getId())
-                            .pais(
-                                datos.getDepartamento().getPais() != null
-                                    ? new PaisEntidad.Builder()
-                                        .id(datos.getDepartamento().getPais().getId())
-                                        .build()
-                                    : null)
-                            .build()
-                        : null)
-                .build());
-  }
+	@Override
+	public List<CiudadEntidad> ejecutar(CiudadDominio datos) {
+		if (UtilObjeto.esNulo(datos)) {
+			return daoFactory.obtenerCiudadDAO().consultarTodos();
+		}
+		return daoFactory.obtenerCiudadDAO()
+				.consultarPorFiltro(
+						new CiudadEntidad.Builder().nombre(datos.getNombre())
+								.departamento(
+										datos.getDepartamento() != null
+												? new DepartamentoEntidad.Builder()
+														.id(datos.getDepartamento()
+																.getId())
+														.pais(datos.getDepartamento().getPais() != null
+																? new PaisEntidad.Builder()
+																		.id(datos.getDepartamento().getPais().getId())
+																		.build()
+																: null)
+														.build()
+												: null)
+								.build());
+	}
 }
